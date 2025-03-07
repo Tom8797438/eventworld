@@ -1,17 +1,18 @@
 <template>
     <div>
-      <Authentification />
+      <Login />
     </div>
   </template>
 
 <script>
 
-import Authentification from '@/components/Authentification.vue'
+
+import Login from '@/components/Login.vue';
 
 export default {
     name : 'LoginView',
     components :{
-        Authentification,
+      Login,
     },
 };
 

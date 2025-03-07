@@ -5,86 +5,49 @@
 // ...allProducts.value = await recherche_produits(selectedFournisseurId); // Appel à la fonction API...
 
 
-import { defineStore } from 'pinia';
-import axios from 'axios';
-import Cookies from 'js-cookie';
-//import { useRouter } from 'vue-router';
-axios.defaults.withCredentials = true;
+import { defineStore } from "pinia";
+import { login, logout } from "@/utils/api_utils";
+import Cookies from "js-cookie";
 
-export const useAuthStore = defineStore('authStore', {
+export const useAuthStore = defineStore("authStore", {
   state: () => ({
-    user: null, // Informations sur l'utilisateur
-    token: null, // Token JWT
-    error: null, // Message d'erreur
+    user: null,
+    token: Cookies.get("authToken") || null,
+    error: null,
   }),
 
-  // Ajout des getters
   getters: {
-    isAuthenticated: (state) => !!state.user, // Retourne true si l'utilisateur est connecté
+    isAuthenticated: (state) => !!state.token,
   },
 
   actions: {
-    async login(identifier, password) {
+    async loginUser(username, password) {
       try {
-        const response = await axios.post('http://localhost:1337/api/auth/local', {
-          identifier,
-          password,
-        },{ headers: { 'Content-Type': 'application/json' } }
-      );
-        console.log('Réponse Strapi :', response);
-        
-        this.token = response.data.jwt;
-        this.user = response.data.user;
-        // Stocker le token dans un cookie
-        Cookies.set('authToken', this.token, { sameSite: 'strict' }); // utilisation en local http
-
-        //Cookies.set('authToken', this.token, { secure: true, sameSite: 'strict' }); // utilisation en https
-
-        // Configurer Axios avec le token
-        axios.defaults.headers.common['Authorization'] = `Bearer ${this.token}`;
+        const { access } = await login(username, password);
+        this.token = access;
         this.error = null;
       } catch (err) {
-        this.error = 'Échec de la connexion. Vérifiez vos identifiants.';
-        console.error('Erreur d\'authentification :', err.response?.data || err.message);
+        this.error = "Échec de la connexion. Vérifiez vos identifiants.";
       }
     },
 
-      logout(router) {
-        this.user = null;
-        this.token = null;
-    
-      // Supprimer le cookie
-      Cookies.remove('authToken');
-    
-      // Retirer l'Authorization d'Axios
-      delete axios.defaults.headers.common['Authorization'];
-    
-      // Effectuer la redirection
-      if (router) {
-        router.push('/login').catch(err => {
-          if (err.name !== 'NavigationDuplicated') {
-            console.error(err);
-          }
-        });
-      } else {
-        console.error('Router instance is not provided to logout');
-      }
+    logoutUser(router) {
+      logout(router);
+      this.token = null;
+      this.user = null;
     },
 
     async autoLogin() {
-      const token = Cookies.get('authToken');
-      if (token) {
-        try {
-          this.token = token;
-          axios.defaults.headers.common['Authorization'] = `Bearer ${this.token}`;
-    
-          // Optionnel : Récupérer les informations utilisateur depuis Strapi
-          const response = await axios.get('http://192.168.1.35:1337/api/users/me');
-          this.user = response.data;
-        } catch (err) {
-          console.warn('Auto-login échoué. Token invalide ou expiré.', err);
-          this.logout();
+      try {
+        const user = await getUser();
+        if (user) {
+          this.user = user;
+          this.token = Cookies.get("authToken"); // Vérifier si le token est bien récupéré
+        } else {
+          this.logoutUser(); // Déconnexion si le token est invalide
         }
+      } catch (err) {
+        console.warn("Auto-login échoué", err);
       }
     },
   },

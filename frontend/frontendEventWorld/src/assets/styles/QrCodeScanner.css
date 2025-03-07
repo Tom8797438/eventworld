@@ -1,0 +1,181 @@
+/* Erreurs */
+.error {
+    font-weight: bold;
+    color: red;
+    text-align: center;
+    margin: 10px 0;
+  }
+  
+  /* Cases à cocher pour les types de codes */
+  .barcode-format-checkbox {
+    margin: 10px;
+    white-space: nowrap;
+    display: inline-block;
+  }
+  
+  /* Conteneur principal */
+  .section-scan {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between; 
+    gap: 1rem;
+    padding: 1rem;
+    background: linear-gradient(135deg, #8565db, #8fd3ce);
+    border-radius: 0 0 18px 18px;
+  }
+  
+  /* Ajuste la sélection de la caméra */
+  .selection-camera {
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    padding: 18px;
+    display: block;
+    max-width: 100%;
+    border-radius: 18px;
+  }
+  
+  /* Zone pour le résultat */
+  .decode-result {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 2rem;
+    font-size: 1.2rem;
+    margin-top: 1.2rem;
+    font-weight: bold;
+  }
+  
+  /* Composant du scanner */
+  .camera-frame {
+    width: 100%;
+    max-width: 900px;
+    aspect-ratio: 16 / 9;
+    border-radius: 18px 18px 0 0;
+    padding-bottom: px;
+    overflow: hidden;
+    margin: auto;
+  }
+  
+  .scan-response {
+    margin-top: 18px;
+    padding: 6px;
+    background-color: #b9252500;
+    display: block;
+    float: right;
+  }
+  .scan-response p {
+    margin: 5px 0;
+  }
+  
+  .scan-result {
+    text-align: center;
+    margin-top: 6px;
+  }
+
+  /* Taille de l'icône au retour de scan*/
+  .status-icon {
+    font-size: 60px; 
+    position: relative;
+    display: flex;
+    right: 90px;
+    gap: 38px;
+    top: 16px;
+    margin: 0px auto;
+  }
+  
+  .success-icon {
+    color: green;
+  }
+  
+  .warning-icon {
+    color: rgb(255, 0, 0);
+    rotate: 180deg ;
+  }
+  
+  .error-icon {
+    color: red;
+  }
+  
+  .reset-button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-top: 6px;
+    transition: background 0.3s;
+  }
+  
+  .reset-button:hover {
+    background-color: #0056b3;
+  }
+
+  /* Responsive design */
+  @media (max-width: 768px) {
+    /* Colonne verticale pour les petits écrans */
+    .section-scan {
+      flex-direction: column;
+      align-items: center;
+      max-width: 400px;
+    }
+  
+    .status-icon {
+      font-size: 60px; 
+      position: relative;
+      display: flex;
+      left: 0px;
+      gap: 38px;
+      top: 6px;
+      margin: 0px auto;
+    }
+
+    .selection-camera,
+    .barcode-format-checkbox {
+      font-size: 1.2rem;
+      width: 100%;
+    }
+  
+    qrcode-stream {
+      width: 90%;
+      height: auto;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    /* Très petits écrans */
+    .section-scan {
+      padding: 0.8rem;
+    }
+  
+    .selection-camera {
+      font-size: 1.1rem;
+      margin: 5px;
+      width: 310px;
+      color:#000;
+    }
+  
+    .barcode-format-checkbox {
+      margin: 6px 0;
+      font-size: 1.2rem;
+    }
+  
+    qrcode-stream {
+      width: 100%;
+      max-width: 300px;
+    }
+  
+    .decode-result {
+      display: contents;
+      position: relative;
+      text-align: center;
+      font-size: 1.2rem;
+      margin-top: 0.2rem;
+      font-weight: bold;
+      color: #000;
+    }
+  }
+
+  
+  

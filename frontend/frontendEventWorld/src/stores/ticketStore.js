@@ -2,7 +2,7 @@ import { defineStore } from 'pinia';
 import axios from 'axios';
 import { useEventStore } from '@/stores/eventStore';
 import { useBookingStore } from '@/stores/bookingStore';
-import { generateTicketPdf } from '@/components/utils/generateTicketPdf';
+import { generateTicketPdf } from '@/utils/generateTicketPdf';
 
 export const useTicketStore = defineStore('ticketStore', {
   state: () => ({

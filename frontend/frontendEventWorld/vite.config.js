@@ -2,13 +2,18 @@ import { fileURLToPath, URL } from 'node:url'
 
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
-import vueDevTools from 'vite-plugin-vue-devtools'
+import vueJsx from '@vitejs/plugin-vue-jsx'
+//import vueDevTools from 'vite-plugin-vue-devtools'
 
 // https://vite.dev/config/
 export default defineConfig({
+  // server: {
+  //   port: 5174, // Changez ici pour définir le port par défaut
+  // },
   plugins: [
     vue(),
-    vueDevTools(),
+    vueJsx(),
+    //vueDevTools(),
   ],
   resolve: {
     alias: {
