@@ -1,0 +1,16 @@
+Django
+djangorestframework
+djangorestframework-simplejwt
+django-cors-headers
+django-filter
+PyJWT
+requests
+psycopg2  # PostgreSQL
+certifi  # Optionnel pour HTTPS sécurisé
+sqlparse
+django-axes
+django-environ
+psycopg2-binary
+dj-database-url
+#boto3  # Stockage en cloud (AWS S3) = bug
+whitenoise
