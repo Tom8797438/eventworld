@@ -4,6 +4,7 @@ import MenuView from '@/views/MenuView.vue'; // Vue pour le menu principal
 import { useAuthStore } from '@/stores/authStore'; // Importation du store pour gérer l'authentification
 import EventDetails from '@/components/EventDetails.vue';
 import QrCodeScanner from "@/components/QrCodeScanner.vue";
+import Register from '@/components/Register.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -18,6 +19,11 @@ const router = createRouter({
       name: 'menu',
       component: MenuView, // Page protégée (Menu principal)
       meta: { requiresAuth: true }, // Nécessite une authentification
+    },
+    {
+      path: '/register',
+      name: 'register',
+      component: Register,
     },
     {
       path: '/events/details', // Utilise documentId comme paramètre requis

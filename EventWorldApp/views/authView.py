@@ -6,13 +6,13 @@ from django.contrib.auth.models import User
 from rest_framework import status
 
 class ProtectedView(APIView):
-    permission_classes = [IsAuthenticated]  # 🔐 Seuls les utilisateurs connectés peuvent accéder
+    permission_classes = [IsAuthenticated]  # Seuls les utilisateurs connectés peuvent accéder
 
     def get(self, request):
         return Response({"message": "Accès autorisé uniquement aux utilisateurs authentifiés"})
 
 class UserProfileView(APIView):
-    permission_classes = [IsAuthenticated]  # 🔐 Seuls les utilisateurs connectés peuvent accéder
+    permission_classes = [IsAuthenticated]  # Seuls les utilisateurs connectés peuvent accéder
 
     def get(self, request):
         user = request.user

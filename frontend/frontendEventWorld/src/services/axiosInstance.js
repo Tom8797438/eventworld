@@ -16,7 +16,7 @@ instance.interceptors.request.use((config) => {
     return config;
 }, (error) => Promise.reject(error));
 
-// ✅ Interceptor : Rafraîchit le token si une requête est rejetée (401 Unauthorized)
+// Interceptor : Rafraîchit le token si une requête est rejetée (401 Unauthorized)
 instance.interceptors.response.use((response) => response, async (error) => {
     if (error.response && error.response.status === 401) {
         try {

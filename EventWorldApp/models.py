@@ -3,7 +3,7 @@ import uuid
 from django.contrib.auth.models import AbstractUser, Group, Permission
 from django.core.validators import RegexValidator
 
-# ✅ 1️⃣ Modèle utilisateur personnalisé
+# Modèle utilisateur personnalisé
 class User(AbstractUser):
     ORGANIZER = "organisateur"
     ASSOCIATION = "association"
@@ -26,20 +26,20 @@ class User(AbstractUser):
 
 
     def can_create_event(self, event_type):
-        """ ✅ Vérifie si l'utilisateur peut créer un type d'événement """
+        """ Vérifie si l'utilisateur peut créer un type d'événement """
         if self.role in [self.ORGANIZER, self.ASSOCIATION]:  
-            return True  # ✅ Organisateur & Association → Tout type d'événement possible
+            return True  # Organisateur & Association → Tout type d'événement possible
         elif self.role == self.STUDENT and event_type in ["private", "limited"]:
-            return True  # ✅ Étudiant → Événements privés et restreints
+            return True  # Étudiant → Événements privés et restreints
         elif self.role == self.OTHER and event_type == "private":
-            return True  # ✅ Autre → Seulement des événements privés
-        return False  # ❌ Accès refusé
+            return True  # Autre → Seulement des événements privés
+        return False  # Accès refusé
 
     def __str__(self):
         return f"{self.username} ({self.role})"
 
 
-# ✅ 2️⃣ Gestion des profils
+#  Gestion des profils
 class Profil(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile")
@@ -63,7 +63,7 @@ class Profil(models.Model):
         verbose_name_plural = "Profils"
 
 
-# ✅ 3️⃣ Gestion des événements
+# Gestion des événements
 class Evenement(models.Model):
     TYPE_EVENT = [("public", "Public"), ("private", "Privé"), ("limited", "Limité")]
     TYPE_STATUS = [
@@ -110,7 +110,7 @@ class Evenement(models.Model):
         ordering = ["-created_at"]
 
 
-# ✅ 4️⃣ Gestion des tickets et QR Codes
+# Gestion des tickets et QR Codes
 class Ticketing(models.Model):
     STAT_STATUS = [("valid", "Valid"), ("used", "Used"), ("invalid", "Invalid")]
 
@@ -132,7 +132,7 @@ class Ticketing(models.Model):
         ordering = ["-created_at"]
 
 
-# ✅ 5️⃣ Gestion des paiements
+# Gestion des paiements
 class Payment(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     ticket = models.ForeignKey(Ticketing, on_delete=models.CASCADE, related_name="payments")
@@ -151,7 +151,7 @@ class Payment(models.Model):
         ordering = ["-created_at"]
 
 
-# ✅ 6️⃣ Gestion des invitations
+# Gestion des invitations
 class InvitationNotification(models.Model):
     STATUS_CHOICES = [("sent", "Sent"), ("accepted", "Accepted"), ("refused", "Refused")]
 

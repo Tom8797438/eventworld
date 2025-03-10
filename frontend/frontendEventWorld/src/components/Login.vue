@@ -24,6 +24,7 @@
       <button type="submit">Se connecter</button>
     </form>
     <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
+    <button @click="redirection" class="register-button">Inscription</button>
   </div>
 </template>
 
@@ -50,7 +51,7 @@ export default {
       try {
         await this.authStore.loginUser(this.identifier, this.password);
         if (this.authStore.isAuthenticated) {
-          this.router.push('/menu'); // Redirige après succès
+          this.router.push('/menu'); // Redirection
         } else {
           this.errorMessage = "Identifiants incorrects.";
         }
@@ -58,6 +59,10 @@ export default {
         this.errorMessage = "Échec de la connexion. Vérifiez vos identifiants.";
       }
     },
+  
+    redirection(){
+      this.router.push('/register');
+    }
   },
 };
 </script>
