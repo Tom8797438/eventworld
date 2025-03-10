@@ -1,26 +1,50 @@
 from django.db import models
 import uuid
-from django.contrib.auth.models import User
+from django.contrib.auth.models import AbstractUser, Group, Permission
 from django.core.validators import RegexValidator
 
-# Gestion des profils
-class Profil(models.Model):
-    TYPE_ORGANISATOR_CHOICES = [
-        ('organisateur', 'Organisateur'),
-        ('association', 'Association'),
-        ('etudiant', 'Étudiant'),
-        ('autre', 'Autre'),
+# ✅ 1️⃣ Modèle utilisateur personnalisé
+class User(AbstractUser):
+    ORGANIZER = "organisateur"
+    ASSOCIATION = "association"
+    STUDENT = "etudiant"
+    OTHER = "autre"
+    
+    ROLE_CHOICES = [
+        (ORGANIZER, "Organisateur"),
+        (ASSOCIATION, "Association"),
+        (STUDENT, "Étudiant"),
+        (OTHER, "Autre"),
     ]
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profil")
+    role = models.CharField(max_length=20, choices=ROLE_CHOICES, default=ORGANIZER)
+
+    # Ajout `related_name` évitant les conflits avec auth.User
+    groups = models.ManyToManyField(Group, related_name="custom_user_groups", blank=True)
+    user_permissions = models.ManyToManyField(Permission, related_name="custom_user_permissions", blank=True)
+
+
+    def can_create_event(self, event_type):
+        """ ✅ Vérifie si l'utilisateur peut créer un type d'événement """
+        if self.role in [self.ORGANIZER, self.ASSOCIATION]:  
+            return True  # ✅ Organisateur & Association → Tout type d'événement possible
+        elif self.role == self.STUDENT and event_type in ["private", "limited"]:
+            return True  # ✅ Étudiant → Événements privés et restreints
+        elif self.role == self.OTHER and event_type == "private":
+            return True  # ✅ Autre → Seulement des événements privés
+        return False  # ❌ Accès refusé
+
+    def __str__(self):
+        return f"{self.username} ({self.role})"
+
+
+# ✅ 2️⃣ Gestion des profils
+class Profil(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile")
     company_name = models.CharField(max_length=100, unique=True)
     company_number = models.CharField(max_length=25, unique=True)
-    type_organisator = models.CharField(
-        max_length=20, 
-        choices=TYPE_ORGANISATOR_CHOICES, 
-        default='organisateur'
-    )
     civility = models.CharField(max_length=10, blank=True, null=True)
     name_contact = models.CharField(max_length=100)
     surname_contact = models.CharField(max_length=100)
@@ -32,83 +56,70 @@ class Profil(models.Model):
     city = models.CharField(max_length=100)
 
     def __str__(self):
-        return f"{self.company_name} ({self.get_type_organisator_display()})"
+        return f"{self.company_name} ({self.user.role})"
 
     class Meta:
         verbose_name = "Profil"
         verbose_name_plural = "Profils"
 
 
-# Gestion des événements
+# ✅ 3️⃣ Gestion des événements
 class Evenement(models.Model):
-    TYPE_EVENT = [
-        ('public', 'Public'),
-        ('private', 'Privé'),
-        ('limited', 'Limité'),
-    ]
+    TYPE_EVENT = [("public", "Public"), ("private", "Privé"), ("limited", "Limité")]
     TYPE_STATUS = [
-        ('draft','Draft'), 
-        ('current', 'Current'), 
-        ('finished', 'Finished'),
-        ('cancelled', 'Cancelled'),
+        ("draft", "Draft"),
+        ("current", "Current"),
+        ("finished", "Finished"),
+        ("cancelled", "Cancelled"),
     ]
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     code_evenement = models.CharField(
-        max_length=13, 
+        max_length=13,
         unique=True,
-        validators=[
-            RegexValidator(
-                regex=r'^\d{13}$',
-                message="Le code évènement doit contenir exactement 13 chiffres."
-            )
-        ],
-        help_text="Entrez un code évènement de 13 chiffres."
+        validators=[RegexValidator(regex=r"^\d{13}$", message="Le code évènement doit contenir exactement 13 chiffres.")],
+        help_text="Entrez un code évènement de 13 chiffres.",
     )
     name = models.CharField(max_length=100)
-    description = models.CharField(max_length=200, blank=True, null=True)
+    description = models.TextField(blank=True, null=True)
     date_start = models.DateField()
     date_end = models.DateField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    price_1 = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
-    price_2 = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
-    price_3 = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
-    price_4 = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
-    price_5 = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
-    price_6 = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     location = models.CharField(max_length=200)
     address = models.CharField(max_length=200)
     postal_code = models.CharField(max_length=10)
     city = models.CharField(max_length=100)
-    organisator = models.ForeignKey(Profil, on_delete=models.CASCADE, related_name="events")
+    organisator = models.ForeignKey(User, on_delete=models.CASCADE, related_name="events")
     number_place = models.IntegerField(default=0)
-    type_event = models.CharField(max_length=20, choices=TYPE_EVENT, default='private')
-    status = models.CharField(max_length=20, choices=TYPE_STATUS, default='draft')
+    type_event = models.CharField(max_length=20, choices=TYPE_EVENT, default="private")
+    status = models.CharField(max_length=20, choices=TYPE_STATUS, default="draft")
 
     def __str__(self):
         return f"{self.name} ({self.code_evenement})"
 
+    def save(self, *args, **kwargs):
+        """ ✅ Vérifie les permissions avant de sauvegarder """
+        if not self.organisator.can_create_event(self.type_event):
+            raise ValueError(f"L'utilisateur {self.organisator.username} ({self.organisator.role}) n'a pas le droit de créer un événement {self.type_event}.")
+        super().save(*args, **kwargs)
+
     class Meta:
         verbose_name = "Événement"
         verbose_name_plural = "Événements"
-        ordering = ['name']
+        ordering = ["-created_at"]
 
 
-# Gestion des tickets et QR Codes
+# ✅ 4️⃣ Gestion des tickets et QR Codes
 class Ticketing(models.Model):
-    STAT_STATUS = [
-        ('valid', 'Valid'),
-        ('used', 'Used'),
-        ('invalid', 'Invalid'),
-    ]
+    STAT_STATUS = [("valid", "Valid"), ("used", "Used"), ("invalid", "Invalid")]
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     event = models.ForeignKey(Evenement, on_delete=models.CASCADE, related_name="tickets")
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="tickets")
-    qr_code = models.CharField(max_length=255, unique=True, blank=True, null=True)
+    qr_code = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)  # ✅ Sécurisation avec UUID
     price = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
-    status = models.CharField(max_length=20, choices=STAT_STATUS, default='valid')
+    status = models.CharField(max_length=20, choices=STAT_STATUS, default="valid")
     scan_timestamp = models.DateTimeField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -118,19 +129,17 @@ class Ticketing(models.Model):
     class Meta:
         verbose_name = "Ticket"
         verbose_name_plural = "Tickets"
-        ordering = ['-created_at']
+        ordering = ["-created_at"]
 
 
-# Gestion des paiements
+# ✅ 5️⃣ Gestion des paiements
 class Payment(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     ticket = models.ForeignKey(Ticketing, on_delete=models.CASCADE, related_name="payments")
     amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
-    payment_status = models.CharField(max_length=20, choices=[
-        ('pending', 'Pending'),
-        ('completed', 'Completed'),
-        ('failed', 'Failed'),
-    ], default='pending')
+    payment_status = models.CharField(
+        max_length=20, choices=[("pending", "Pending"), ("completed", "Completed"), ("failed", "Failed")], default="pending"
+    )
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -139,21 +148,17 @@ class Payment(models.Model):
     class Meta:
         verbose_name = "Payment"
         verbose_name_plural = "Payments"
-        ordering = ['-created_at']
+        ordering = ["-created_at"]
 
 
-# Gestion des invitations
+# ✅ 6️⃣ Gestion des invitations
 class InvitationNotification(models.Model):
-    STATUS_CHOICES = [
-        ('sent', 'Sent'),
-        ('accepted', 'Accepted'),
-        ('refused', 'Refused'),
-    ]
+    STATUS_CHOICES = [("sent", "Sent"), ("accepted", "Accepted"), ("refused", "Refused")]
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     event = models.ForeignKey(Evenement, on_delete=models.CASCADE, related_name="invitations")
     email = models.EmailField()
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='sent')
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="sent")
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -162,4 +167,4 @@ class InvitationNotification(models.Model):
     class Meta:
         verbose_name = "Invitation"
         verbose_name_plural = "Invitations"
-        ordering = ['-created_at']
+        ordering = ["-created_at"]

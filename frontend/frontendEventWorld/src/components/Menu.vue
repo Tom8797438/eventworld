@@ -125,7 +125,7 @@
 
 // Fonction pour gérer la déconnexion
 const handleLogout = () => {
-  authStore.logout(router); // Passe l'instance du routeur au store
+  authStore.logoutUser(router); // Passe l'instance du routeur au store
 };
   </script>
   

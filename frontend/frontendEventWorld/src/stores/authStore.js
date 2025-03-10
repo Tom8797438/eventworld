@@ -6,7 +6,7 @@
 
 
 import { defineStore } from "pinia";
-import { login, logout } from "@/utils/api_utils";
+import api from "@/services/axiosInstance";
 import Cookies from "js-cookie";
 
 export const useAuthStore = defineStore("authStore", {
@@ -23,31 +23,37 @@ export const useAuthStore = defineStore("authStore", {
   actions: {
     async loginUser(username, password) {
       try {
-        const { access } = await login(username, password);
+        const response = await api.post("token/", { username, password });
+        const { access, refresh } = response.data;
+
+        Cookies.set("authToken", access);
+        Cookies.set("refreshToken", refresh);
         this.token = access;
+
+        // Met à jour les headers Axios automatiquement
+        api.defaults.headers.common["Authorization"] = `Bearer ${access}`;
+
         this.error = null;
       } catch (err) {
         this.error = "Échec de la connexion. Vérifiez vos identifiants.";
       }
     },
 
-    logoutUser(router) {
-      logout(router);
+    async logoutUser(router) {
+      Cookies.remove("authToken");
+      Cookies.remove("refreshToken");
       this.token = null;
       this.user = null;
+      delete api.defaults.headers.common["Authorization"];
+      if (router) router.push("/login");
     },
 
     async autoLogin() {
       try {
-        const user = await getUser();
-        if (user) {
-          this.user = user;
-          this.token = Cookies.get("authToken"); // Vérifier si le token est bien récupéré
-        } else {
-          this.logoutUser(); // Déconnexion si le token est invalide
-        }
+        const response = await api.get("user/");
+        this.user = response.data;
       } catch (err) {
-        console.warn("Auto-login échoué", err);
+        this.logoutUser();
       }
     },
   },
