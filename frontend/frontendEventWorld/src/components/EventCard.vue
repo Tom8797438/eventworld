@@ -18,7 +18,7 @@
           > 
           <h3 class="event-title">{{ event.name }}         
           <font-awesome-icon  
-          @click.stop="deleteEvent(event)" 
+          @click.stop="deleteEventHandler(event)" 
           :icon="['fas', 'trash']" 
           class="delete-icon"
         /> </h3>
@@ -51,18 +51,20 @@ export default {
 
   methods: {
   // Liaison avec les actions du store
-  ...mapActions(useEventStore, ['fetchEvents', 'setSelectedEvent', 'fetcheventdelete']),
+  ...mapActions(useEventStore, ['fetchEvents', 'setSelectedEvent', 'deleteEvent']),
 
-  async deleteEvent(event) {
+  async deleteEventHandler(event) {
+    console.log("deleteEvent: ", event);
     if (confirm("Voulez-vous vraiment supprimer cet événement ?")) {
-      try {
-        await this.fetcheventdelete(event.documentId);
-        console.log("Événement supprimé localement !");
-      } catch (error) {
-        console.error("Erreur lors de la suppression :", error);
-      }
+        try {
+            console.log("Évént id : ", event.id);
+            await this.deleteEvent(event.id); // Utilisation correcte de l'ID
+            console.log("Événement supprimé localement !");
+        } catch (error) {
+            console.error("Erreur lors de la suppression :", error);
+        }
     }
-  },
+},
 
   goToEventDetails(event) {
     console.log('Événement sélectionné : ', event);

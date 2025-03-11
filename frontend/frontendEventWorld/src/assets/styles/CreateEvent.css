@@ -13,7 +13,7 @@
 }
 
 .create-event-container {
-    columns: 2;
+    columns: 3;
     max-width: 800px;
     padding: 1rem; /* Ajout d'espace intérieur */
     background: linear-gradient(135deg, #6e45e2, #88d3ce);
@@ -24,12 +24,12 @@
   
   /* Style des groupes de champs */
   .form-group {
-    margin-bottom: 0.5rem; /* Espacement vertical entre les groupes */
+    margin-bottom: 1rem; /* Espacement vertical entre les groupes */
   }
   
   .form-group button {
     position: relative;
-    top: 36px;
+    top: 12px;
   }
   
   /* Style des libellés */
@@ -90,6 +90,18 @@
     margin-top: 2.5rem;
   }
   
+/* Style des champs de prix */
+.price-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.price-container input {
+  width: 45%;
+}
+
   /* Responsive */
   @media (max-width:768px){
     

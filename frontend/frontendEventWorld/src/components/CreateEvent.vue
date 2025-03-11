@@ -16,8 +16,13 @@
           </div>
 
           <div class="form-group">
-            <label for="date">Date</label>
-            <input v-model="form.event_date" type="date" id="date" required />
+            <label for="date">Date début</label>
+            <input v-model="form.date_start" type="date" id="date_start" required />
+          </div>
+
+          <div class="form-group">
+            <label for="date">Date fin</label>
+            <input v-model="form.date_end" type="date" id="date_end" required />
           </div>
     
           <div class="form-group">
@@ -41,34 +46,29 @@
           </div>
     
           <div class="form-group">
-            <label for="total_seats">Places (Qté)</label>
-            <input v-model="form.total_seats" type="number" id="total_seats" required />
+            <label for="number_place">Places (Qté)</label>
+            <input v-model="form.number_place" type="number" id="number_place" required />
           </div>
-    
+          
           <div class="form-group">
-            <label for="price_standard">Prix Standard</label>
-            <input v-model="form.price_standard" type="number" id="price_standard" required />
-          </div>
-    
-          <div class="form-group">
-            <label for="price_vip">Prix VIP</label>
-            <input v-model="form.price_vip" type="number" id="price_vip" />
-          </div>
-    
-          <div class="form-group">
-            <label for="price_children">Prix PMR</label>
-            <input v-model="form.price_children" type="number" id="price_children" />
-          </div>
-    
-          <div class="form-group">
-            <label for="price_pmr">Prix Enfants</label>
-            <input v-model="form.price_pmr" type="number" id="price_pmr" />
+            <label for="type_event">Type d'événement</label>
+            <select v-model="form.type_event" id="type_event" required>
+              <option v-for="(label, value) in types" :key="value" :value="value">
+                {{ label }}
+              </option>
+            </select>
           </div>
 
-          <div class="form-group">
-            <label for="price_student">Prix Etudiant</label>
-            <input v-model="form.price_student" type="number" id="price_student" />
+        <div class="form-group">
+          <div class="price-container" v-for="(price, index) in form.price_categories" :key="index">
+            <label>Prix des billets</label>
+            <input v-model="price.label" placeholder="Ex: Standard, VIP" />
+            <input v-model="price.value" type="number" placeholder="Prix en €" />
+            <button @click.prevent="removePrice(index)">❌</button>
           </div>
+        </div>
+          <button @click.prevent="addPrice">➕ Ajouter un prix</button>
+
 
           <div class="form-group">
             <button type="submit">Valider</button>
@@ -88,6 +88,7 @@
   
   <script>
   import { useEventStore } from '@/stores/eventStore';
+  import { createEvent } from '@/utils/api_utils';
   
   export default {
     name: 'CreateEvent',
@@ -96,23 +97,28 @@
         form: {
           name: '',
           description: '',
-          event_date: '',
+          date_start: '',
+          date_end: '',
           location: '',
           address: '',
           postal_code:'',
           city: '',
-          total_seats: null,
-          price_standard: null,
-          price_vip: null,
-          price_pmr: null,
-          price_children: null,
-          price_student: null,
+          type_event:'',
+          number_place: null,
+          price_categories: [],
         },
+        types: {
+        public: "Public",
+        private: "Privé",
+        limited: "Limité",
+      },
         success: false,
         error: null,
       };
     },
     methods: {
+      addPrice() { this.form.price_categories.push({ label: '', value: null }); },
+      removePrice(index) { this.form.price_categories.splice(index, 1); },
       async createEvent() {
   const eventStore = useEventStore();
 

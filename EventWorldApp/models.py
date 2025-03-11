@@ -74,12 +74,7 @@ class Evenement(models.Model):
     ]
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    code_evenement = models.CharField(
-        max_length=13,
-        unique=True,
-        validators=[RegexValidator(regex=r"^\d{13}$", message="Le code évènement doit contenir exactement 13 chiffres.")],
-        help_text="Entrez un code évènement de 13 chiffres.",
-    )
+    code_evenement = models.CharField(max_length=255, unique=True, blank=True, null=True)
     name = models.CharField(max_length=100)
     description = models.TextField(blank=True, null=True)
     date_start = models.DateField()
@@ -94,6 +89,8 @@ class Evenement(models.Model):
     number_place = models.IntegerField(default=0)
     type_event = models.CharField(max_length=20, choices=TYPE_EVENT, default="private")
     status = models.CharField(max_length=20, choices=TYPE_STATUS, default="draft")
+    # Stocke dynamiquement les prix sous forme de JSON { "standard": 10, "vip": 20, "pmr": 5 }
+    price_categories = models.JSONField(default=dict, blank=True, null=True)
 
     def __str__(self):
         return f"{self.name} ({self.code_evenement})"
@@ -102,6 +99,9 @@ class Evenement(models.Model):
         """ ✅ Vérifie les permissions avant de sauvegarder """
         if not self.organisator.can_create_event(self.type_event):
             raise ValueError(f"L'utilisateur {self.organisator.username} ({self.organisator.role}) n'a pas le droit de créer un événement {self.type_event}.")
+        
+        if not self.code_evenement:  # Si le champ est vide, on génère un code unique
+            self.code_evenement = str(uuid.uuid4())[:8]  # Générer un identifiant court
         super().save(*args, **kwargs)
 
     class Meta:

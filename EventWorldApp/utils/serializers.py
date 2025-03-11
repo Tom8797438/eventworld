@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from EventWorldApp.models import User, Profil
+from EventWorldApp.models import User, Profil, Evenement
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -15,3 +15,9 @@ class ProfilSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profil
         fields = "__all__"
+        
+class EventSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Evenement
+        fields = "__all__"
+        read_only_fields = ('code_evenement',) 

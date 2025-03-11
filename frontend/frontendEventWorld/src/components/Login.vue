@@ -24,7 +24,9 @@
       <button type="submit">Se connecter</button>
     </form>
     <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
-    <button @click="redirection" class="register-button">Inscription</button>
+    <div class="register-button">
+      <button @click="redirection">Inscription</button>
+    </div>
   </div>
 </template>
 
@@ -36,7 +38,7 @@ export default {
   name: 'Login',
   data() {
     return {
-      identifier: '', // Peut être un email ou un nom d'utilisateur
+      identifier: '', // email ou un nom d'utilisateur
       password: '',
       errorMessage: null,
     };

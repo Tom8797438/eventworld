@@ -1,3 +1,4 @@
+from django.contrib.auth.models import Group
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -18,6 +19,11 @@ class RegisterView(APIView):
         user_serializer = UserSerializer(data=user_data)
         if user_serializer.is_valid():
             user = user_serializer.save()
+            
+            # Assignation du groupe Django correspondant au rôle
+            role_group = Group.objects.filter(name=user.role).first()
+            if role_group:
+                user.groups.add(role_group)
 
             # Création du profil lié à l'utilisateur
             profil_data["user"] = user.id

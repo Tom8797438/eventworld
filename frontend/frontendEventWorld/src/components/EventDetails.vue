@@ -4,21 +4,19 @@
       <!-- Colonne gauche -->
       <div class="event-details">
         <h2 class="event-title">{{ selectedEvent?.name || 'Non spécifié' }}</h2>
-        <p><strong>Date :</strong> {{ selectedEvent.event_date || 'Non spécifié' }}</p>
+        <p><strong>Date début:</strong> {{ selectedEvent.date_start || 'Non spécifié' }}</p>
+        <p><strong>Date fin:</strong> {{ selectedEvent.date_end || 'Non spécifié' }}</p>
         <p><strong>Lieu :</strong> {{ selectedEvent.location || 'Non spécifié' }}</p>
         <p><strong>Adresse :</strong> {{ selectedEvent.address || 'Non spécifié' }}</p>
         <p><strong>Ville :</strong> {{ selectedEvent.city || 'Non spécifié' }}</p>
-        <p><strong>Places disponibles :</strong> {{ selectedEvent.total_seats || 'Non spécifié' }}</p>
-        <p v-if="selectedEvent.price_standard"><strong>Prix Standard :</strong> {{ selectedEvent.price_standard }} €</p>
-        <p v-if="selectedEvent.price_vip"><strong>Prix VIP :</strong> {{ selectedEvent.price_vip }} €</p>
-        <p v-if="selectedEvent.price_pmr"><strong>Prix PMR :</strong> {{ selectedEvent.price_pmr }} €</p>
-        <p v-if="selectedEvent.price_children"><strong>Prix Enfant -12 ans :</strong> {{ selectedEvent.price_children }} €</p>
-        <p v-if="selectedEvent.price_student"><strong>Prix Étudiant :</strong> {{ selectedEvent.price_student }} €</p>
-
+        <p><strong>Places disponibles :</strong> {{ selectedEvent.number_place || 'Non spécifié' }}</p>
+        <p v-if="selectedEvent.price_categories"><strong>Prix :</strong> {{ selectedEvent.price_categories }} €</p>
+      
       </div>
 
       <!-- Colonne droite -->
       <div class="booking-section">
+        
         <h3>Vos coordonnées</h3>
         <div class="input-group">
           <label>Nom</label>
