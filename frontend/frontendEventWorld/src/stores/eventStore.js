@@ -61,7 +61,7 @@ export const useEventStore = defineStore('eventStore', {
           this.error = "Impossible de supprimer l'événement.";
   
           // Restaurer l'événement en cas d'échec
-          if (deletedEvent) {
+          if (deleteEvent) {
               this.events.splice(eventIndex, 0, deletedEvent);
           }
   

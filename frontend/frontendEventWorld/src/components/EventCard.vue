@@ -23,7 +23,7 @@
           class="delete-icon"
         /> </h3>
           <!-- <p><strong>ID:</strong> {{ event.id }}</p> -->
-          <p><strong>Date:</strong> {{ event.event_date || 'Not specified' }}</p>
+          <p><strong>Date:</strong> {{ event.date_start || 'Not specified' }}</p>
           <p><strong>Location:</strong> {{ event.location || 'Not specified' }}</p>
           <p><strong>City:</strong> {{ event.city || 'Not specified' }}</p>
           

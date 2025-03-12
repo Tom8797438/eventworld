@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useEventStore } from '@/stores/eventStore';
 import { useBookingStore } from '@/stores/bookingStore';
 import { generateTicketPdf } from '@/utils/generateTicketPdf';
+import { purchaseTickets } from "@/utils/api_utils";
 
 export const useTicketStore = defineStore('ticketStore', {
   state: () => ({
@@ -10,103 +11,22 @@ export const useTicketStore = defineStore('ticketStore', {
   }),
 
   actions: {
-    /**
-     * Crée un ticket unique et retourne les données du ticket créé.
-     */
-    async createIndividualTicket(ticketData) {
+    async createTickets(eventId, ticketData) {
       try {
-        const eventStore = useEventStore();
-        const selectedEvent = eventStore.selectedEvent;
+        const createdTickets = await purchaseTickets(eventId, ticketData);
+        console.log("Tickets créés :", createdTickets);
 
-        if (!selectedEvent || !selectedEvent.id) {
-          throw new Error("Aucun événement sélectionné ou ID manquant.");
+        // Générer les PDFs des billets
+        for (const ticket of createdTickets.created_tickets) {
+          await generateTicketPdf(ticket);
         }
 
-        // Construire le payload pour un ticket
-        const ticketPayload = {
-          ...ticketData,
-          qr_code: `QR-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-          statu: "valid",
-          name_event: selectedEvent.name,
-          event: selectedEvent.id,
-          price: ticketData.price,
-        };
-
-        console.log("Payload pour un ticket :", ticketPayload);
-
-        // Envoi de la requête pour créer un ticket
-        const response = await axios.post(
-          `http://localhost:1337/api/tickets`,
-          { data: ticketPayload }
-        );
-        if (!response.data || !response.data.data) {
-          throw new Error("Réponse invalide lors de la création du ticket.");
-        }
-        const createdTicket = response.data.data;
-        
-        console.log("Ticket créé :", response.data);
-
-        // Retourner les données du ticket créé
-        return {
-          ...ticketPayload,
-          id: createdTicket.id,
-          documentId: createdTicket.documentId,
-        };
-      } catch (error) {
-        console.error("Erreur lors de la création d'un ticket :", error);
-        throw error;
-      }
-    },
-
-    /**
-     * Génère un nombre précis de tickets et leurs PDFs.
-     */
-    async createMultipleTickets() {
-      try {
-        const bookingStore = useBookingStore();
-
-        // Vérifiez que des tickets sont disponibles
-        if (bookingStore.tickets.length === 0) {
-          throw new Error("Aucun ticket à créer.");
-        }
-
-        console.log("Données de bookingStore :", bookingStore.tickets);
-
-        const createdTickets = []; // Liste des tickets créés
-
-        // Parcourir chaque type de ticket dans bookingStore
-        for (const ticket of bookingStore.tickets) {
-          console.log(`Création de ${ticket.quantity} tickets pour le type : ${ticket.ticket_type}`);
-
-          // Créez les tickets en fonction de la quantité demandée
-          for (let i = 0; i < ticket.quantity; i++) {
-            const createdTicket = await this.createIndividualTicket({
-              customer_firstname: ticket.customer_firstname,
-              customer_lastname: ticket.customer_lastname,
-              customer_email: ticket.customer_email,
-              customer_phone: ticket.customer_phone,
-              ticket_type: ticket.ticket_type,
-              price: ticket.price,
-            });
-
-            console.log(`Ticket ${i + 1} créé :`, createdTicket);
-
-            // Générer un PDF pour chaque ticket créé
-            await generateTicketPdf(createdTicket);
-
-            // Ajouter le ticket créé à la liste
-            createdTickets.push(createdTicket);
-          }
-        }
-
-        console.log("Tous les tickets créés :", createdTickets);
-
-        // Mettre à jour l'état local
-        this.tickets = createdTickets;
+        // Mise à jour du state
+        this.tickets = createdTickets.created_tickets;
 
         return createdTickets;
       } catch (error) {
-        console.error("Erreur lors de la création des tickets multiples :", error);
+        console.error("Erreur lors de la création des tickets :", error);
         throw error;
       }
     },

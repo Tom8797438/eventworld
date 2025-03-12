@@ -105,4 +105,22 @@ export async function deleteEvent(Id) {
   }
 }
 
+// ===========================
+// ✅ PARTIE TICKETS
+// ===========================
+
+// Fonction pour acheter des billets
+export async function purchaseTickets(Id, tickets) {
+  try {
+    const response = await api.post("tickets/", {
+      id: Id,
+      tickets: tickets
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error("Erreur lors de l'achat des billets :", error.response?.data || error.message);
+    throw error;
+  }
+}
 export default api;

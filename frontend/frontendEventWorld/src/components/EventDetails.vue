@@ -4,50 +4,58 @@
       <!-- Colonne gauche -->
       <div class="event-details">
         <h2 class="event-title">{{ selectedEvent?.name || 'Non spécifié' }}</h2>
+        <p><strong>Description:</strong> {{ selectedEvent.description || 'Non spécifié' }}</p>
         <p><strong>Date début:</strong> {{ selectedEvent.date_start || 'Non spécifié' }}</p>
         <p><strong>Date fin:</strong> {{ selectedEvent.date_end || 'Non spécifié' }}</p>
         <p><strong>Lieu :</strong> {{ selectedEvent.location || 'Non spécifié' }}</p>
         <p><strong>Adresse :</strong> {{ selectedEvent.address || 'Non spécifié' }}</p>
         <p><strong>Ville :</strong> {{ selectedEvent.city || 'Non spécifié' }}</p>
         <p><strong>Places disponibles :</strong> {{ selectedEvent.number_place || 'Non spécifié' }}</p>
-        <p v-if="selectedEvent.price_categories"><strong>Prix :</strong> {{ selectedEvent.price_categories }} €</p>
-      
       </div>
 
-      <!-- Colonne droite -->
+      <!-- Colonne droite : Réservation -->
       <div class="booking-section">
-        
         <h3>Vos coordonnées</h3>
         <div class="input-group">
           <label>Nom</label>
-          <input id="firstname" type="text" placeholder="Votre nom" v-model="firstname" />
+          <input type="text" placeholder="Votre nom" v-model="firstname" />
         </div>
         <div class="input-group">
           <label>Prénom</label>
-          <input id="lastname" type="text" placeholder="Votre prénom" v-model="lastname" />
+          <input type="text" placeholder="Votre prénom" v-model="lastname" />
         </div>
         <div class="input-group">
           <label>E-mail</label>
-          <input id="email" type="email" placeholder="Votre e-mail" v-model="email" />
+          <input type="email" placeholder="Votre e-mail" v-model="email" />
         </div>
         <div class="input-group">
           <label>Téléphone</label>
-          <input id="phone" type="text" placeholder="Votre N° de téléphone" v-model="phone" />
+          <input type="text" placeholder="Votre N° de téléphone" v-model="phone" />
         </div>
 
+        <!-- Si plusieurs types de prix, on affiche une liste déroulante -->
         <h3>Réserver vos places</h3>
-        <div class="input-group" v-for="(ticketType, index) in ticketTypes" :key="index">
-          <label :for="ticketType.name">
-            {{ ticketType.label }} : {{ ticketType.price }} €
-          </label>
-          <input
-            :id="ticketType.name"
-            type="number"
-            min="0"
-            v-model="ticketType.quantity"
-            @input="calculateTotal"
-          />
+
+        <div v-for="(ticket, index) in selectedTickets" :key="index" class="ticket-selection">
+          <label v-if="ticketTypes.length > 1">Type de place</label>
+          <select v-if="ticketTypes.length > 1" v-model="ticket.type">
+            <option v-for="option in ticketTypes" :key="option.name" :value="option.name">
+              {{ option.price.label }} - {{ option.price.value }} € 
+            </option>
+          </select>
+
+          <p v-else><strong>{{ ticketTypes[0].price.label }} :</strong>{{ ticketTypes[0].price.value }} €</p>
+
+          <div class="input-group">
+            <label>Quantité</label>
+            <input type="number" min="1" v-model="ticket.quantity" @input="calculateTotal" />
+            <button class="delete-ticket" @click="removeTicket(index)">❌</button>
+          </div>
+
         </div>
+
+        <button v-if="ticketTypes.length > 1" class="add-ticket" @click="addTicket">➕ Ajouter un autre ticket</button>
+
         <p class="total">Total : {{ total }} €</p>
         <button @click="bookTickets">Réserver vos places</button>
       </div>
@@ -56,136 +64,115 @@
 </template>
 
 <script>
-import { ref, computed } from 'vue'; // Importation des outils de Vue.js pour gérer les données réactives et calculées
-import { useEventStore } from '@/stores/eventStore'; // Importation du store pour gérer les événements
-import { useBookingStore } from '@/stores/bookingStore'; // Importation du store pour gérer les réservations
-import { useTicketStore } from '@/stores/ticketStore'; // Importation du store pour gérer les tickets
-import { useRouter } from 'vue-router'; // Importation du routeur pour la navigation entre les pages
+import { ref, computed } from 'vue';
+import { useEventStore } from '@/stores/eventStore';
+import { useTicketStore } from '@/stores/ticketStore';
+import { useRouter } from 'vue-router';
 
 export default {
   setup() {
-    // Initialisation du routeur
     const router = useRouter();
-
-    // Initialisation des stores
     const eventStore = useEventStore();
-    const bookingStore = useBookingStore();
     const ticketStore = useTicketStore();
 
-    // Références pour les champs utilisateur
-    const firstname = ref(''); // Prénom de l'utilisateur
-    const lastname = ref(''); // Nom de l'utilisateur
-    const email = ref(''); // Email de l'utilisateur
-    const phone = ref(''); // Téléphone de l'utilisateur
+    const firstname = ref('');
+    const lastname = ref('');
+    const email = ref('');
+    const phone = ref('');
 
-  const ticketTypes = ref([]); // Utilisation de ref() pour la réactivité
+    const ticketTypes = ref([]);
 
-  // Initialisation des tickets dynamiquement une fois l'événement sélectionné
-  if (eventStore.selectedEvent) {
-    ticketTypes.value = [
-      { name: 'standardTickets', label: 'Standard', price: eventStore.selectedEvent?.price_standard, quantity: 0 },
-      { name: 'vipTickets', label: 'VIP', price: eventStore.selectedEvent?.price_vip, quantity: 0 },
-      { name: 'pmrTickets', label: 'PMR', price: eventStore.selectedEvent?.price_pmr, quantity: 0 },
-      { name: 'childrenTickets', label: 'Enfants', price: eventStore.selectedEvent?.price_children, quantity: 0 },
-      { name: 'studentTickets', label: 'Étudiants', price: eventStore.selectedEvent?.price_student, quantity: 0 },
-    ].filter(ticket => ticket.price !== null && ticket.price !== undefined);
-  }
-
-  
-    // Calcul de l'événement sélectionné avec une redirection si aucun n'est sélectionné
     const selectedEvent = computed(() => {
-    if (!eventStore.selectedEvent) {
-      console.error("Aucun événement sélectionné");
-      router.push('/Menu'); // Redirige vers la liste des événements
-      return null;
+      if (!eventStore.selectedEvent) {
+        console.error("Aucun événement sélectionné");
+        router.push('/Menu');
+        return null;
+      }
+      return eventStore.selectedEvent;
+    });
+
+    if (eventStore.selectedEvent && eventStore.selectedEvent.price_categories) {
+      ticketTypes.value = Object.entries(eventStore.selectedEvent.price_categories).map(([key, value]) => ({
+        name: key,
+        label: key.charAt(0).toUpperCase() + key.slice(1), // Capitaliser le label
+        price: value,
+      }));
     }
-    return eventStore.selectedEvent; // Renvoie l'événement sélectionné
-  });
+
+    const selectedTickets = ref([{ type: ticketTypes.value[0]?.name || '', quantity: 1 }]);
 
     const total = computed(() => {
-    return ticketTypes.value.reduce((sum, ticketType) => sum + (ticketType.quantity * ticketType.price || 0), 0);
-  });
+      return selectedTickets.value.reduce((sum, ticket) => {
+        const ticketType = ticketTypes.value.find(t => t.name === ticket.type);
+        return sum + (ticket.quantity * (ticketType?.price.value || 0));
+      }, 0);
+    });
 
-
-    // Fonction pour afficher le total dans la console (debug)
     const calculateTotal = () => {
       console.log("Total calculé :", total.value);
     };
 
-     // Fonction pour réserver des tickets
-     const bookTickets = async () => {
-  // Mettre à jour les données utilisateur dans le store
-  bookingStore.setUser({
-    customer_firstname: firstname.value.trim(),
-    customer_lastname: lastname.value.trim(),
-    customer_email: email.value.trim(),
-    customer_phone: phone.value.trim(),
-  });
+    const addTicket = () => {
+      if (ticketTypes.value.length > 1) {
+        selectedTickets.value.push({ type: ticketTypes.value[0].name, quantity: 1 });
+      }
+    };
 
-  // Préparation des tickets
-  const ticketsToCreate = ticketTypes.value
-    .filter((ticketType) => ticketType.quantity > 0) // Filtrer les types de tickets avec quantité > 0
-    .map((ticketType) => ({
-      customer_firstname: bookingStore.user.customer_firstname,
-      customer_lastname: bookingStore.user.customer_lastname,
-      customer_email: bookingStore.user.customer_email,
-      customer_phone: bookingStore.user.customer_phone,
-      ticket_type: ticketType.name,
-      quantity: ticketType.quantity,
-      price: ticketType.price,
-      id:ticketType.id,
-      documentId: ticketType.documentId,
-    }));
+    const removeTicket = (index) => {
+      selectedTickets.value.splice(index, 1);
+    };
+
+    const bookTickets = async () => {
+      const ticketsToCreate = selectedTickets.value
+        .filter(ticket => ticket.quantity > 0)
+        .map(ticket => {
+          const ticketType = ticketTypes.value.find(t => t.name === ticket.type);
+          return {
+            firstname: firstname.value.trim(),
+            lastname: lastname.value.trim(),
+            email: email.value.trim(),
+            phone: phone.value.trim(),
+            quantity: ticket.quantity,
+            price: ticketType?.price.value || 0,
+            ticket_type: ticketType.price.label,
+          };
+        });
+
+      if (ticketsToCreate.length === 0) {
+        alert("Veuillez sélectionner au moins un ticket.");
+        return;
+      }
 
       console.log("Tickets prêts à être envoyés :", ticketsToCreate);
 
       try {
-        // Ajouter les tickets au bookingStore
-        bookingStore.addTickets(ticketsToCreate);
-
-        // Créer les tickets via ticketStore
-        const createdTickets = await ticketStore.createMultipleTickets();
-        console.log("de bookTickets dans EventDetails.vue Tickets créés :", createdTickets);
-
+        await ticketStore.createTickets(selectedEvent.value.id, ticketsToCreate);
         alert("Réservation réussie !");
-
-        // ✅ Réinitialiser le formulaire
         resetForm();
-
-        // ✅ Redirection après réservationpp
         goBackToEvents();
-
       } catch (error) {
         console.error("Erreur lors de la réservation :", error);
         alert("Une erreur est survenue lors de la réservation.");
       }
     };
 
-    // Fonction pour revenir à la liste des événements
     const goBackToEvents = () => {
-      eventStore.selectedEvent = null;// Réinitialise l'événement sélectionné
-      router.push('/Menu'); // Redirige vers le menu
+      eventStore.selectedEvent = null;
+      router.push('/Menu');
     };
 
     const resetForm = () => {
-    console.log("Réinitialisation du formulaire...");
-    
-    // Réinitialiser les champs utilisateur
-    firstname.value = "";
-    lastname.value = "";
-    email.value = "";
-    phone.value = "";
-
-    // Réinitialiser la quantité des tickets à 0
-    ticketTypes.value.forEach(ticket => {
-      ticket.quantity = 0;
-    });
-  };
-
+      firstname.value = "";
+      lastname.value = "";
+      email.value = "";
+      phone.value = "";
+      selectedTickets.value = [{ type: ticketTypes.value[0]?.name || '', quantity: 1 }];
+    };
 
     return {
       ticketTypes,
       selectedEvent,
+      selectedTickets,
       total,
       firstname,
       lastname,
@@ -193,7 +180,8 @@ export default {
       phone,
       calculateTotal,
       bookTickets,
-      goBackToEvents,
+      addTicket,
+      removeTicket,
       goBackToEvents,
       resetForm,
     };
@@ -203,4 +191,39 @@ export default {
 
 <style scoped>
 @import '@/assets/styles/EventDetails.css';
+
+.add-ticket {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2em;
+  margin-left: 5px;
+}
+
+.delete-ticket {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 0.81em;
+  margin-left: 5px;
+  margin-top: 5px;
+}
+
+.add-ticket {
+  color: #28a745;
+}
+
+.add-ticket:hover {
+  color: #534796;
+}
+
+.delete-ticket {
+  color: #dc3545;
+  width: 20%;
+}
+
+.delete-ticket:hover {
+  color: #9c7579;
+  background-color: #35dc3d;
+}
 </style>

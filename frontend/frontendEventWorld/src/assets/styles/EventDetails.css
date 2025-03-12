@@ -61,6 +61,7 @@
   .input-group label {
     flex: 2;
     font-size: 1rem;
+    margin-right: 6px;
   }
   
   .input-group input {
