@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
-import axios from 'axios';
-import { useEventStore } from '@/stores/eventStore';
-import { useBookingStore } from '@/stores/bookingStore';
+// import axios from 'axios';
+// import { useEventStore } from '@/stores/eventStore';
+// import { useBookingStore } from '@/stores/bookingStore';
 import { generateTicketPdf } from '@/utils/generateTicketPdf';
 import { purchaseTickets } from "@/utils/api_utils";
 
@@ -13,9 +13,8 @@ export const useTicketStore = defineStore('ticketStore', {
   actions: {
     async createTickets(eventId, ticketData) {
       try {
+        
         const createdTickets = await purchaseTickets(eventId, ticketData);
-        console.log("Tickets créés :", createdTickets);
-
         // Générer les PDFs des billets
         for (const ticket of createdTickets.created_tickets) {
           await generateTicketPdf(ticket);

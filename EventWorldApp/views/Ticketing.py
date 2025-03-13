@@ -39,14 +39,19 @@ class TicketCreateView(APIView):
                     "qr_code": uuid.uuid4(),
                     "ticket_type": ticket_type,
                 }
-                ticket_instance.update(base_ticket_data)  # 🔥 Appliquer les valeurs communes
-                ticket_instance.update(ticket_data)  # 🔥 Appliquer les valeurs spécifiques
+                ticket_instance.update(base_ticket_data)  # Appliquer les valeurs communes
+                ticket_instance.update(ticket_data)  # Appliquer les valeurs spécifiques
                 ticket_instance["quantity"] = 1
 
                 serializer = TicketSerializer(data=ticket_instance)
                 if serializer.is_valid():
                     serializer.save()
-                    created_tickets.append(serializer.data)
+                    # ✅ Ajouter `event.name` à `serializer.data`
+                    ticket_data_serialized = serializer.data
+                    ticket_data_serialized["event_name"] = event.name
+
+                    created_tickets.append(ticket_data_serialized)  # Ajouter la version modifiée
+
                 else:
                     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

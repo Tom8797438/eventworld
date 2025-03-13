@@ -11,7 +11,6 @@ export async function generateTicketPdf(ticketData) {
     const qrCodeContent = JSON.stringify({
       qr_code: ticketData.qr_code, // Identifiant unique
       id: ticketData.id,
-      documentId: ticketData.documentId, // DocumentId du ticket
     });
 
     // Log du contenu du QR code pour débogage
@@ -24,17 +23,16 @@ export async function generateTicketPdf(ticketData) {
     const pdfDoc = new jsPDF();
     pdfDoc.setFontSize(16);
     pdfDoc.text("Ticket de Réservation", 10, 10);
-    pdfDoc.text(`Événement : ${ticketData.name_event}`, 10, 20);
+    pdfDoc.text(`Événement : ${ticketData.event_name}`, 10, 20);
 
     // Ajout des informations du ticket
     pdfDoc.setFontSize(12);
-    pdfDoc.text(`Nom : ${ticketData.customer_firstname} ${ticketData.customer_lastname}`, 10, 30);
-    pdfDoc.text(`Email : ${ticketData.customer_email}`, 10, 40);
-    pdfDoc.text(`Téléphone : ${ticketData.customer_phone}`, 10, 50);
+    pdfDoc.text(`Nom : ${ticketData.firstname} ${ticketData.lastname}`, 10, 30);
+    pdfDoc.text(`Email : ${ticketData.email}`, 10, 40);
+    pdfDoc.text(`Téléphone : ${ticketData.phone}`, 10, 50);
     pdfDoc.text(`Type de ticket : ${ticketData.ticket_type}`, 10, 60);
     pdfDoc.text(`Prix : ${ticketData.price} €`, 10, 70);
     pdfDoc.text(`Id : ${ticketData.id}`, 10, 80);
-    pdfDoc.text(`DocumentId : ${ticketData.documentId}`, 10, 90);
 
     // Ajout du QR code
     pdfDoc.addImage(qrCodeImage, "PNG", 150, 10, 50, 50);

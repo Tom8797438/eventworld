@@ -31,7 +31,6 @@ export const useBookingStore = defineStore('booking', {
     // Ajoute des tickets à la liste des tickets
     addTickets(ticketDataArray) {
       this.tickets = [...this.tickets, ...ticketDataArray];// Ajoute les nouveaux tickets à la liste existante
-      console.log("Tickets ajoutés au store :", this.tickets); // Log pour vérification
     },
   },
 });

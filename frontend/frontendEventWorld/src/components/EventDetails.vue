@@ -36,9 +36,9 @@
         <!-- Si plusieurs types de prix, on affiche une liste déroulante -->
         <h3>Réserver vos places</h3>
 
-        <div v-for="(ticket, index) in selectedTickets" :key="index" class="ticket-selection">
+        <div v-for="(ticket, index) in selectedTickets" :key="index" >
           <label v-if="ticketTypes.length > 1">Type de place</label>
-          <select v-if="ticketTypes.length > 1" v-model="ticket.type">
+          <select v-if="ticketTypes.length > 1" v-model="ticket.type" class="ticket-selection">
             <option v-for="option in ticketTypes" :key="option.name" :value="option.name">
               {{ option.price.label }} - {{ option.price.value }} € 
             </option>
@@ -109,7 +109,6 @@ export default {
     });
 
     const calculateTotal = () => {
-      console.log("Total calculé :", total.value);
     };
 
     const addTicket = () => {
@@ -123,10 +122,12 @@ export default {
     };
 
     const bookTickets = async () => {
+      const eventName = selectedEvent.value.name;
       const ticketsToCreate = selectedTickets.value
         .filter(ticket => ticket.quantity > 0)
         .map(ticket => {
           const ticketType = ticketTypes.value.find(t => t.name === ticket.type);
+          // Vérification à l’intérieur du map()
           return {
             firstname: firstname.value.trim(),
             lastname: lastname.value.trim(),
@@ -135,15 +136,13 @@ export default {
             quantity: ticket.quantity,
             price: ticketType?.price.value || 0,
             ticket_type: ticketType.price.label,
+            event_name: eventName, // attention c'est la
           };
         });
-
       if (ticketsToCreate.length === 0) {
         alert("Veuillez sélectionner au moins un ticket.");
         return;
       }
-
-      console.log("Tickets prêts à être envoyés :", ticketsToCreate);
 
       try {
         await ticketStore.createTickets(selectedEvent.value.id, ticketsToCreate);
@@ -191,39 +190,4 @@ export default {
 
 <style scoped>
 @import '@/assets/styles/EventDetails.css';
-
-.add-ticket {
-  background-color: transparent;
-  border: none;
-  cursor: pointer;
-  font-size: 1.2em;
-  margin-left: 5px;
-}
-
-.delete-ticket {
-  background-color: transparent;
-  border: none;
-  cursor: pointer;
-  font-size: 0.81em;
-  margin-left: 5px;
-  margin-top: 5px;
-}
-
-.add-ticket {
-  color: #28a745;
-}
-
-.add-ticket:hover {
-  color: #534796;
-}
-
-.delete-ticket {
-  color: #dc3545;
-  width: 20%;
-}
-
-.delete-ticket:hover {
-  color: #9c7579;
-  background-color: #35dc3d;
-}
 </style>
