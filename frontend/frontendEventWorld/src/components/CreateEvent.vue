@@ -3,7 +3,7 @@
       <h1 class="title">Créer un Évènement</h1>
       <div class="create-event-container">
         <!-- Formulaire de création d'évènement -->
-        <form @submit.prevent="createEvent">
+        <form @submit.prevent="createEvent" class="form-container">
           
           <div class="form-group">
             <label for="name">Evènement</label>
@@ -59,19 +59,12 @@
             </select>
           </div>
 
-        <div class="form-group">
-          <div class="price-container" v-for="(price, index) in form.price_categories" :key="index">
-            <label>Prix des billets</label>
-            <input v-model="price.label" placeholder="Ex: Standard, VIP" />
-            <input v-model="price.value" type="number" placeholder="Prix en €" />
-            <button @click.prevent="removePrice(index)">❌</button>
-          </div>
-        </div>
-          <button @click.prevent="addPrice">➕ Ajouter un prix</button>
+
+          <button @click.prevent="addPrice" class="button-add-price">➕ Ajouter un prix</button>
 
 
           <div class="form-group">
-            <button type="submit">Valider</button>
+            <button type="submit" class="button-valid">Valider</button>
           </div>
           
         </form>
@@ -83,12 +76,20 @@
         </p>
 
       </div>
+      <div class="form-group">
+          <div class="price-container" v-for="(price, index) in form.price_categories" :key="index">
+            <label>Tarification</label>
+            <input v-model="price.label" placeholder="Ex: Standard, VIP" />
+            <input v-model="price.value" type="number" placeholder="Prix en €" />
+            <button @click.prevent="removePrice(index)" class="button-remove-price">❌</button>
+          </div>
+        </div>
     </div>
   </template>
   
   <script>
   import { useEventStore } from '@/stores/eventStore';
-  import { createEvent } from '@/utils/api_utils';
+  // import { createEvent } from '@/utils/api_utils';
   
   export default {
     name: 'CreateEvent',

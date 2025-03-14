@@ -5,26 +5,49 @@
   margin: 0 auto;
   border: none;
   box-shadow: none;
-  display: block; /* Éviter un comportement inline par défaut */
+  /* display:block; Éviter un comportement inline par défaut */
+  max-width: 1000px;
+}
+
+.form-container{
+ columns: 3;
 }
 
 .title{
     color:#11379e;
+    text-align: center;
+    margin-bottom: 1rem;
 }
 
-.create-event-container {
+/* .create-event-container {
     columns: 3;
     max-width: 800px;
-    padding: 1rem; /* Ajout d'espace intérieur */
+    padding: 1rem; 
     background: linear-gradient(135deg, #6e45e2, #88d3ce);
-    /* border: 1px solid #e0e0e0; */
-    border-radius: 18px; /* Coins arrondis */
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Ombre légère */
-  }
+    border-radius: 18px; 
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); 
+  } */
+
+  .create-event-container {
+    display: grid;
+    columns: 2;
+    grid-template-columns: repeat(1, 1fr);  /* ✅ Adapte automatiquement */
+    gap: 1rem; /* ✅ Espacement légèrement plus large pour plus d'aération */
+    max-width: 1100px; /* ✅ Légèrement plus large pour éviter un effet trop serré */
+    margin: 0 auto;
+    padding: 2rem;
+    background: linear-gradient(135deg, #6e45e2, #88d3ce);
+    border-radius: 18px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
   
   /* Style des groupes de champs */
   .form-group {
-    margin-bottom: 1rem; /* Espacement vertical entre les groupes */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    bottom: 6px;
   }
   
   .form-group button {
@@ -34,47 +57,54 @@
   
   /* Style des libellés */
   label {
-    display: block;
     font-weight: bold;
     color: #000000;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.25rem;
   }
   
-  /* Style des champs de saisie */
-  input {
-    width: 100%;
-    padding: 0.75rem;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 1rem;
-    box-sizing: border-box; /* Inclure le padding et la bordure */
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
-  }
+ /* Style des champs de saisie */
+input,
+select {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+  box-sizing: border-box;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+input:focus,
+select:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 4px rgba(0, 123, 255, 0.5);
+  outline: none;
+}
+
+/* Style du bouton */
+button {
+  max-width: 100%;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 0.75rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+button:hover {
+  background-color: #0056b3;
+  transform: scale(1.02);
+}
   
-  input:focus {
-    border-color: #007bff; /* Bleu au focus */
-    box-shadow: 0 0 4px rgba(0, 123, 255, 0.5); /* Effet lumineux */
-    outline: none;
+  .button-add-price{
+    width:100%;
+    position: relative;
+    top: 16px;
   }
-  
-  /* Style du bouton */
-  button {
-    width: 100%;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 0.75rem 1.5rem;
-    border-radius: 8px;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-  }
-  
-  button:hover {
-    background-color: #0056b3; /* Bleu plus foncé */
-    transform: scale(1.02); /* Légère augmentation */
-  }
-  
+
   /* Messages de succès et d'erreur */
   .success {
     color: #28a745;
@@ -93,13 +123,28 @@
 /* Style des champs de prix */
 .price-container {
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
+  position: relative;
+  top: 12px;
+  gap: 2rem;
   align-items: center;
+  /* text-align: center; */
 }
 
 .price-container input {
-  width: 45%;
+  width: 100%;
+}
+
+.price-container button {
+  position: relative;
+  top: 4px;  /* ajuster la hauteur de la croix de suppression*/
+  right:18px; /* ajuster l'horizontalité de la croix de suppression*/
+  padding: 6px;
+  margin-bottom: 8px;
+}
+
+.button-valid{
+  position: relative;
+  margin-top:30px;
 }
 
   /* Responsive */
@@ -148,9 +193,14 @@
   
   /* Style des groupes de champs */
   .form-group {
-    margin-bottom: 1rem; /* Espacement vertical entre les groupes */
+    margin-bottom: 1.5rem; /* Espacement vertical entre les groupes */
   }
   
+.form-group input{
+  width: 80px;
+}
+
+
   .form-group button {
     position: relative;
     top:28px;
