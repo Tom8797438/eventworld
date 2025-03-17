@@ -37,7 +37,7 @@
         <h3>Réserver vos places</h3>
 
         <div v-for="(ticket, index) in selectedTickets" :key="index" >
-          <label v-if="ticketTypes.length > 1">Type de place</label>
+          <label v-if="ticketTypes.length > 1" >Type de place</label>
           <select v-if="ticketTypes.length > 1" v-model="ticket.type" class="ticket-selection">
             <option v-for="option in ticketTypes" :key="option.name" :value="option.name">
               {{ option.price.label }} - {{ option.price.value }} € 
@@ -48,7 +48,7 @@
 
           <div class="input-group">
             <label>Quantité</label>
-            <input type="number" min="1" v-model="ticket.quantity" @input="calculateTotal" />
+            <input type="number" min="1" v-model="ticket.quantity" @input="calculateTotal" class="quantity-selection"/>
             <button class="delete-ticket" @click="removeTicket(index)">❌</button>
           </div>
 

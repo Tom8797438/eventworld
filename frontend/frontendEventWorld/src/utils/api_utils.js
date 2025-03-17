@@ -124,3 +124,19 @@ export async function purchaseTickets(Id, tickets) {
   }
 }
 export default api;
+
+// ===========================
+// ✅ PARTIE SCAN TICKET
+// ===========================
+
+
+// Vérifier le QR Code auprès du backend
+export async function checkTicketStatus(qr_code) {
+  try {
+    const response = await api.post(`scan_ticket/`, { qr_code });
+    return response.data;
+  } catch (error) {
+    console.error("Erreur lors de la vérification du ticket :", error.response?.data || error.message);
+    throw error;
+  }
+}

@@ -1,0 +1,2 @@
+for /L %p in (5170,1,5200) do (for /f "tokens=5" %i in ('netstat -ano ^| findstr LISTENING ^| findstr :%p') do taskkill /F /PID %i /T >nul 2>&1)
+for /f "tokens=5" %i in ('netstat -ano ^| findstr LISTENING ^| findstr :8000') do taskkill /F /PID %i /T >nul 2>&1

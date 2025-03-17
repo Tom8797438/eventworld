@@ -28,10 +28,9 @@
       <div class="scan-response" v-if="scanResponse">
         <div class="status-icon" :class="statusClass">
           <!-- <button @click="resetScanner" class="reset-button">Réinitialiser</button> -->
-          <FontAwesomeIcon v-if="scanResponse.status === 'success'" :icon="['fas', 'thumbs-up']" class="success-icon"/>
-          <FontAwesomeIcon v-if="scanResponse.status === 'canceled'" :icon="['fas', 'thumbs-up']" class="warning-icon"/>
-          <FontAwesomeIcon v-if="scanResponse.status === 'error'" :icon="['fas', 'times-circle']" class="error-icon"/>
-          
+          <FontAwesomeIcon v-if="scanResponse.status === 'valid'" :icon="['fas', 'thumbs-up']" class="success-icon"/>
+          <FontAwesomeIcon v-if="scanResponse.status === 'used'" :icon="['fas', 'thumbs-up']" class="warning-icon"/>
+          <FontAwesomeIcon v-if="scanResponse.status === 'invalid'" :icon="['fas', 'times-circle']" class="error-icon"/>
         </div>
         
     </div>
@@ -122,11 +121,11 @@ export default {
     const statusClass = computed(() => {
     if (!scanResponse.value) return "";
     switch (scanResponse.value.status) {
-      case "success":
+      case "valid":
         return "success-icon";
-      case "canceled":
+      case "used":
         return "warning-icon";
-      case "error":
+      case "invalid":
         return "error-icon";
       default:
         return "";
