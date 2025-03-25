@@ -8,11 +8,11 @@ export const useScanStore = defineStore("scanStore", {
         console.log("🚀 Début du scan :", qrCodeContent);
 
         if (!qrCodeContent) {
-          console.error(" QR Code vide ou invalide.");
           return { message: "QR Code invalide", status: "error" };
         }
 
         // ✅ Vérification du QR Code avec l'API
+        console.log("Avant envoi vers API :", qrCodeContent);
         const response = await checkTicketStatus(qrCodeContent);
         console.log("Réponse API :", response);
 

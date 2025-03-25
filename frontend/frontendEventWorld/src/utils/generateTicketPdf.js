@@ -5,16 +5,15 @@ import jsPDF from "jspdf"; // Importation de la bibliothèque pour générer des
 export async function generateTicketPdf(ticketData) {
   try {
     // Log du ticket reçu pour vérifier les données en entrée
-    console.log("de generateTicketPdf : ", ticketData);
+    // console.log("de generateTicketPdf : ", ticketData); // ne contient que le nom de l'evenement
 
     // Contenu étendu pour le QR code
-    const qrCodeContent = JSON.stringify({
-      qr_code: ticketData.qr_code, // Identifiant unique
-      id: ticketData.id,
-    });
+      const qrCodeContent = JSON.stringify({
+        qr_code: ticketData.qr_code,
+      });      
 
     // Log du contenu du QR code pour débogage
-    console.log("generateTicketPdf Contenu du QR code :", qrCodeContent);
+    //console.log("generateTicketPdf Contenu du QR code :", qrCodeContent);
 
     // Générer le QR code avec le contenu étendu
     const qrCodeImage = await QRCode.toDataURL(qrCodeContent);
@@ -32,13 +31,15 @@ export async function generateTicketPdf(ticketData) {
     pdfDoc.text(`Téléphone : ${ticketData.phone}`, 10, 50);
     pdfDoc.text(`Type de ticket : ${ticketData.ticket_type}`, 10, 60);
     pdfDoc.text(`Prix : ${ticketData.price} €`, 10, 70);
-    pdfDoc.text(`Id : ${ticketData.id}`, 10, 80);
+    //pdfDoc.text(`Id : ${ticketData.id}`, 10, 80);
+    
+    // il faut ajouter les coordonnées de l'évènement
 
     // Ajout du QR code
     pdfDoc.addImage(qrCodeImage, "PNG", 150, 10, 50, 50);
 
     // Téléchargement automatique
-    const fileName = `Ticket_${ticketData.qr_code}.pdf`;
+    const fileName = `Votre_Ticket_${ticketData.event_name}.pdf`;
     pdfDoc.save(fileName);
   } catch (error) {
     console.error("Erreur lors de la génération du PDF :", error);

@@ -49,7 +49,7 @@ export async function refreshToken() {
     if (!refresh) throw new Error("Aucun token de rafraîchissement disponible.");
 
     const response = await api.post("token/refresh/", { refresh });
-    Cookies.set("authToken", response.data.access, { secure: true, sameSite: "Strict" });
+    Cookies.set("authToken", response.data.access, { secure: true, sameSite: "Strict", expires: 1,});
 
     return response.data.access;
   } catch (error) {
@@ -133,7 +133,8 @@ export default api;
 // Vérifier le QR Code auprès du backend
 export async function checkTicketStatus(qr_code) {
   try {
-    const response = await api.post(`scan_ticket/`, { qr_code });
+    const response = await api.post("scan_ticket/", qr_code);
+    console.log("api_utils.js checkTicketStatus: ",qr_code)
     return response.data;
   } catch (error) {
     console.error("Erreur lors de la vérification du ticket :", error.response?.data || error.message);

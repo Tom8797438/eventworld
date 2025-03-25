@@ -27,8 +27,7 @@
       <!-- Mise à jour : Utilisation de `status` -->
       <div class="scan-response" v-if="scanResponse">
         <div class="status-icon" :class="statusClass">
-          <!-- <button @click="resetScanner" class="reset-button">Réinitialiser</button> -->
-          <FontAwesomeIcon v-if="scanResponse.status === 'valid'" :icon="['fas', 'thumbs-up']" class="success-icon"/>
+          <FontAwesomeIcon v-if="scanResponse.status === 'success'" :icon="['fas', 'thumbs-up']" class="success-icon"/>
           <FontAwesomeIcon v-if="scanResponse.status === 'used'" :icon="['fas', 'thumbs-up']" class="warning-icon"/>
           <FontAwesomeIcon v-if="scanResponse.status === 'invalid'" :icon="['fas', 'times-circle']" class="error-icon"/>
         </div>
@@ -74,29 +73,38 @@ export default {
   try {
     console.log("QR Code brut détecté :", decodedString);
 
-    const parsedData = JSON.parse(decodedString);
-    console.log("Contenu décodé :", parsedData);
+    let qrData;
 
-    if (parsedData.documentId && parsedData.qr_code) {
-      const response = await scanStore.scanTicket(parsedData);
-      scanResponse.value = response;
-      console.log("Réponse du scan :", response);
-
-      // Forcer la réinitialisation du scanner après un scan
-      setTimeout(() => {
-        scanResponse.value = null;  // Effacer la réponse du scan
-        result.value = "";  // Réinitialiser le dernier QR Code
-        componentKey.value += 1; // Forcer Vue à recréer le composant
-      }, 2000); // Petit délai pour laisser voir la réponse avant réinitialisation
-
-    } else {
-      throw new Error("QR Code invalide : DocumentId ou QR_CODE manquant.");
+    // 🧠 Si c'est un JSON encodé en string, on le parse
+    try {
+      qrData = JSON.parse(decodedString);
+    } catch (e) {
+      qrData = decodedString; // Si ce n'est pas du JSON, on garde la string brute
     }
+
+    // Si c'est un objet avec la clé "qr_code", on extrait sa valeur
+    const qrCodeToCheck = typeof qrData === "object" && qrData.qr_code ? qrData.qr_code : qrData;
+
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+    if (!uuidRegex.test(qrCodeToCheck)) {
+      throw new Error("QR Code invalide (non conforme au format UUID)");
+    }
+
+    const response = await scanStore.scanTicket({qr_code: qrCodeToCheck});
+    scanResponse.value = response;
+    console.log("Réponse du scan :", response);
+
+    setTimeout(() => {
+      scanResponse.value = null;
+      result.value = "";
+      componentKey.value += 1;
+    }, 2000);
   } catch (error) {
     console.error("Erreur lors de la validation du scan :", error);
-    scanResponse.value = { status: "error", message: error.message };
+    scanResponse.value = { status: "invalid", message: error.message };
   }
 }
+
 
     // Détection des QR codes
     function onDetect(detectedCodes) {
@@ -121,7 +129,8 @@ export default {
     const statusClass = computed(() => {
     if (!scanResponse.value) return "";
     switch (scanResponse.value.status) {
-      case "valid":
+      //case "valid":
+      case "sucess":
         return "success-icon";
       case "used":
         return "warning-icon";

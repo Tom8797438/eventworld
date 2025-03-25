@@ -3,16 +3,23 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.shortcuts import get_object_or_404
 from EventWorldApp.models import Ticketing
+from rest_framework.permissions import IsAuthenticated
+from EventWorldApp.permissions import IsNotStudent
 
 class ScanTicket (APIView):
     
-    def receiptScan(self, request, *args, **kwargs):
+    permission_classes = [IsAuthenticated, IsNotStudent]
+    
+    def post(self, request, *args, **kwargs):
         qr_code = request.data.get('qr_code')
+        print('QR Code reçu :',qr_code)
+        
         if not qr_code:
-            return Response({"message": "QR Code manquant"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"message": "QR Code manquant ou id"}, status=status.HTTP_400_BAD_REQUEST)
 
         ticket = get_object_or_404(Ticketing, qr_code=qr_code)
-
+        print("receiptScan variable ticket: ",ticket)
+        
         if ticket.status == "used":
                 return Response(
                 {"message": "Ce ticket a déjà été utilisé", "status": "used"},

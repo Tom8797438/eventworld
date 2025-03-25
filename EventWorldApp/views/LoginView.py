@@ -9,21 +9,32 @@ import json
 
 class RegisterView(APIView):
     permission_classes = [AllowAny]
+    
 
     def post(self, request):
         print("Données reçues:", json.dumps(request.data, indent=2))
         user_data = request.data.get("user", {})
         profil_data = request.data.get("profil", {})
-
+        
+        ROLE_TO_GROUP = {
+                "organisateur": "Organisateur",
+                "association": "Association",
+                "etudiant": "Étudiant",
+                "autre": "Autre"
+        }
+        
         # Création de l'utilisateur
         user_serializer = UserSerializer(data=user_data)
         if user_serializer.is_valid():
             user = user_serializer.save()
             
             # Assignation du groupe Django correspondant au rôle
-            role_group = Group.objects.filter(name=user.role).first()
-            if role_group:
-                user.groups.add(role_group)
+            group_name = ROLE_TO_GROUP.get(user.role)
+            if group_name:
+                role_group = Group.objects.filter(name=group_name).first()
+                if role_group:
+                    user.groups.add(role_group)
+
 
             # Création du profil lié à l'utilisateur
             profil_data["user"] = user.id
@@ -37,3 +48,4 @@ class RegisterView(APIView):
             user.delete()
 
         return Response(user_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+

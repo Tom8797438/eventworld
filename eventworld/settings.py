@@ -26,6 +26,8 @@ SECRET_KEY = 'django-insecure-gy775*qyy9g-4op4=(u04s16451g1-i-k67=_n4e17jg8%z+)_
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+# DEBUG = True => css actif http://127.0.0.1:8000/admin/
+# DEBUG = False => css non actif http://127.0.0.1:8000/admin/
 
 #ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 ALLOWED_HOSTS = ['*']
