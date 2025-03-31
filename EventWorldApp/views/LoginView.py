@@ -15,7 +15,7 @@ class RegisterView(APIView):
         print("Données reçues:", json.dumps(request.data, indent=2))
         user_data = request.data.get("user", {})
         profil_data = request.data.get("profil", {})
-        
+
         ROLE_TO_GROUP = {
                 "organisateur": "Organisateur",
                 "association": "Association",
@@ -28,6 +28,8 @@ class RegisterView(APIView):
         if user_serializer.is_valid():
             user = user_serializer.save()
             
+            profil_data["email"] = user.email  # 🔁 copie automatique
+            
             # Assignation du groupe Django correspondant au rôle
             group_name = ROLE_TO_GROUP.get(user.role)
             if group_name:
@@ -38,6 +40,7 @@ class RegisterView(APIView):
 
             # Création du profil lié à l'utilisateur
             profil_data["user"] = user.id
+            
             profil_serializer = ProfilSerializer(data=profil_data)
 
             if profil_serializer.is_valid():

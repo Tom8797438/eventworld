@@ -6,7 +6,7 @@ class IsOrganizerOrAssociation(BasePermission):
     ✅ Autorise uniquement les organisateurs et les associations à accéder à une API spécifique.
     """
     def has_permission(self, request, view):
-        return request.user.is_authenticated and request.user.role in ["organisateur", "association"]
+        return request.user.is_authenticated and request.user.role in ["organisateur", "association", "etudiant"]
 
 class IsStudentOrHigher(BasePermission):
     """

@@ -49,15 +49,19 @@
     
 
   <script setup>
-  import { ref } from 'vue';
+  import { computed, ref } from 'vue';
   import EventCard from '@/components/EventCard.vue';
   import CreateEvent from '@/components/CreateEvent.vue';
   import { useAuthStore } from '@/stores/authStore';
   import { useRouter } from 'vue-router';
-  import QrCodeScanner from '@/components/QrCodeScanner.vue'
+  import QrCodeScanner from '@/components/QrCodeScanner.vue';
+  import { useEventStore } from '@/stores/eventStore';
+
 
   const authStore = useAuthStore();
   const router = useRouter();
+  const eventStore = useEventStore();
+
 
   // État pour ouvrir/fermer le menu
   const menuOpen = ref(false);
@@ -74,6 +78,7 @@
 
   // État pour afficher EventCard
   const showEventCard = ref(false);
+  
 
   // État pour afficher CreateEvent
   const showCreateEvent = ref(false);
@@ -92,36 +97,49 @@
   const closeCreateEvent = () => {
     showCreateEvent.value = false;
   };
+  
+
+  // const isNotStudent = authStore.isNotStudent;
+
+  const isNotStudent = computed(() => authStore.user?.role !== 'etudiant');
+
 
   // Items du menu
-  const menuItems = [
-    {
-      label: 'Nouveau',
-      icon: 'fas fa-calendar-plus',
-      action: () => {
-        showCreateEvent.value = true;
-      }
-    },
-    {
-      label: 'Scanner',
-      icon: 'fas fa-qrcode',
-      action: () => {
-        showQrCodeScanner.value = true;
-      }
-    },
-    {
-      label: 'Évènements',
-      icon: 'fas fa-calendar',
-      action: () => {
-        showEventCard.value = true; // Affiche EventCard
-    },
+  // ✅ Liste complète
+const allMenuItems = [
+  {
+    label: 'Nouveau',
+    icon: 'fas fa-calendar-plus',
+    action: () => showCreateEvent.value = true,
   },
   {
+    label: 'Scanner',
+    icon: 'fas fa-qrcode',
+    action: () => showQrCodeScanner.value = true,
+    show: isNotStudent,
+  },
+  {
+  label: 'Évènements',
+  icon: 'fas fa-calendar',
+  action: async () => {
+    eventStore.resetEvents();       // 👌 fonctionne maintenant
+    await eventStore.fetchEvents(); // 🔁 charge les bons events
+    showEventCard.value = true;     // 👁️ affiche
+  },
+},
+
+  {
     label: 'Déconnexion',
-    icon: 'fas fa-sign-out-alt', // Icône pour la déconnexion
+    icon: 'fas fa-sign-out-alt',
     action: () => handleLogout(),
   },
 ];
+
+const menuItems = computed(() =>
+  allMenuItems.filter(item => item.show === undefined || item.show.value)
+);
+
+
 
 // Fonction pour gérer la déconnexion
 const handleLogout = () => {

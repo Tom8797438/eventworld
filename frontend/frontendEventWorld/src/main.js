@@ -11,6 +11,7 @@ import { QrcodeStream } from 'vue-qrcode-reader';
 // Importation des icônes gratuites de FontAwesome
 import { faCalendarPlus, faTicketAlt, faQrcode, faCalendar,faSignOutAlt,faTrash } from '@fortawesome/free-solid-svg-icons';
 import { useAuthStore } from '@/stores/authStore';
+
 // Ajouter les icônes nécessaires à la bibliothèque
 library.add(faCalendarPlus, faTicketAlt, faQrcode, faCalendar, faSignOutAlt, faTrash);
 
@@ -27,6 +28,7 @@ app.use(router);
 // Enregistre le composant FontAwesome globalement
 app.component('font-awesome-icon', FontAwesomeIcon);
 app.component('QrcodeStream', QrcodeStream);
+
 const authStore = useAuthStore();
 authStore.autoLogin();
 // Désactiver Vue DevTools

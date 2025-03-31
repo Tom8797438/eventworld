@@ -18,6 +18,8 @@ export const useAuthStore = defineStore("authStore", {
 
   getters: {
     isAuthenticated: (state) => !!state.token,
+    isNotStudent: (state) => state.user?.role !== "etudiant", // utilisateur ≠ étudiant
+    //isStudent: (state) => state.user?.role === 'etudiant',
   },
 
   actions: {
@@ -32,6 +34,17 @@ export const useAuthStore = defineStore("authStore", {
 
         // Met à jour les headers Axios automatiquement
         api.defaults.headers.common["Authorization"] = `Bearer ${access}`;
+
+  // 🔄 Recharge les données utilisateur
+  const userResponse = await api.get("user/");
+  this.user = userResponse.data;
+
+  // ✅ On vide les anciens événements (optionnel)
+  const eventStore = useEventStore();
+  
+  eventStore.events = [];
+   // ✅ Recharge les événements de ce user
+   await eventStore.fetchEvents();
 
         this.error = null;
       } catch (err) {

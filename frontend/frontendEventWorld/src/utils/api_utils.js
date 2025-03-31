@@ -85,7 +85,7 @@ export async function fetchEvents() {
 // Créer un nouvel événement
 export async function createEvent(eventData) {
   try {
-    console.log("Données envoyées:", eventData);
+    //console.log("Données envoyées:", eventData);
     const response = await api.post("events/", eventData);
     return response.data;
   } catch (error) {

@@ -1,14 +1,22 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import LoginView from '@/views/LoginView.vue';
+import EventpublicView from '@/views/EventpublicView.vue';
 import MenuView from '@/views/MenuView.vue'; // Vue pour le menu principal
 import { useAuthStore } from '@/stores/authStore'; // Importation du store pour gérer l'authentification
 import EventDetails from '@/components/EventDetails.vue';
 import QrCodeScanner from "@/components/QrCodeScanner.vue";
 import Register from '@/components/Register.vue';
 
+
 const router = createRouter({
+  
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
+    {
+      path: '/accueil',
+      name: 'EventpublicView',
+      component: EventpublicView, // Page publique de connexion
+    },
     {
       path: '/login',
       name: 'login',
@@ -40,7 +48,7 @@ const router = createRouter({
     },
     {
       path: '/:pathMatch(.*)*', // Redirection par défaut
-      redirect: '/login',
+      redirect: '/accueil',
     },
   ],
 });
@@ -50,7 +58,7 @@ router.beforeEach((to, from, next) => {
   const authStore = useAuthStore();
 
   if (to.meta.requiresAuth && !authStore.isAuthenticated) {
-    next('/login'); // Redirige vers la page de connexion si non authentifié
+    next('/accueil'); // Redirige vers la page de connexion si non authentifié
   } else if (to.name === 'login' && authStore.isAuthenticated) {
     next('/menu'); // Redirige vers le menu si déjà connecté
   } else {

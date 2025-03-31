@@ -11,15 +11,27 @@ export const useEventStore = defineStore('eventStore', {
   }),
   actions: {
     setSelectedEvent(event) {
-      console.log("store setSelectedEvent ", event);
+      //console.log("store setSelectedEvent ", event);
       this.selectedEvent = event;
     },
+    resetEvents() {
+      this.events = [];
+      this.loading = false;
+      this.error = null;
+    },
 
-    async fetchEvents() {
+    async fetchEvents(publicOnly = false) {
       try {
         this.loading = true;
+         // Vide les événements précédents avant un nouveau chargement
+        this.events = [];
+
         const data = await fetchEvents();
-        this.events = data;
+        // this.events = data;
+        // 💡 Filtrage selon le mode
+        this.events = publicOnly
+        ? data.filter(event => event.type_event === 'public')
+        : data;
       } catch (err) {
         this.error = "Échec de la récupération des événements.";
       } finally {
@@ -29,7 +41,7 @@ export const useEventStore = defineStore('eventStore', {
 
     async createEvent(eventData) {
       try {
-        console.log("createEvent eventStore.js : ", eventData);
+        //console.log("createEvent eventStore.js : ", eventData);
         this.loading = true;
         await createEvent(eventData);
         await this.fetchEvents(); // Rafraîchit la liste après création
@@ -43,7 +55,7 @@ export const useEventStore = defineStore('eventStore', {
 
     async deleteEvent(Id) {
       try {
-          console.log("Suppression de l'événement :", Id);
+          //console.log("Suppression de l'événement :", Id);
           this.loading = true;
   
           // Stocker temporairement l'événement supprimé
@@ -56,7 +68,7 @@ export const useEventStore = defineStore('eventStore', {
           // Appel API pour suppression réelle
           await deleteEvent(Id);
           
-          console.log("Événement supprimé avec succès !");
+          //console.log("Événement supprimé avec succès !");
       } catch (err) {
           this.error = "Impossible de supprimer l'événement.";
   

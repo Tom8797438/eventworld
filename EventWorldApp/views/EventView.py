@@ -1,5 +1,5 @@
 from rest_framework import viewsets, status
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import AllowAny, IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from EventWorldApp.models import Evenement
 from EventWorldApp.utils.serializers import EventSerializer
@@ -7,12 +7,12 @@ from EventWorldApp.permissions import IsOrganizerOrAssociation
 
 class EventViewSet(viewsets.ModelViewSet):
     serializer_class = EventSerializer
-    permission_classes = [IsAuthenticated, IsOrganizerOrAssociation]
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
     def get_queryset(self):
         """Récupère les événements accessibles selon le rôle de l'utilisateur"""
         user = self.request.user
-        if user.role in ["organisateur", "association", "etudiant", "autre"]:
+        if user.is_authenticated and user.role in ["organisateur", "association", "etudiant", "autre"]:
             return Evenement.objects.filter(organisator=user)
         return Evenement.objects.filter(type_event="public")
 
@@ -42,3 +42,4 @@ class EventViewSet(viewsets.ModelViewSet):
         )
 
         return Response({"message": "Événement créé avec succès !", "event_id": event.id}, status=status.HTTP_201_CREATED)
+

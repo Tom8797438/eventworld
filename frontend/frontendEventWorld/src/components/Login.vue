@@ -1,41 +1,51 @@
 <template>
-  <div class="login-container">
-    <h1 class="title">Connexion</h1>
-    <form @submit.prevent="handleLogin">
-      <div class="form-group">
-        <label for="identifier" class="title">Email ou Nom d'utilisateur</label>
-        <input
-          v-model="identifier"
-          type="text"
-          id="identifier"
-          placeholder="Email ou Nom d'utilisateur"
-          required
-        />
+  
+    <div class="login-container">
+
+      <h1 class="title">Connexion</h1>
+      <form @submit.prevent="handleLogin">
+        <div class="form-group">
+          <label for="identifier" class="title">Email ou Nom d'utilisateur</label>
+          <input
+            v-model="identifier"
+            type="text"
+            id="identifier"
+            placeholder="Email ou Nom d'utilisateur"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label for="password" class="title">Mot de passe</label>
+          <input
+            v-model="password"
+            type="password"
+            id="password"
+            required
+          />
+        </div>
+        <div class="register-button">
+        <button type="submit">Connexion</button>    
+        <button @click="redirection">Inscription</button>
+        <button @click="goback">Accueil</button>
       </div>
-      <div class="form-group">
-        <label for="password" class="title">Mot de passe</label>
-        <input
-          v-model="password"
-          type="password"
-          id="password"
-          required
-        />
-      </div>
-      <button type="submit">Se connecter</button>
-    </form>
-    <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
-    <div class="register-button">
-      <button @click="redirection">Inscription</button>
+      <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
+      </form>
+      
     </div>
-  </div>
+
+
 </template>
 
 <script>
 import { useAuthStore } from '@/stores/authStore';
 import { useRouter } from 'vue-router';
+import EventpublicView from '@/views/EventpublicView.vue';
 
 export default {
   name: 'Login',
+  components:{
+    EventpublicView
+  },
   data() {
     return {
       identifier: '', // email ou un nom d'utilisateur
@@ -64,6 +74,9 @@ export default {
   
     redirection(){
       this.router.push('/register');
+    },
+    goback(){
+      this.router.push('/accueil');
     }
   },
 };
@@ -71,4 +84,6 @@ export default {
 
 <style scoped>
 @import '@/assets/styles/Authentification.css';
+
+
 </style>
