@@ -1,7 +1,7 @@
 <template>
-    <dvi>
+    <div>
         <PublicEvents/>
-    </dvi>
+    </div>
 </template>
 
 <script setup >

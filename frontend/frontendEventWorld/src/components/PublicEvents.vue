@@ -10,10 +10,11 @@
           class="public-event-card"
           :title="'Découvrez tous les événements'"
           :showDelete="false"
-          :events="events"
-          :loading="loading"
-          :error="error"
+          :events="store.events"
+          :loading="store.loading"
+          :error="store.error"
           :noBackground="true" 
+          :fromPublic="true"
         /><!--noBackground : couleur de fond-->
         <div class="container-button">
           <button @click="goToLogin">Connexion</button>
@@ -26,7 +27,7 @@
 </template>
 
 <script setup>
-import { useEventStore } from '@/stores/eventStore';
+import { usePublicEventStore } from '@/stores/publicEventStore';
 import EventCard from './EventCard.vue';
 import { onMounted } from 'vue';
 import { useRouter } from 'vue-router';
@@ -37,10 +38,10 @@ const goToLogin = () => {
   router.push('/login');
 };
 
-const store = useEventStore();
+const store = usePublicEventStore();
 
 onMounted(async () => {
-    await store.fetchEvents(true);
+    await store.fetchPublicEvents(true);
 });
 </script>
 

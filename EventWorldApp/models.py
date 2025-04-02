@@ -2,6 +2,8 @@ from django.db import models
 import uuid
 from django.contrib.auth.models import AbstractUser, Group, Permission
 from django.core.validators import RegexValidator
+from django.utils import timezone
+from datetime import timedelta
 
 # Modèle utilisateur personnalisé
 class User(AbstractUser):
@@ -109,6 +111,19 @@ class Evenement(models.Model):
         verbose_name_plural = "Événements"
         ordering = ["-created_at"]
 
+class TemporaryScanner(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="temporary_scanner")
+    event = models.ForeignKey(Evenement, on_delete=models.CASCADE, related_name="temporary_scanners")
+    created_at = models.DateTimeField(auto_now_add=True)
+    expires_at = models.DateTimeField()
+    can_scan = models.BooleanField(default=True)
+
+    def is_active(self):
+        return self.can_scan and timezone.now() < self.expires_at
+
+    def __str__(self):
+        return f"{self.user.username} - Scan pour {self.event.name} (jusqu'à {self.expires_at})"
 
 # Gestion des tickets et QR Codes
 class Ticketing(models.Model):

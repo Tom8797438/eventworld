@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from EventWorldApp.models import User, Profil, Evenement, Ticketing
+from EventWorldApp.models import User, Profil, Evenement, Ticketing, TemporaryScanner
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -10,6 +10,16 @@ class UserSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         user = User.objects.create_user(**validated_data)  # Création sécurisée
         return user
+
+
+class TemporaryScannerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TemporaryScanner
+        fields = ['user', 'event', 'can_scan', 'expires_at']
+        extra_kwargs = {
+            'can_scan': {'default': True}
+        }
+
 
 class ProfilSerializer(serializers.ModelSerializer):
     class Meta:

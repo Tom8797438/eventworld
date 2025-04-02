@@ -94,6 +94,17 @@ export async function createEvent(eventData) {
   }
 }
 
+// Modifier un événement
+export async function updateEvent(eventId, updatedData) {
+  try{
+    const response = await api.put(`events/${eventId}/`, updatedData);
+    return response.data;
+  } catch (error) {
+    console.error("Erreur modification d'événement :", error.response?.data || error.message);
+    throw error;
+  }
+}
+
 // Supprimer un événement
 export async function deleteEvent(Id) {
   try {

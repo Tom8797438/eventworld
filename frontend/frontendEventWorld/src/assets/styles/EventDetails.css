@@ -34,7 +34,7 @@
   }
   
   .event-details p {
-    margin-bottom: 1.5rem;
+    margin-bottom: 0.5rem;
     font-size: 1.5em;
   }
   
@@ -58,6 +58,19 @@
     text-transform: uppercase;
     margin-left: 4px;
     width: 100%;
+  }
+
+  .textarea{
+    resize : both;
+    min-width : 100px;
+    min-height : 100px;
+    max-width : 300px;
+    max-height : 100px;
+  }
+
+  .input-modif{
+    padding: 2px;
+    
   }
 
   .input-group.quantity-selection{

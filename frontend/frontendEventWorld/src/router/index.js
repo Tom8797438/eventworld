@@ -1,8 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import LoginView from '@/views/LoginView.vue';
 import EventpublicView from '@/views/EventpublicView.vue';
-import MenuView from '@/views/MenuView.vue'; // Vue pour le menu principal
-import { useAuthStore } from '@/stores/authStore'; // Importation du store pour gérer l'authentification
+import PublicEventDetail from '@/components/PublicEventDetail.vue';
+import MenuView from '@/views/MenuView.vue'; 
+import { useAuthStore } from '@/stores/authStore'; 
 import EventDetails from '@/components/EventDetails.vue';
 import QrCodeScanner from "@/components/QrCodeScanner.vue";
 import Register from '@/components/Register.vue';
@@ -17,6 +18,12 @@ const router = createRouter({
       name: 'EventpublicView',
       component: EventpublicView, // Page publique de connexion
     },
+    {
+      path: '/event-public/:id',
+      name: 'PublicEventDetail',
+      component: PublicEventDetail,
+      meta: { requiresAuth: false },
+    },    
     {
       path: '/login',
       name: 'login',

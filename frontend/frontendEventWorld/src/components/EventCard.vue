@@ -41,61 +41,73 @@
   </template>
   
   <script>
-import { useEventStore } from '@/stores/eventStore';
-import { mapState, mapActions } from 'pinia';
-
-export default {
-  name: 'EventCard',
-  props: {
-    title: String,
-    showDelete: {
-      type: Boolean,
-      default: true,
+  import { useEventStore } from '@/stores/eventStore';
+  import { usePublicEventStore } from '@/stores/publicEventStore'; // 👈 important
+  import { mapState, mapActions } from 'pinia';
+  
+  export default {
+    name: 'EventCard',
+    props: {
+      title: String,
+      showDelete: {
+        type: Boolean,
+        default: true,
+      },
+      noBackground: {
+        type: Boolean,
+        default: false,
+      },
+      fromPublic: {
+        type: Boolean,
+        default: false,
+      }
     },
-    noBackground: {
-      type: Boolean,
-      default: false
-    }
-  },
-  computed: {
-    // Liaison avec le store via mapState
-    ...mapState(useEventStore, ['events', 'loading', 'error']),
-  },
-
-  methods: {
-  // Liaison avec les actions du store
-  ...mapActions(useEventStore, ['fetchEvents', 'setSelectedEvent', 'deleteEvent']),
-
-  async deleteEventHandler(event) {
-    //console.log("deleteEvent: ", event);
-    if (confirm("Voulez-vous vraiment supprimer cet événement ?")) {
-        try {
-            //console.log("Évént id : ", event.id);
-            await this.deleteEvent(event.id); // Utilisation correcte de l'ID
-            //console.log("Événement supprimé localement !");
-        } catch (error) {
-            //console.error("Erreur lors de la suppression :", error);
+  
+    computed: {
+      ...mapState(useEventStore, ['events', 'loading', 'error']),
+    },
+  
+    methods: {
+      ...mapActions(useEventStore, ['fetchEvents', 'setSelectedEvent', 'deleteEvent']),
+  
+      async deleteEventHandler(event) {
+        if (confirm("Voulez-vous vraiment supprimer cet événement ?")) {
+          try {
+            await this.deleteEvent(event.id);
+          } catch (error) {
+            console.error("Erreur lors de la suppression :", error);
+          }
         }
-    }
-},
-
-  goToEventDetails(event) {
-    //console.log('Événement sélectionné : ', event);
-    this.setSelectedEvent(event);
-    this.$router.push({
-      name: 'EventDetails',
-    });
-  }
-},
-
+      },
+  
+      goToEventDetails(event) {
+        console.log('Événement sélectionné : ', event);
+  
+        if (this.fromPublic) {
+          const publicStore = usePublicEventStore(); // 👈 store public
+          publicStore.setSelectedEvent(event);       // 👈 on stocke dans le bon store
+          this.$router.push({
+            name: 'PublicEventDetail',
+            params: { id: event.id }
+          });
+        } else {
+          this.setSelectedEvent(event); // store privé
+          this.$router.push({
+            name: 'EventDetails',
+          });
+        }
+      }
+    },
+  
     mounted() {
-      // Charge les événements lors du montage
       if (!this.events.length) {
         this.fetchEvents(); 
       }
-    },
+    }
   };
-</script>
+  </script>
+  
+  
   
   <style scoped>
 @import '@/assets/styles/Event.css'

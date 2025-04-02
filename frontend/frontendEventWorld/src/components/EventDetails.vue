@@ -4,18 +4,35 @@
       <!-- Colonne gauche -->
       <div class="event-details">
         <h2 class="event-title">{{ selectedEvent?.name || 'Non spécifié' }}</h2>
-        <p><strong>Description:</strong> {{ selectedEvent.description || 'Non spécifié' }}</p>
+        <input class="input-modif" type="text" v-model="editedEvent.name" />
+
+        <p><strong>Description:</strong> {{ truncate(selectedEvent.description, 20) || 'Non spécifié' }}</p>
+        <textarea class="textarea input-modif" v-model="editedEvent.description"></textarea>
+
         <p><strong>Date début:</strong> {{ selectedEvent.date_start || 'Non spécifié' }}</p>
+        <input class="input-modif" type="date" v-model="editedEvent.date_start" />
+
         <p><strong>Date fin:</strong> {{ selectedEvent.date_end || 'Non spécifié' }}</p>
+        <input class="input-modif" type="date" v-model="editedEvent.date_end" />
+
         <p><strong>Lieu :</strong> {{ selectedEvent.location || 'Non spécifié' }}</p>
+        <input class="input-modif" type="text" v-model="editedEvent.location" />
+
         <p><strong>Adresse :</strong> {{ selectedEvent.address || 'Non spécifié' }}</p>
+        <input class="input-modif" type="text" v-model="editedEvent.address" />
+
         <p><strong>Ville :</strong> {{ selectedEvent.city || 'Non spécifié' }}</p>
-        <p><strong>Places disponibles :</strong> {{ selectedEvent.number_place || 'Non spécifié' }}</p>
+        <input class="input-modif" type="text" v-model="editedEvent.city" />
+
+        <p><strong>Places disponibles :</strong> {{ selectedEvent.remaining_places || 'Non spécifié' }}</p>
+        <input class="input-modif" type="number" v-model="editedEvent.number_place" />
+
+        <button @click="saveChanges">Enregistrer les modifications</button>
       </div>
 
       <!-- Colonne droite : Réservation -->
       <div class="booking-section">
-        <h3>Vos coordonnées</h3>
+        <h3>Coordonnées client</h3>
         <div class="input-group">
           <label>Nom</label>
           <input type="text" placeholder="Votre nom" v-model="firstname" />
@@ -44,7 +61,14 @@
             </option>
           </select>
 
-          <p v-else><strong>{{ ticketTypes[0].price.label }} :</strong>{{ ticketTypes[0].price.value }} €</p>
+          <p v-else-if="ticketTypes.length === 1">
+            <strong>{{ ticketTypes[0]?.label || 'Type inconnu' }} :</strong>
+            {{ ticketTypes[0]?.value ?? '0' }} €
+          </p>
+          <p v-else>
+            Aucun tarif disponible.
+          </p>
+
 
           <div class="input-group">
             <label>Quantité</label>
@@ -64,7 +88,7 @@
 </template>
 
 <script>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { useEventStore } from '@/stores/eventStore';
 import { useTicketStore } from '@/stores/ticketStore';
 import { useRouter } from 'vue-router';
@@ -81,6 +105,7 @@ export default {
     const phone = ref('');
 
     const ticketTypes = ref([]);
+    const editedEvent = ref({});
 
     const selectedEvent = computed(() => {
       if (!eventStore.selectedEvent) {
@@ -91,13 +116,19 @@ export default {
       return eventStore.selectedEvent;
     });
 
-    if (eventStore.selectedEvent && eventStore.selectedEvent.price_categories) {
-      ticketTypes.value = Object.entries(eventStore.selectedEvent.price_categories).map(([key, value]) => ({
-        name: key,
-        label: key.charAt(0).toUpperCase() + key.slice(1), // Capitaliser le label
-        price: value,
-      }));
-    }
+    onMounted(() => {
+      if (selectedEvent.value) {
+        editedEvent.value = { ...selectedEvent.value };
+
+        if (selectedEvent.value.price_categories) {
+          ticketTypes.value = Object.entries(selectedEvent.value.price_categories).map(([key, value]) => ({
+            name: key,
+            label: key.charAt(0).toUpperCase() + key.slice(1),
+            price: value,
+          }));
+        }
+      }
+    });
 
     const selectedTickets = ref([{ type: ticketTypes.value[0]?.name || '', quantity: 1 }]);
 
@@ -108,8 +139,17 @@ export default {
       }, 0);
     });
 
-    const calculateTotal = () => {
+    const saveChanges = async () => {
+      try {
+        await eventStore.updateEvent(editedEvent.value.id, editedEvent.value);
+        alert("Événement mis à jour !");
+      } catch (err) {
+        console.error(err);
+        alert("Erreur lors de la mise à jour.");
+      }
     };
+
+    const calculateTotal = () => {};
 
     const addTicket = () => {
       if (ticketTypes.value.length > 1) {
@@ -127,7 +167,6 @@ export default {
         .filter(ticket => ticket.quantity > 0)
         .map(ticket => {
           const ticketType = ticketTypes.value.find(t => t.name === ticket.type);
-          // Vérification à l’intérieur du map()
           return {
             firstname: firstname.value.trim(),
             lastname: lastname.value.trim(),
@@ -135,10 +174,11 @@ export default {
             phone: phone.value.trim(),
             quantity: ticket.quantity,
             price: ticketType?.price.value || 0,
-            ticket_type: ticketType.price.label,
-            event_name: eventName, // attention c'est la
+            ticket_type: ticketType?.price.label || 'N/A',
+            event_name: eventName,
           };
         });
+
       if (ticketsToCreate.length === 0) {
         alert("Veuillez sélectionner au moins un ticket.");
         return;
@@ -167,10 +207,17 @@ export default {
       phone.value = "";
       selectedTickets.value = [{ type: ticketTypes.value[0]?.name || '', quantity: 1 }];
     };
+    function truncate(text, maxLength) {
+  if (!text) return '';
+  return text.length > maxLength ? text.slice(0, maxLength) + '…' : text;
+}
 
     return {
+      truncate,
+      saveChanges,
       ticketTypes,
       selectedEvent,
+      editedEvent,
       selectedTickets,
       total,
       firstname,

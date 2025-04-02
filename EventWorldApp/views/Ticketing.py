@@ -5,6 +5,7 @@ from django.shortcuts import get_object_or_404
 from EventWorldApp.models import Evenement, Ticketing
 from django.contrib.auth import get_user_model
 from EventWorldApp.utils.serializers import TicketSerializer
+from rest_framework.permissions import AllowAny
 import uuid
 
 User = get_user_model()
@@ -13,7 +14,7 @@ class TicketCreateView(APIView):
     """
     Vue pour gérer la création des billets pour un événement.
     """
-
+    permission_classes = [AllowAny] 
     def post(self, request, *args, **kwargs):
         # print("Données reçues :", request.data)
         event_id = request.data.get('id')
