@@ -1,6 +1,11 @@
 pipeline {
     agent any
 
+    envirionement {
+        BACKEND_DIR = "EventWorldApp/eventworld"
+        FRONTEND_DIR = "EventWorldApp/eventworld/frontend/frontendEventWorld"
+    }
+
     stages {
         stage('Cloner le projet') {
             steps {
@@ -12,7 +17,7 @@ pipeline {
             steps {
                 echo "📥 Clonage du dépôt backend GitLab..."
                 sh '''
-                    cd EventWorldApp/eventworld
+                    cd BACKEND_DIR
                     python3 -m venv venv
                     source venv/bin/activate
                     pip install -r requirements.txt
@@ -26,9 +31,9 @@ pipeline {
             steps {
                 echo "📥 Clonage du dépôt frontend GitLab..."
                 sh '''
-                    cd Eventworld/eventworld/frontend/frontendEventWorld
+                    cd FRONTEND_DIR
                     npm install
-                    nohup npm run dev &
+                    nohup npm run dev > frontend.log 2>&1 &
                 '''
             }
         }
