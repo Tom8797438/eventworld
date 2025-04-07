@@ -6,28 +6,31 @@
         <h2 class="event-title">{{ selectedEvent?.name || 'Non spécifié' }}</h2>
         <input class="input-modif" type="text" v-model="editedEvent.name" />
 
-        <p><strong>Description:</strong> {{ truncate(selectedEvent.description, 20) || 'Non spécifié' }}</p>
+        <p><strong>Description : </strong> {{ truncate(selectedEvent.description, 10) || 'Non spécifié' }}</p>
         <textarea class="textarea input-modif" v-model="editedEvent.description"></textarea>
 
-        <p><strong>Date début:</strong> {{ selectedEvent.date_start || 'Non spécifié' }}</p>
+        <p><strong>Date début : </strong> {{ selectedEvent.date_start || 'Non spécifié' }}</p>
         <input class="input-modif" type="date" v-model="editedEvent.date_start" />
 
-        <p><strong>Date fin:</strong> {{ selectedEvent.date_end || 'Non spécifié' }}</p>
+        <p><strong>Date fin : </strong> {{ selectedEvent.date_end || 'Non spécifié' }}</p>
         <input class="input-modif" type="date" v-model="editedEvent.date_end" />
 
-        <p><strong>Lieu :</strong> {{ selectedEvent.location || 'Non spécifié' }}</p>
+        <p><strong>Lieu : </strong> {{ selectedEvent.location || 'Non spécifié' }}</p>
         <input class="input-modif" type="text" v-model="editedEvent.location" />
 
-        <p><strong>Adresse :</strong> {{ selectedEvent.address || 'Non spécifié' }}</p>
+        <p><strong>Adresse : </strong> {{ selectedEvent.address || 'Non spécifié' }}</p>
         <input class="input-modif" type="text" v-model="editedEvent.address" />
 
-        <p><strong>Ville :</strong> {{ selectedEvent.city || 'Non spécifié' }}</p>
+        <p><strong>Code postal : </strong> {{ selectedEvent.postal_code || 'Non spécifié' }}</p>
+        <input class="input-modif" type="text" v-model="editedEvent.postal_code" />
+
+        <p><strong>Ville : </strong> {{ selectedEvent.city || 'Non spécifié' }}</p>
         <input class="input-modif" type="text" v-model="editedEvent.city" />
 
-        <p><strong>Places disponibles :</strong> {{ selectedEvent.remaining_places || 'Non spécifié' }}</p>
+        <p><strong>Places disponibles : </strong> {{ selectedEvent.remaining_places || 'Non spécifié' }}</p>
         <input class="input-modif" type="number" v-model="editedEvent.number_place" />
 
-        <button @click="saveChanges">Enregistrer les modifications</button>
+        <button class="button-save" @click="saveChanges">Enregistrer</button>
       </div>
 
       <!-- Colonne droite : Réservation -->

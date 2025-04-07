@@ -16,7 +16,7 @@ justify-content: center;
 margin-top: 1rem;
 max-height: 600px; /* Fixe une hauteur pour permettre le défilement */
 overflow-y: auto; /* Active le défilement vertical */
-padding: 1rem; /* Ajoute un peu d'espace intérieur */
+padding: 0rem; /* Ajoute un peu d'espace intérieur */
 border-radius: 8px; /* Coins arrondis */
 }
 

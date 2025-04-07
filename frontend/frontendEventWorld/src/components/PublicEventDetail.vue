@@ -4,7 +4,8 @@
         <!-- Colonne gauche -->
         <div class="event-details">
           <h2 class="event-title">{{ selectedEvent?.name || 'Non spécifié' }}</h2>
-          <p><strong>Description:</strong> {{ selectedEvent.description || 'Non spécifié' }}</p>
+          <p ><strong>Description:</strong></p>
+          <textarea readonly class="description"> {{ selectedEvent.description || 'Non spécifié' }}</textarea>
           <p><strong>Date début:</strong> {{ selectedEvent.date_start || 'Non spécifié' }}</p>
           <p><strong>Date fin:</strong> {{ selectedEvent.date_end || 'Non spécifié' }}</p>
           <p><strong>Lieu :</strong> {{ selectedEvent.location || 'Non spécifié' }}</p>
@@ -189,6 +190,6 @@
   </script>
   
   <style scoped>
-  @import '@/assets/styles/EventDetails.css';
+  @import '@/assets/styles/PublicEventDetails.css';
   </style>
   

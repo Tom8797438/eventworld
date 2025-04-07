@@ -1,12 +1,21 @@
 <template>
     <div class="container-public-event">
 
-      <div class="container-event-card">
+      <div class="search-bar">
+          <p>Rechercher : <input/></p>
+          <button>Rechercher</button>
+        </div>
+
+      <div class="public-container-button">
+          <button @click="goToLogin">Connexion</button>
+      </div>
+
+      <div class="public-container-event-card">
           <p v-if="store.loading">Chargement des événements publics...</p>
           <p v-if="store.error">{{ store.error }}</p>
           <p v-if="!store.events.length && !store.loading">Aucun événement public trouvé.</p>
 
-        <EventCard
+          <EventCard
           class="public-event-card"
           :title="'Découvrez tous les événements'"
           :showDelete="false"
@@ -16,12 +25,9 @@
           :noBackground="true" 
           :fromPublic="true"
         /><!--noBackground : couleur de fond-->
-        <div class="container-button">
-          <button @click="goToLogin">Connexion</button>
-        </div>
-
+        
       </div>
-    
+      
     </div>
 
 </template>
@@ -76,4 +82,6 @@ export default {
 
 <style scoped>
 @import '@/assets/styles/PublicEvents.css';
+
+
 </style>

@@ -14,6 +14,8 @@
     justify-content: center;
     align-items: center;
     z-index: 1000; /* S'assurer que l'overlay est au-dessus */
+    background-color: rgba(255, 0, 0, 0);
+    
   }
   
   .event-card {
@@ -32,15 +34,33 @@
   .event-details {
     padding-right: 1rem;
     height: 60vh;
-    columns: 2;
   }
   
   .event-details p {
     margin-bottom: 0.5rem;
     font-size: 1.2em;
     display: flex;
+    gap: 2%;
     max-width: auto;
-    color: #ccc;
+    color: #11379e;
+  }
+
+.description{
+    width: 100%;
+    min-height: 100px;
+    resize: none;
+    border: 1px solid #cccccc83;
+    border-radius: 4px;
+    padding: 0.2em;
+    line-height:2em;
+    background-color: #cccccc00;
+    white-space: pre-wrap; /* gère les retours à la ligne */
+    font-family:Arial, Helvetica, sans-serif;
+    color: #fff;
+}
+
+  .event-details p strong{
+    color: #fff;
   }
   
   .booking-section {
@@ -63,21 +83,6 @@
     text-transform: uppercase;
     margin-left: 4px;
     width: 100%;
-  }
-
-  .textarea{
-    resize : both;
-    min-width : 200px;
-    min-height : 250px;
-    max-width : 200px;
-    max-height : 200px;
-  }
-
-  .input-modif{
-    padding: 4px;
-    border-radius: 4px;
-    font-size: 1rem;
-    border: 1px solid #ddd;
   }
 
   .input-group.quantity-selection{
@@ -178,9 +183,6 @@
     margin-top: 5px;
     background-color: #007bff;
   }
-  
-  
-
   
   .delete-ticket {
     color: #dc3545;
