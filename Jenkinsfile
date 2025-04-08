@@ -15,9 +15,9 @@ pipeline {
 
         stage('Lancer le backend') {
             steps {
-                echo "📥 Clonage du dépôt backend GitLab..."
+                echo "📥 Clonage du dépôt backend GitLab"
                 sh '''
-                    cd BACKEND_DIR
+                    cd $BACKEND_DIR
                     python3 -m venv venv
                     source venv/bin/activate
                     pip install -r requirements.txt
@@ -29,9 +29,9 @@ pipeline {
 
         stage('Lancer le frontend') {
             steps {
-                echo "📥 Clonage du dépôt frontend GitLab..."
+                echo "📥 Clonage du dépôt frontend GitLab"
                 sh '''
-                    cd FRONTEND_DIR
+                    cd $FRONTEND_DIR
                     npm install
                     nohup npm run dev > frontend.log 2>&1 &
                 '''
