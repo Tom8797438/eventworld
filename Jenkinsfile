@@ -2,8 +2,8 @@ pipeline {
     agent any
 
     environment {
-        BACKEND_DIR = "EventWorld/EventWorldApp"
-        FRONTEND_DIR = "EventWorld/frontend/frontendEventWorld"
+        BACKEND_DIR = "EventWorld/eventWorldApp/EventWorldApp"
+        FRONTEND_DIR = "EventWorld/eventworld/frontend/frontendEventWorld"
     }
 
     stages {
