@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        BACKEND_DIR = "EventWorldApp/EventWorldApp"
+        BACKEND_DIR = "EventWorld/EventWorldApp"
         FRONTEND_DIR = "Eventworld/frontend/frontendEventWorld"
     }
 
