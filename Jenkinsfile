@@ -17,6 +17,7 @@ pipeline {
         stage('Lancer le backend') {
             steps {
                 echo "📥 Clonage du dépôt backend GitLab"
+                sh "echo BACKEND_DIR=$BACKEND_DIR"
                 sh '''
                     cd $BACKEND_DIR
                     python3 -m venv venv
@@ -31,6 +32,8 @@ pipeline {
         stage('Lancer le frontend') {
             steps {
                 echo "📥 Clonage du dépôt frontend GitLab"
+                sh "echo BACKEND_DIR=$FRONTEND_DIR"
+
                 sh '''
                     cd $FRONTEND_DIR
                     npm install
