@@ -29,6 +29,8 @@ services:
     container_name: eventworld-frontend
     ports:
       - "5173:5173"
+    volumes:
+      - ./frontend/frontendEventWorld:/app
     command: npm run dev
     depends_on:
       - backend
