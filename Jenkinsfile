@@ -4,18 +4,18 @@ pipeline {
     stages {
         stage('Lister les fichiers') {
             steps {
-              
                 sh 'find . -name docker-compose.yml'
             }
         }
 
         stage('Déploiement avec Docker Compose') {
             steps {
-                 sh 'sudo docker-compose -f docker-compose.yml up -d --build'
+                sh 'docker-compose -f docker-compose.yml up -d --build'
             }
         }
     }
 }
+
 
 
 // pipeline {
