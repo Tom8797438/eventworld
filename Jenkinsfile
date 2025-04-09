@@ -2,8 +2,8 @@ pipeline {
     agent any
 
     environment {
-            BACKEND_DIR = "Eventworld/eventworld/EventWorldApp"
-            FRONTEND_DIR = "Eventworld/eventworld/frontend/frontendEventWorld"
+            BACKEND_DIR = "EventWorldApp"
+            FRONTEND_DIR = "frontend/frontendEventWorld"
             }
 
 
@@ -13,7 +13,7 @@ pipeline {
                 git branch: 'main', url: 'https://gitlab.com/Tom8797438/eventworld.git'
             }
         }
-        
+
     stage('Lister les fichiers') {
         steps {
             sh 'pwd'
