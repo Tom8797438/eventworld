@@ -5,8 +5,9 @@ pipeline {
         stage('Lister les fichiers') {
             steps {
                 sh 'pwd'
-                sh 'ls -la'
-                sh 'ls -R'
+                // sh 'ls -la'
+                // sh 'ls -R'
+                sh 'find . -name docker-compose.yml'
             }
         }
 
