@@ -4,9 +4,8 @@ pipeline {
     stages {
         stage('Déploiement avec Docker Compose') {
             steps {
-                dir("${WORKSPACE}") {
-                    sh 'docker-compose -f docker-compose.yml up -d --build'
-                }
+                sh 'docker-compose -f docker-compose.yml up -d --build'
+            }
         }
     }
 }
