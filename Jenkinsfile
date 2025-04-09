@@ -13,6 +13,14 @@ pipeline {
                 git branch: 'main', url: 'https://gitlab.com/Tom8797438/eventworld.git'
             }
         }
+        
+    stage('Lister les fichiers') {
+        steps {
+            sh 'pwd'
+            sh 'ls -la'
+            sh 'ls -R'
+        }
+    }
 
         stage('Lancer le backend') {
             steps {
