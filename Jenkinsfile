@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('Déploiement avec Docker Compose') {
             steps {
-                 sh 'docker-compose -f docker-compose.yml up -d --build'
+                 sh 'docker-compose -f Eventworld/eventworld/docker-compose.yml up -d --build'
             }
         }
     }
