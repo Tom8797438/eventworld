@@ -2,6 +2,12 @@ pipeline {
     agent any
 
     stages {
+        stage('Test Docker') {
+            steps {
+                sh 'docker ps'
+            }
+        }
+
         stage('Lister les fichiers') {
             steps {
                 sh 'find . -name docker-compose.yml'
