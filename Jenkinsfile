@@ -14,13 +14,13 @@ pipeline {
             }
         }
 
-    stage('Lister les fichiers') {
-        steps {
-            sh 'pwd'
-            sh 'ls -la'
-            sh 'ls -R'
-        }
-    }
+    // stage('Lister les fichiers') {
+    //     steps {
+    //         sh 'pwd'
+    //         sh 'ls -la'
+    //         sh 'ls -R'
+    //     }
+    // }
 
         stage('Lancer le backend') {
             steps {
@@ -28,8 +28,6 @@ pipeline {
                 sh "echo BACKEND_DIR=$BACKEND_DIR"
                 sh '''
                     cd $BACKEND_DIR
-                    python3 -m venv venv
-                    source venv/bin/activate
                     pip install -r requirements.txt
                     python manage.py migrate
                     nohup python manage.py runserver 0.0.0.0:8000 &
