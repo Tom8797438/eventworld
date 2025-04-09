@@ -4,16 +4,14 @@ pipeline {
     stages {
         stage('Lister les fichiers') {
             steps {
-                sh 'pwd'
-                // sh 'ls -la'
-                // sh 'ls -R'
+              
                 sh 'find . -name docker-compose.yml'
             }
         }
 
         stage('Déploiement avec Docker Compose') {
             steps {
-                 sh 'docker-compose -f venv/Eventworld/eventworld/docker-compose.yml up -d --build'
+                 sh 'docker-compose -f docker-compose.yml up -d --build'
             }
         }
     }
