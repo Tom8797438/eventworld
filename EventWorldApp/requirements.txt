@@ -5,7 +5,8 @@ django-cors-headers
 django-filter
 PyJWT
 requests
-psycopg2  # PostgreSQL
+psycopg2-binary
+#psycopg2  # PostgreSQL
 certifi  # Optionnel pour HTTPS sécurisé
 sqlparse
 django-axes
