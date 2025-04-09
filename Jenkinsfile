@@ -1,6 +1,14 @@
 pipeline {
     agent any
 
+    stage('Lister les fichiers') {
+            steps {
+                sh 'pwd'
+                sh 'ls -la'
+                sh 'ls -R'
+            }
+        }
+
     stages {
         stage('Déploiement avec Docker Compose') {
             steps {
