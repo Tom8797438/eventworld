@@ -9,10 +9,10 @@ pipeline {
                 sh 'ls -R'
             }
         }
-        
+
         stage('Déploiement avec Docker Compose') {
             steps {
-                 sh 'docker-compose -f Eventworld/eventworld/docker-compose.yml up -d --build'
+                 sh 'docker-compose -f venv/Eventworld/eventworld/docker-compose.yml up -d --build'
             }
         }
     }
