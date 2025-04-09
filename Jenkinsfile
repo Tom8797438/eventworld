@@ -2,9 +2,10 @@ pipeline {
     agent any
 
     environment {
-        BACKEND_DIR = "EventWorld/eventworld/EventWorldApp"
-        FRONTEND_DIR = "Eventworld/frontend/frontendEventWorld"
-    }
+            BACKEND_DIR = "eventworld/EventWorldApp"
+            FRONTEND_DIR = "eventworld/frontend/frontendEventWorld"
+            }
+
 
     stages {
         stage('Cloner le projet') {
