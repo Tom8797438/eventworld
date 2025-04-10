@@ -145,12 +145,12 @@ DATABASES = {
         'NAME': 'Event_World_db',
         'USER': 'dev2',
         'PASSWORD': '456123',
-        'HOST': 'db',
+        'HOST': os.getenv('DB_HOST', 'db'),
         'PORT': '5432',
     }
 }
-print("🔍 DB_HOST =", os.getenv("DB_HOST"))
-print("🧠 DATABASE CONFIG =", DATABASES['default'])
+# print("🔍 DB_HOST =", os.getenv("DB_HOST"))
+# print("🧠 DATABASE CONFIG =", DATABASES['default'])
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
 
