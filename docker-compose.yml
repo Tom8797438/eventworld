@@ -33,8 +33,10 @@ services:
   db:
     image: postgres:13
     container_name: eventworld-db
-    env_file:
-      - .env
+    environment:
+      POSTGRES_DB: Event_World_db
+      POSTGRES_USER: dev2
+      POSTGRES_PASSWORD: '789456'
     volumes:
       - pgdata:/var/lib/postgresql/data
     ports:
