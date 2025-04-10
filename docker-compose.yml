@@ -36,7 +36,7 @@ services:
     environment:
       POSTGRES_DB: Event_World_db
       POSTGRES_USER: dev2
-      POSTGRES_PASSWORD: '789456'
+      POSTGRES_PASSWORD: '456123'
     volumes:
       - pgdata:/var/lib/postgresql/data
     ports:
