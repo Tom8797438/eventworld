@@ -7,6 +7,8 @@ import vueJsx from '@vitejs/plugin-vue-jsx'
 // https://vite.dev/config/
 export default defineConfig({
   server: {
+    host: '0.0.0.0', // permet d'accéder via le réseau, important dans Docker
+    port: 5173,
     proxy: {
       "/api": {
         target: "http://127.0.0.1:8000",
