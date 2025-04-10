@@ -1,14 +1,14 @@
 stages:
-  - build
+  # - build
   - deploy
 
-build:
-  stage: build
-  tags:
-    - local
-  script:
-    - echo "🛠️ Build des images Docker"
-    - docker compose build
+# build:
+#   stage: build
+#   tags:
+#     - local
+#   script:
+#     - echo "🛠️ Build des images Docker"
+#     - docker compose build
 
 deploy:
   stage: deploy
