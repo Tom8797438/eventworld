@@ -145,7 +145,7 @@ DATABASES = {
         'NAME': 'Event_World_db',
         'USER': 'dev2',
         'PASSWORD': '456123',
-        'HOST': 'localhost',
+        'HOST': '0.0.0.0',
         'PORT': '5432',
     }
 }
