@@ -144,7 +144,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'Event_World_db',
         'USER': 'dev2',
-        'PASSWORD': '456123',
+        'PASSWORD': "'456123'",
         'HOST': 'eventworld-db',
         'PORT': '5432',
     }
