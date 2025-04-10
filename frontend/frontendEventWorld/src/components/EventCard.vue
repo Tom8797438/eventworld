@@ -9,7 +9,7 @@
       <!-- Message d'erreur -->
       <div v-if="error" class="error">{{ error }}</div>
   
-      <!-- Liste des événements sous forme de cartes virtuel -->
+      <!-- Liste des événements en forme de cartes virtuel -->
       <div v-if="events.length" class="events-container">
         
         <div v-for="event in events" 
