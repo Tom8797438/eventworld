@@ -30,17 +30,17 @@ services:
     depends_on:
       - backend
 
-  db:
-    image: postgres:13
-    container_name: eventworld-db
-    environment:
-      POSTGRES_DB: ${DB_NAME}
-      POSTGRES_USER: ${DB_USER}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
-    volumes:
-      - pgdata:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
+  # db:
+  #   image: postgres:13
+  #   container_name: eventworld-db
+  #   environment:
+  #     POSTGRES_DB: Event_World_db
+  #     POSTGRES_USER: dev2
+  #     POSTGRES_PASSWORD: 456123
+  #   volumes:
+  #     - pgdata:/var/lib/postgresql/data
+  #   ports:
+  #     - "5432:5432"
 
 volumes:
   pgdata:

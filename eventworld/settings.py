@@ -7,7 +7,7 @@ For more information on this file, see
 https://docs.djangoproject.com/en/5.1/topics/settings/
 
 For the full list of settings and their values, see
-https://docs.djangoproject.com/en/5.1/ref/settings/ '"
+https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
@@ -129,7 +129,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'eventworld.wsgi.application'
 
 
-# Database '
+# Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 # DATABASES = {
@@ -145,12 +145,11 @@ DATABASES = {
         'NAME': 'Event_World_db',
         'USER': 'dev2',
         'PASSWORD': '456123',
-        'HOST': 'db',
-        'PORT': os.getenv('DB_PORT', '5432'),
+        'HOST': '127.0.0.1',
+        'PORT': '5432',
     }
 }
-print("🔍 DB_HOST =", os.getenv("DB_HOST"))
-# print("🧠 DATABASE CONFIG =", DATABASES['default'])  fdsfds
+
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
 
@@ -189,7 +188,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-#STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
