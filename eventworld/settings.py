@@ -145,7 +145,7 @@ DATABASES = {
         'NAME': 'Event_World_db',
         'USER': 'dev2',
         'PASSWORD': '456123',
-        'HOST': os.getenv('DB_HOST', 'db'),
+        'HOST': 'db',
         'PORT': '5432',
     }
 }
