@@ -145,7 +145,7 @@ DATABASES = {
         'NAME': 'Event_World_db',
         'USER': 'dev2',
         'PASSWORD': '456123',
-        'HOST': '0.0.0.0',
+        'HOST': '/var/lib/docker/containers/e9bcc34e083cada8d7a84f8e42a09b834282f6abe61e3e0636a01ffe4822aa55/hosts',
         'PORT': '5432',
     }
 }
