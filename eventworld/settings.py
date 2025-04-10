@@ -142,11 +142,11 @@ WSGI_APPLICATION = 'eventworld.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'Event_World_db',
-        'USER': 'dev2',
-        'PASSWORD': '456123',
+        'NAME': os.getenv('DB_NAME', 'Event_World_db'),
+        'USER': os.getenv('DB_USER', 'dev2'),
+        'PASSWORD': os.getenv('DB_PASSWORD', '456123'),
         'HOST': os.getenv('DB_HOST', 'db'),
-        'PORT': '5432',
+        'PORT': os.getenv('DB_PORT', '5432'),
     }
 }
 print("🔍 DB_HOST =", os.getenv("DB_HOST"))

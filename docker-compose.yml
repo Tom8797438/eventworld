@@ -8,14 +8,11 @@ services:
     container_name: eventworld-backend
     ports:
       - "8000:8000"
+    env_file:
+      - .env
     depends_on:
       - db
-    environment:
-      - DB_NAME=Event_World_db
-      - DB_USER=dev2
-      - DB_PASSWORD=456123
-      - DB_HOST=db
-      - DB_PORT=5432
+    
 
   frontend:
     build:
@@ -31,10 +28,8 @@ services:
   db:
     image: postgres:13
     container_name: eventworld-db
-    environment:
-      POSTGRES_DB: Event_World_db
-      POSTGRES_USER: dev2
-      POSTGRES_PASSWORD: 456123
+    env_file :
+      - .env
     volumes:
       - pgdata:/var/lib/postgresql/data
     ports:
