@@ -150,7 +150,7 @@ DATABASES = {
     }
 }
 print("🔍 DB_HOST =", os.getenv("DB_HOST"))
-# print("🧠 DATABASE CONFIG =", DATABASES['default'])
+# print("🧠 DATABASE CONFIG =", DATABASES['default'])  fdsfds
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
 
