@@ -11,7 +11,7 @@ services:
     depends_on:
       - db
     environment:
-      - DB_NAME=eventdb
+      - DB_NAME=Event_World_db
       - DB_USER=dev2
       - DB_PASSWORD=456123
       - DB_HOST=db
