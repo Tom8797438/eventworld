@@ -129,7 +129,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'eventworld.wsgi.application'
 
 
-# Database
+# Database de
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 # DATABASES = {
