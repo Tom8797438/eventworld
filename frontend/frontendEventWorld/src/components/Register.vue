@@ -13,12 +13,12 @@
 </div>
 
 <div class="form-group">
-  <label for="company_name">Nom de l'entreprise</label>
+  <label for="company_name">Raison Sociale</label>
   <input v-model="profil.company_name" type="text" id="company_name" />
 </div>
 
 <div class="form-group">
-  <label for="company_number">Numéro de l'entreprise</label>
+  <label for="company_number">N° Entreprise</label>
   <input v-model="profil.company_number" type="text" id="company_number" />
 </div>
 
@@ -200,5 +200,27 @@ select {
   margin-top: 2rem;
 }
 
+@media screen and (max-width: 768px) {
+  input{
+    width: 90%;
+  }
 
+  .form-grid{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.4rem;
+  }
+  
+  *, *::before, *::after {
+    /* box-sizing: border-box; */
+    margin: 0;
+    font-weight: normal;
+  }
+  .register-container {
+    background: none;
+}
+  label {
+      font-size: 0.8em;
+  }
+}
 </style>

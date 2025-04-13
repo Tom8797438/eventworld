@@ -1,15 +1,13 @@
 <template>
     <div class="container-public-event">
 
-      <div class="search-bar">
-          <p>Rechercher : <input/></p>
-          <button>Rechercher</button>
-        </div>
-
       <div class="public-container-button">
           <button @click="goToLogin">Connexion</button>
       </div>
-
+      <div class="search-bar">
+          <input type="text" placeholder="Rechercher par titre"/>
+          <button>Rechercher</button>
+        </div>
       <div class="public-container-event-card">
           <p v-if="store.loading">Chargement des événements publics...</p>
           <p v-if="store.error">{{ store.error }}</p>

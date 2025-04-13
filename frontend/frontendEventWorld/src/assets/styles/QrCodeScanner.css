@@ -28,10 +28,10 @@
   .selection-camera {
     font-size: 1rem;
     margin-bottom: 1rem;
-    padding: 18px;
+    padding: 22px;
     display: block;
     max-width: 100%;
-    border-radius: 18px;
+    border-radius: 12px;
   }
   
   /* Zone pour le résultat */
@@ -47,22 +47,32 @@
   
   /* Composant du scanner */
   .camera-frame {
+    position: relative; /* nécessaire pour positionner l’icône à l’intérieur */
     width: 100%;
     max-width: 900px;
-    aspect-ratio: 16 / 9;
+    aspect-ratio: 18 / 16;
     border-radius: 18px 18px 0 0;
-    padding-bottom: px;
     overflow: hidden;
     margin: auto;
   }
   
   .scan-response {
-    margin-top: 18px;
-    padding: 6px;
-    background-color: #b9252500;
-    display: block;
-    float: right;
+    position: absolute;
+    top: 30%;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    background-color: transparent;
+    zoom: 250%;
   }
+  
+  .status-icon {
+    font-size: 60px;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+  }
+  
   .scan-response p {
     margin: 5px 0;
   }
@@ -73,15 +83,7 @@
   }
 
   /* Taille de l'icône au retour de scan*/
-  .status-icon {
-    font-size: 60px; 
-    position: relative;
-    display: flex;
-    right: 90px;
-    gap: 38px;
-    top: 16px;
-    margin: 0px auto;
-  }
+
   
   .success-icon {
     color: green;
@@ -174,6 +176,10 @@
       margin-top: 0.2rem;
       font-weight: bold;
       color: #000;
+    }
+
+    .scan-response{
+      top:20%;
     }
   }
 

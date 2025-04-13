@@ -31,7 +31,6 @@
           <FontAwesomeIcon v-if="scanResponse.status === 'used'" :icon="['fas', 'thumbs-up']" class="warning-icon"/>
           <FontAwesomeIcon v-if="scanResponse.status === 'invalid'" :icon="['fas', 'times-circle']" class="error-icon"/>
         </div>
-        
     </div>
     
   </div>

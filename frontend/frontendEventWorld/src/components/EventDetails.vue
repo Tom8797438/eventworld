@@ -30,7 +30,16 @@
         <p><strong>Places disponibles : </strong> {{ selectedEvent.remaining_places || 'Non spécifié' }}</p>
         <input class="input-modif" type="number" v-model="editedEvent.number_place" />
 
-        <button class="button-save" @click="saveChanges">Enregistrer</button>
+        <div v-for="(price, index) in editedEvent.price_categories" :key="index" class="price-editor">
+        <label>Type : </label>
+        <input class="input-modif" type="text" v-model="price.label" placeholder="ex: Standard" />
+        
+        <label>Prix (€) :</label>
+        <input class="input-modif" type="number" v-model="price.value" placeholder="ex: 10" />
+      </div>
+
+
+        <div class="container-button-save"><button class="button-save" @click="saveChanges">Enregistrer</button></div>
       </div>
 
       <!-- Colonne droite : Réservation -->

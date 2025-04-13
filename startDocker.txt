@@ -1,0 +1,14 @@
+Dans le terminal wsl
+
+source ~/.bashrc
+
+docker ps
+docker ps -a
+
+thomas@thomas:~$ docker start eventworld-frontend
+eventworld-frontend
+thomas@thomas:~$ docker start eventworld-backend
+eventworld-backend
+thomas@thomas:~$ docker start eventworld-db
+eventworld-db
+

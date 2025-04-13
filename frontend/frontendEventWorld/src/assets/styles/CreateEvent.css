@@ -173,28 +173,40 @@ button:hover {
   
   .create-event-container {
   columns: 2;
-  max-width: 280px;
-  margin: 1.5rem auto; /* Centrer avec un espace autour */
-  padding: 1.5rem; /* Ajout d'espace intérieur */
+  max-width: 380px;
+  margin: 2rem auto; /* Centrer avec un espace autour */
+  padding: 2rem; /* Ajout d'espace intérieur */
   background-color: #f9f9f9; /* Couleur de fond douce */
   border: 1px solid #e0e0e0;
   border-radius: 8px; /* Coins arrondis */
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Ombre légère */
+  font-size: 1em;
   }
   
   /* Style des groupes de champs */
   .form-group {
-    margin-bottom: 1.5rem; /* Espacement vertical entre les groupes */
+    margin: 2%; /* Espacement vertical entre les groupes */
+
   }
   
-.form-group input{
-  width: 80px;
-}
+  .form-group input{
+    width: 100px;
+    font-size: 1em;
+  }
 
-
+  .button-add-price{
+    width:100%;
+    position: relative;
+    top: 1em;
+    font-size: 0.8em;
+  }
   .form-group button {
     position: relative;
-    top:28px;
+    top:0px;
   }
   
-  }
+  .button-valid {
+    margin-top: 20px;
+}
+
+}

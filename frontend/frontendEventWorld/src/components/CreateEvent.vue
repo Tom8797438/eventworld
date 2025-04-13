@@ -36,7 +36,7 @@
           </div>
 
           <div class="form-group">
-            <label for="postal_code">Code Postal</label>
+            <label for="postal_code">CP</label>
             <input v-model="form.postal_code" type="number" id="postal_code" required />
           </div>
     
@@ -46,22 +46,22 @@
           </div>
     
           <div class="form-group">
-            <label for="number_place">Places (Qté)</label>
+            <label for="number_place">Nbr Places</label>
             <input v-model="form.number_place" type="number" id="number_place" required />
           </div>
           
           <div class="form-group">
-            <label for="type_event">Type d'événement</label>
+            <label for="type_event">Type</label>
             <select v-model="form.type_event" id="type_event" required>
               <option v-for="(label, value) in types" :key="value" :value="value">
                 {{ label }}
               </option>
             </select>
           </div>
-
-
-          <button @click.prevent="addPrice" class="button-add-price">➕ Ajouter un prix</button>
-
+          <div class="form-group">
+          <label>Prix</label>
+          <button @click.prevent="addPrice" class="button-add-price">➕</button>
+        </div>
 
           <div class="form-group">
             <button type="submit" class="button-valid">Valider</button>

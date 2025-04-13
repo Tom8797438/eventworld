@@ -14,8 +14,8 @@ flex-wrap: wrap;
 gap: 1rem;
 justify-content: center;
 margin-top: 1rem;
-max-height: 600px; /* Fixe une hauteur pour permettre le défilement */
-overflow-y: auto; /* Active le défilement vertical */
+max-height: 750px; /* Fixe une hauteur pour permettre le défilement */
+overflow-y: auto; /*Active le défilement vertical */
 padding: 0rem; /* Ajoute un peu d'espace intérieur */
 border-radius: 8px; /* Coins arrondis */
 }
@@ -77,3 +77,13 @@ border-radius: 8px; /* Coins arrondis */
   transform: scale(1.2);
 }
 
+@media screen and (max-width: 768px)  {
+  .event-title {
+    font-size: 1.05rem;
+  }
+
+  .events-container{
+    max-height: 700px;
+  }
+
+}

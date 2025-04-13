@@ -179,9 +179,6 @@
     background-color: #007bff;
   }
   
-  
-
-  
   .delete-ticket {
     color: #dc3545;
     width: 20%;
@@ -197,78 +194,88 @@
   /* Pour tablettes (768px ou moins) */
   @media (max-width: 768px) {
     .event-card {
-      grid-template-columns: 1fr; /* Une seule colonne */
+      display: flex;
+      flex-direction: column; /* Colonne unique */
       padding: 1rem;
-      max-height: 90vh; 
-      overflow-y: auto
+      height: 100vh;
+      overflow-y: auto;
     }
   
     .event-details {
+      width: 100%;
       padding-right: 0;
+      height: 800px;
+      gap: 12%;
     }
   
     .event-details p {
-      font-size: 0em; /* Réduction de la taille du texte */
+      font-size: 1rem;
+      margin-bottom: 0.5rem;
+    }
+  
+    .input-modif,
+    .textarea {
+      font-size: 0.8rem;
+      max-width: 100%;
+      margin-bottom: 1rem;
+    }
+
+    .textarea{
+      resize : both;
+      min-width : 200px;
+      min-height : 350px;
+      max-width : 200px;
+      max-height : 200px;
     }
   
     .booking-section {
       margin-top: 1rem;
+      width: 100%;
     }
   
     .booking-section h3 {
-      font-size: 1.2rem; /* Réduction de la taille des titres */
+      font-size: 1.1rem;
     }
   
-    .input-group label {
-      font-size: 0.9rem; /* Réduction des étiquettes */
-    }
-  
+    .input-group label,
     .input-group input {
-      font-size: 0.9rem;
-      padding: 0.4rem;
+      font-size: 0.95rem;
     }
   
     button {
-      font-size: 0.9rem;
-      padding: 0.6rem;
+      font-size: 0.95rem;
+      padding: 0.6rem 1rem;
+      margin-top: 0.5rem;
     }
+    
   }
   
-  /* Pour mobiles (480px ou moins) */
   @media (max-width: 480px) {
     .event-card {
-      grid-template-columns: 1fr; /* Une seule colonne */
-      padding: 0.5rem;
+      padding: 0.8rem;
       gap: 1rem;
-      max-height: 90vh; 
-      overflow-y: auto
+      max-height: 80vh;
+      overflow-y: auto;
     }
   
     .event-details p {
-      font-size: 1rem; /* Texte encore plus petit */
+      font-size: 0.9rem;
+    }
+  
+    .input-modif,
+    .textarea {
+      font-size: 0.9rem;
+      width: 100%;
+      margin-bottom: 0.8rem;
     }
   
     .booking-section {
-      margin-top: 1rem;
-      padding: 0.5rem;
-    }
-  
-    .booking-section h3 {
-      font-size: 0.9rem; /* Titres plus petits */
-    }
-  
-    .input-group label {
-      font-size: 0.8rem; /* Étiquettes réduites */
-    }
-  
-    .input-group input {
-      font-size: 0.8rem;
-      padding: 0.3rem;
+      display: none; /* Masque la section réservation */
     }
   
     button {
-      font-size: 0.8rem;
-      padding: 0.5rem;
+      font-size: 0.9rem;
+      padding: 0.5rem 0.8rem;
     }
   }
   

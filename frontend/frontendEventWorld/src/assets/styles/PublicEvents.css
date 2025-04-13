@@ -5,10 +5,28 @@
 }
 
 .search-bar{
-  position: absolute;
+  /* position: flex; */
+  position: fixed;
   display: flex;
-  float: right;
-  left: 12%;
+  gap:12px;
+  top:18%;
+  left: 12vh;
+  align-items: center;
+}
+
+.search-bar button{
+  width: 6%;
+  top:18vh;
+  left: 48vh;
+}
+
+input{
+  flex: 1;
+  padding: 0.78rem;
+  font-size: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  text-align: left;
 }
 
 .container-public-event::before {
@@ -22,10 +40,10 @@
   transform: scaleX(1); /* effet miroir */
   z-index: -1;
   opacity: 0.6;
-  background-size:20%;
+  background-size:40%;
 }
 
-::v-deep(.first-title ){
+::v-deep(.first-title){
   color: #271daf;
   font-size: 4em;
   text-transform:uppercase;
@@ -34,15 +52,18 @@
   position: absolute;
   top:4vh;
   left: 18vh;
+  position: fixed;
 }
 
 .public-container-button{
-  position:absolute;
+  position:fixed;
   right:18px;
   top:12px;
 }
 
-button {
+::v-deep(button) {
+  position: fixed;
+  right: 1%;
   max-width: auto;
   padding: 0.78rem;
   background: linear-gradient(135deg, #6e45e2, #88d3ce);
@@ -58,4 +79,84 @@ button:hover{
   transform: scale(1.05);
 }
 
-  
+@media screen and (max-width: 768px)  {
+  .search-bar {
+    gap: 2%;
+    left:2vh;
+    top:12vh;
+  }
+
+  .search-bar button{
+    left:32vh;
+    top:12vh;
+    width: 25%;
+  }
+
+  .search-bar input {
+    width: 50%;
+    padding: 0.62rem;
+    background-color: #6f45e277;
+    border-color: #6f45e2fd;
+  }
+  .search-bar ::first-line{
+    color: #ffffff;
+  }
+
+  ::v-deep(.event-title){
+  font-size:1.1em ;
+}
+
+  .container-public-event::before {
+    background-size: 40%;
+    background-position: center;
+    opacity: 0.3;
+  }
+
+  ::v-deep(.first-title) {
+    font-size: 1.5em;
+    top: 0vh;
+    left:0vh;
+    text-align: center;
+    width: 100%;
+    text-shadow: none;
+    background-color: #6e45e2;
+    height: 5%;
+  }
+
+  ::v-deep(.events-container) {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 8rem;
+    max-height: 700px;
+    overflow-y: auto;
+    padding: 0rem;
+    border-radius: 8px;
+  }
+
+
+  .public-container-button button{
+    max-width: 25%;
+    left : 68%;
+    top: 4%;
+    margin: 1rem auto;
+    text-align: center;
+  }
+
+  .container-public-event::before{
+    top:-6%;
+    background-size:290%;
+    z-index: 1;
+    background-position: -38vh -2vh;
+    background-repeat: no-repeat;
+    transform: scaleX(-1); /* effet miroir */
+    z-index: -1;
+    opacity: 0.28;
+  }
+  *, *::before, *::after {
+    /* box-sizing: border-box; */
+    margin: 0;
+    font-weight: normal;
+}
+}
