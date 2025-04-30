@@ -1,7 +1,4 @@
 import { defineStore } from 'pinia';
-// import axios from 'axios';
-// import { useEventStore } from '@/stores/eventStore';
-// import { useBookingStore } from '@/stores/bookingStore';
 import { generateTicketPdf } from '@/utils/generateTicketPdf';
 import { purchaseTickets } from "@/utils/api_utils";
 

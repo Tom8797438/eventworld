@@ -13,7 +13,7 @@
 
 <style scoped>
 
-/* Conteneur principal */
+/* Conteneur principal
 .main-container {
   display: flex;
   align-items: center;
@@ -26,6 +26,6 @@
   position: fixed;
   top: 0;
   left: 0;
-}
+} */
 
 </style>

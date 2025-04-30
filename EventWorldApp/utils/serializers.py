@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from EventWorldApp.models import User, Profil, Evenement, Ticketing, TemporaryScanner
+from EventWorldApp.models import User, Profil, Evenement, Ticketing, TemporaryScanner, InvitationNotification
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -36,3 +36,19 @@ class TicketSerializer(serializers.ModelSerializer):
     class Meta:
         model= Ticketing
         fields = "__all__"
+        
+class EvenementForInvitationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Evenement
+        fields = (
+            'id', 'name', 'description', 'date_start', 'date_end',
+            'location', 'address', 'postal_code', 'city',
+            'type_event', 'number_place', 'price_categories'
+        )
+
+class InvitationNotificationSerializer(serializers.ModelSerializer):
+    event = EvenementForInvitationSerializer(read_only=True)
+    
+    class Meta:
+        model = InvitationNotification
+        fields = ('id', 'event', 'email', 'status', 'created_at')

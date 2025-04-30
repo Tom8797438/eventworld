@@ -4,6 +4,7 @@ from .views.LoginView import RegisterView
 from .views.EventView import EventViewSet
 from .views.Ticketing import TicketCreateView
 from .views.ScanView import ScanTicket
+from .views.LinkInvitationView import CreateDraftEventView, GenerateInvitationView, EventInvitationDetailView, get_invitation_by_event_id
 from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
@@ -15,5 +16,11 @@ urlpatterns = [
     path('register/', RegisterView.as_view(), name='register'),
     path('tickets/',TicketCreateView.as_view(), name='tickets'),
     path ('scan_ticket/',ScanTicket.as_view(),name='scan_ticket'),
+    
+    path('events/draft/', CreateDraftEventView.as_view(), name='create-draft-event'),
+    path('invitation/', GenerateInvitationView.as_view(), name='generate-invitation'),
+    
+    path('invitation/<uuid:id>/', EventInvitationDetailView.as_view(), name='event-invitation-detail'),
+    path("invitation/by-event/", get_invitation_by_event_id, name="get-invitation-by-event-id"),
     path('', include(router.urls)),
 ]

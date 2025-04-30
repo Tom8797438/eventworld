@@ -13,7 +13,7 @@ display: flex;
 flex-wrap: wrap;
 gap: 1rem;
 justify-content: center;
-margin-top: 1rem;
+margin-top: 18rem;
 max-height: 750px; /* Fixe une hauteur pour permettre le défilement */
 overflow-y: auto; /*Active le défilement vertical */
 padding: 0rem; /* Ajoute un peu d'espace intérieur */

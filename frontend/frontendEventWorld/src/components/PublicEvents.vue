@@ -39,7 +39,7 @@ import { useRouter } from 'vue-router';
 
 const router = useRouter();
 const goToLogin = () => {
-  router.push('/login');
+  router.push('/FirstPage'); // Redirige vers la page de connexion
 };
 
 const store = usePublicEventStore();
@@ -49,34 +49,6 @@ onMounted(async () => {
 });
 </script>
 
-<!-- <script>
-import EventCard from './EventCard.vue'
-import { useEventStore } from '@/stores/eventStore'
-
-export default {
-  name: 'PublicEvents',
-  components: { EventCard },
-  data() {
-    return {
-      events: [],
-      loading: false,
-      error: '',
-    }
-  },
-  async mounted() {
-    const store = useEventStore()
-    this.loading = true
-    try {
-      await store.fetchEvents()
-      this.events = store.events
-    } catch (e) {
-      this.error = "Erreur de chargement"
-    } finally {
-      this.loading = false
-    }
-  }
-}
-</script> -->
 
 <style scoped>
 @import '@/assets/styles/PublicEvents.css';

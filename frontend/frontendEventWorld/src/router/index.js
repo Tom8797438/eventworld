@@ -7,6 +7,10 @@ import { useAuthStore } from '@/stores/authStore';
 import EventDetails from '@/components/EventDetails.vue';
 import QrCodeScanner from "@/components/QrCodeScanner.vue";
 import Register from '@/components/Register.vue';
+import InvitationEventView from '@/components/InvitationEventView.vue';
+import FirstPageView from '@/views/FirstPageView.vue';
+import CreateEvent from '@/components/CreateEvent.vue';
+
 
 
 const router = createRouter({
@@ -25,9 +29,14 @@ const router = createRouter({
       meta: { requiresAuth: false },
     },    
     {
+      path: '/FirstPage',
+      name: 'FirstPage',
+      component: FirstPageView,
+    },
+    {
       path: '/login',
       name: 'login',
-      component: LoginView, // Page publique de connexion
+      component: LoginView, 
     },
     {
       path: '/menu',
@@ -46,7 +55,11 @@ const router = createRouter({
       component: EventDetails,
       meta: { requiresAuth: true }, // Nécessite une authentification
     },
-    
+    {
+      path: '/event/:id', // Route avec un paramètre dynamique `id`
+      name: 'EventDetails',
+      component: EventDetails,
+    },
     {
       path: "/scan-qr-code",
       name: "QrCodeScanner",
@@ -55,8 +68,19 @@ const router = createRouter({
     },
     {
       path: '/:pathMatch(.*)*', // Redirection par défaut
-      redirect: '/accueil',
+      redirect: '/FirstPage',
     },
+    {
+      path: '/invitation/:id',
+      name: 'InvitationEventView',
+      component: InvitationEventView,
+      meta: { requiresAuth: false },
+    },   
+    {
+      path: '/CreateEvent',
+      name: 'CreateEvent',
+      component: CreateEvent
+    }, 
   ],
 });
 

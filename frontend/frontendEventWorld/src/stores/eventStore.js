@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { fetchEvents, createEvent, updateEvent, deleteEvent } from "@/utils/api_utils";
+import { fetchEvents, createEvent, updateEvent, deleteEvent, generateInvitation, fetchInvitationById } from "@/utils/api_utils";
 
 export const useEventStore = defineStore('eventStore', {
   state: () => ({
@@ -55,10 +55,21 @@ export const useEventStore = defineStore('eventStore', {
     
     async createEvent(eventData) {
       try {
-        //console.log("createEvent eventStore.js : ", eventData);
         this.loading = true;
-        await createEvent(eventData);
-        await this.fetchEvents(); // Rafraîchit la liste après création
+    
+        // Créer l'événement via l'API
+        const createdEvent = await createEvent(eventData);
+    
+        // Option 1 : Si l'API retourne directement l'invitation associée,
+        // par exemple via une propriété "invitation_id", vous pouvez utiliser :
+        if (createdEvent.invitation_id) {
+          const invitation = await fetchInvitationById(createdEvent.invitation_id);
+          this.invitationLink = `${window.location.origin}/invitation/${invitation.id}`;
+        } else {
+        }
+    
+        // Rafraîchir la liste des événements
+        await this.fetchEvents();
       } catch (err) {
         this.error = "Erreur lors de la création de l'événement.";
         throw err;
@@ -107,6 +118,19 @@ export const useEventStore = defineStore('eventStore', {
           console.error("Erreur de suppression :", err);
       } finally {
           this.loading = false;
+      }
+    },
+    async generateInvitation(eventId, email = null) {
+      try {
+        this.loading = true;
+        // Appel à l'API sécurisée pour générer une invitation.
+        const invitation = await generateInvitation(eventId, email);
+        return invitation;
+      } catch (err) {
+        this.error = "Erreur lors de la génération de l'invitation.";
+        throw err;
+      } finally {
+        this.loading = false;
       }
     },
   },

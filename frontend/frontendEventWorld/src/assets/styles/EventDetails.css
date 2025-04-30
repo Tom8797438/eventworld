@@ -31,7 +31,7 @@
   
   .event-details {
     padding-right: 1rem;
-    height: 60vh;
+    height: 80vh;
     columns: 2;
   }
   
@@ -40,7 +40,7 @@
     font-size: 1.2em;
     display: flex;
     max-width: auto;
-    color: #ccc;
+    color: #ddd;
   }
   
   .booking-section {
@@ -48,6 +48,7 @@
     padding: 1rem;
     border-radius: 8px;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    display: none;
   }
   
   .booking-section h3 {
@@ -129,7 +130,7 @@
     max-width: 100%;
     padding: 0.8rem;
     background-color: #4caf50;
-    color: white;
+    color: #fff;
     border: none;
     border-radius: 4px;
     font-size: 1rem;
@@ -142,7 +143,7 @@
     width: auto;
     padding: 0.8rem;
     background-color: #4caf50;
-    color: white;
+    color: #fff;
     border: none;
     border-radius: 4px;
     font-size: 1rem;
@@ -151,6 +152,7 @@
     margin-top: 0.5rem;
     display: flex;
   }
+
   button:hover {
     background-color: #45a049;
   }
@@ -187,6 +189,23 @@
   .delete-ticket:hover {
     color: #9c7579;
     background-color: #0056b3;
+  }
+  
+  .input-modif{
+    color: #0056b3;
+    margin: 4%;
+  }
+
+  .invitation-link-section a{
+    display: inline-block;
+    border:solid 1px;
+    border-radius: 4px;
+    color: #ddd;
+  }
+
+  .link :hover{
+    background-color: #3399ff83;
+    color: #fff;
   }
 
   /* Responsive Design */
@@ -247,7 +266,22 @@
       padding: 0.6rem 1rem;
       margin-top: 0.5rem;
     }
-    
+    .invitation-link-section a{
+      display: inline-block;
+      background-color: #3399ff;
+      color: white;
+      padding: 5px 10px;
+      border-radius: 4px;
+      white-space: nowrap;       /* Empêche le retour à la ligne */
+      overflow-x: auto;          /* Ajoute un scroll horizontal si trop long */
+      max-width: 100%;           /* S'adapte à la largeur du parent */
+      text-decoration: none;
+      font-family: monospace; 
+    }
+    .invitation-link-section a:hover{
+      background-color: #fff;
+      color: #3399ff;
+    }
   }
   
   @media (max-width: 480px) {

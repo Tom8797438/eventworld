@@ -1,7 +1,6 @@
 
 <template>
   <Navbar />
-  <router-view />
 </template>
 
 <script setup>
@@ -12,7 +11,7 @@ import Navbar from '@/components/Navbar.vue';
 <style scoped>
 
 
-@media (min-width: 1024px) {
+/* @media (min-width: 1024px) {
   header {
     display: flex;
     place-items: center;
@@ -37,5 +36,5 @@ import Navbar from '@/components/Navbar.vue';
     padding: 1rem 0;
     margin-top: 1rem;
   }
-}
+} */
 </style>

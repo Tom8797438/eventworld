@@ -11,13 +11,6 @@ export async function login(username, password) {
       });
     }
 
-// export async function refreshToken() {
-//     const response = await axios.post(`${AUTH_API_URL}refresh/`, {
-//         refresh: localStorage.getItem('refresh_token'),
-//     });
-//     localStorage.setItem('access_token', response.data.access);
-// }
-
 // Rafraîchissement du token (si tu en fais un jour, via cookie sécurisé)
 export async function refreshToken() {
     return await axios.post(`${AUTH_API_URL}refresh/`, {}, {
@@ -25,15 +18,9 @@ export async function refreshToken() {
     });
   }
 
-// export function logout() {
-//     localStorage.removeItem('access_token');
-//     localStorage.removeItem('refresh_token');
-// }
-
 // Déconnexion
 export async function logout() {
-    // ❌ On ne touche plus au localStorage
-    // ✅ Optionnel : tu peux faire un appel backend pour effacer le cookie si besoin
+    // Optionnel : faire un appel backend pour effacer le cookie si besoin
     return await axios.post(`${API_URL}logout/`, {}, {
       withCredentials: true
     });

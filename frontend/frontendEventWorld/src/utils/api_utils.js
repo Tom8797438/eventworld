@@ -140,7 +140,6 @@ export default api;
 // ✅ PARTIE SCAN TICKET
 // ===========================
 
-
 // Vérifier le QR Code auprès du backend
 export async function checkTicketStatus(qr_code) {
   try {
@@ -152,3 +151,45 @@ export async function checkTicketStatus(qr_code) {
     throw error;
   }
 }
+
+// ===========================
+// ✅ PARTIE INVITATION
+// ===========================
+
+export async function generateInvitation(eventId, email = null) {
+  try {
+    // Construire le payload en incluant l'event_id et, optionnellement, l'email.
+    const payload = { event_id: eventId };
+    if (email) {
+      payload.email = email;
+    }
+    // Appel à l'API pour créer l'invitation
+    const response = await api.post("invitation/", payload);
+    return response.data;
+  } catch (error) {
+    console.error("Erreur lors de la génération de l'invitation :", error.response?.data || error.message);
+    throw error;
+  }
+}
+
+// ✅ Récupération de l’invitation via son ID
+export async function fetchInvitationById(invitationId) {
+  try {
+    const response = await api.get(`invitation/${invitationId}/`);
+    return response.data;
+  } catch (error) {
+    console.error("Erreur lors de la récupération de l'invitation :", error.response?.data || error.message);
+    throw error;
+  }
+}
+
+export async function fetchInvitationByEventId(eventId) {
+  try {
+    const response = await api.get(`invitation/by-event/?event_id=${eventId}`);
+    return response.data;
+  } catch (error) {
+    console.error("Erreur lors de la récupération de l'invitation via event_id :", error.response?.data || error.message);
+    throw error;
+  }
+}
+

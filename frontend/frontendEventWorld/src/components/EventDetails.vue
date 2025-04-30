@@ -31,16 +31,32 @@
         <input class="input-modif" type="number" v-model="editedEvent.number_place" />
 
         <div v-for="(price, index) in editedEvent.price_categories" :key="index" class="price-editor">
-        <label>Type : </label>
+        <label>Type de prix : </label>
         <input class="input-modif" type="text" v-model="price.label" placeholder="ex: Standard" />
-        
-        <label>Prix (€) :</label>
-        <input class="input-modif" type="number" v-model="price.value" placeholder="ex: 10" />
+          <div>
+            <label><strong>Prix Unitaire (ht €) :</strong></label>
+            <input class="input-modif" type="number" v-model="price.value" placeholder="ex: 10" />
+          </div>
+            <div>
+              <label for="type_event">Type</label>
+              <select class="input-modif" v-model="editedEvent.type_event" id="type_event">
+                <option v-for="(label, value) in types" :key="value" :value="value">
+                  {{ label }}
+                </option>
+              </select>
+            </div>
+        </div>
+
+      <div v-if="invitationLink" class="invitation-link-section">
+        <p><strong>Lien d'invitation :</strong></p>
+        <div class="link"><a :href="invitationLink" target="_blank">{{ invitationLink }}</a></div>
       </div>
 
-
-        <div class="container-button-save"><button class="button-save" @click="saveChanges">Enregistrer</button></div>
+      <div class="container-button-save">
+        <button class="button-save" @click="saveChanges">Enregistrer</button>
       </div>
+      
+    </div>
 
       <!-- Colonne droite : Réservation -->
       <div class="booking-section">
@@ -61,6 +77,7 @@
           <label>Téléphone</label>
           <input type="text" placeholder="Votre N° de téléphone" v-model="phone" />
         </div>
+       
 
         <!-- Si plusieurs types de prix, on affiche une liste déroulante -->
         <h3>Réserver vos places</h3>
@@ -103,13 +120,23 @@
 import { ref, computed, onMounted } from 'vue';
 import { useEventStore } from '@/stores/eventStore';
 import { useTicketStore } from '@/stores/ticketStore';
-import { useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
+import { fetchInvitationByEventId } from '@/utils/api_utils';
 
 export default {
   setup() {
+    const types = {
+      public: "Public",
+      private: "Privé",
+      limited: "Limité"
+    };
+    const route = useRoute();
     const router = useRouter();
     const eventStore = useEventStore();
     const ticketStore = useTicketStore();
+
+    const eventId = route.params.id; // Récupère l'ID de l'événement depuis les paramètres de la route
+    const invitationLink = ref('');
 
     const firstname = ref('');
     const lastname = ref('');
@@ -119,16 +146,15 @@ export default {
     const ticketTypes = ref([]);
     const editedEvent = ref({});
 
-    const selectedEvent = computed(() => {
-      if (!eventStore.selectedEvent) {
-        console.error("Aucun événement sélectionné");
-        router.push('/Menu');
-        return null;
-      }
-      return eventStore.selectedEvent;
-    });
+    const selectedEvent = computed(() => eventStore.events.find(event => event.id === eventId));
 
-    onMounted(() => {
+    onMounted(async () => {
+      if (!selectedEvent.value) {
+        console.error('Événement introuvable');
+        router.push('/Menu'); // Redirige vers le menu si l'événement n'existe pas
+        return;
+      }
+
       if (selectedEvent.value) {
         editedEvent.value = { ...selectedEvent.value };
 
@@ -138,6 +164,17 @@ export default {
             label: key.charAt(0).toUpperCase() + key.slice(1),
             price: value,
           }));
+        }
+
+        try {
+          const invitation = await fetchInvitationByEventId(selectedEvent.value.id);
+          if (invitation && invitation.id) {
+            invitationLink.value = `${window.location.origin}/invitation/${invitation.id}`;
+          } else {
+            console.warn("Aucune invitation trouvée pour cet événement.");
+          }
+        } catch (err) {
+          console.error("Erreur lors de la récupération du lien d'invitation :", err);
         }
       }
     });
@@ -219,12 +256,14 @@ export default {
       phone.value = "";
       selectedTickets.value = [{ type: ticketTypes.value[0]?.name || '', quantity: 1 }];
     };
+
     function truncate(text, maxLength) {
-  if (!text) return '';
-  return text.length > maxLength ? text.slice(0, maxLength) + '…' : text;
-}
+      if (!text) return '';
+      return text.length > maxLength ? text.slice(0, maxLength) + '…' : text;
+    }
 
     return {
+      selectedEvent,
       truncate,
       saveChanges,
       ticketTypes,
@@ -242,11 +281,13 @@ export default {
       removeTicket,
       goBackToEvents,
       resetForm,
+      types,
+      invitationLink,
     };
   },
 };
 </script>
 
 <style scoped>
-@import '@/assets/styles/EventDetails.css';
+/* @import '@/assets/styles/EventDetails.css'; */
 </style>
