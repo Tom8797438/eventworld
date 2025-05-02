@@ -1,221 +1,345 @@
 .card {
-  background: linear-gradient(135deg, #6f45e285, #88d3ceab);
-  border-radius: 18px;
-  padding: 1rem;
+  width: 100vw;
   margin: 0 auto;
-  border: none;
-  box-shadow: none;
-  /* display:block; Éviter un comportement inline par défaut */
-  max-width: 1000px;
-}
-
-.form-container{
- columns: 3;
-}
-
-.title{
-    color:#11379e;
-    text-align: center;
-    margin-bottom: 1rem;
-}
-
-.create-event-container {
-    display: grid;
-    columns: 2;
-    grid-template-columns: repeat(1, 1fr);  /* Adapte automatiquement */
-    gap: 1rem; /* Espacement légèrement plus large pour plus d'aération */
-    max-width: 1100px; /* Légèrement plus large pour éviter un effet trop serré */
-    margin: 0 auto;
-    padding: 2rem;
-    background: linear-gradient(135deg, #6e45e2, #88d3ce);
-    border-radius: 18px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-}
-  
-  /* Style des groupes de champs */
-  .form-group {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    position: relative;
-    bottom: 6px;
-  }
-  
-  .form-group button {
-    position: relative;
-    top: 12px;
-  }
-  
-  /* Style des libellés */
-  label {
-    font-weight: bold;
-    color: #000000;
-    margin-bottom: 0.25rem;
-  }
-  
- /* Style des champs de saisie */
-input,
-select {
-  width: 100%;
-  padding: 0.5rem;
+  padding: 12px;
   border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 1rem;
-  box-sizing: border-box;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  border-radius: 10px;
+  background: #fff;
 }
 
-input:focus,
-select:focus {
-  border-color: #007bff;
-  box-shadow: 0 0 4px rgba(0, 123, 255, 0.5);
-  outline: none;
+.logo{
+  width: 16%;
+  height: 16%;
 }
 
-/* Style du bouton */
-button {
-  max-width: 100%;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  padding: 0.75rem;
-  border-radius: 8px;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.2s ease;
+.title {
+  text-align: center;
+  margin-bottom: 18px;
+  color: #000;
 }
 
-button:hover {
-  background-color: #0056b3;
-  transform: scale(1.02);
-}
-  
-  .button-add-price{
-    width:100%;
-    position: relative;
-    top: 16px;
-  }
-
-  /* Messages de succès et d'erreur */
-  .success {
-    color: #0056b3;
-    font-weight: bold;
-    text-align: center;
-    margin-top: 2.5rem;
-  }
-  
-  .error {
-    color: #dc3545;
-    font-weight: bold;
-    text-align: center;
-    margin-top: 2.5rem;
-  }
-  
-/* Style des champs de prix */
-.price-container {
+.app-title{
   display: flex;
   position: relative;
-  top: 12px;
-  gap: 2rem;
+  left: 35%;
+  font-size: 2em;
+}
+
+.form-container {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.form-group.row.buttons{
+  gap: 20px;
+  justify-content:center;
+}
+
+.form-group {
+  color: #000;
+}
+
+.form-group.row {
+  display: flex;
+  justify-content: space-between; /* Ajoute un espace entre les champs */
+  gap: 20px; /* Ajoute un espacement entre les colonnes */
+}
+
+.form-group-item {
+  flex: 1; /* Chaque champ occupe une largeur égale */
+}
+
+.form-group-item label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.form-group-item input,
+.form-group-item select {
+  width: 100%; /* S'assure que les champs occupent toute la largeur disponible */
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.price-container {
+  display: flex;
   align-items: center;
-  /* text-align: center; */
+  gap: 10px;
+  margin-top:2%
 }
 
-.price-container input {
-  width: 100%;
+.tarification-header {
+  display: flex;
+  align-items: center; /* Aligne verticalement le label et le bouton */
+  justify-content: space-between; /* Ajoute de l'espace entre le label et le bouton */
+  gap: 10px; /* Ajoute un espacement entre le label et le bouton */
 }
 
-.price-container button {
-  position: relative;
-  top: 4px;  /* ajuster la hauteur de la croix de suppression*/
-  right:18px; /* ajuster l'horizontalité de la croix de suppression*/
-  padding: 6px;
-  margin-bottom: 8px;
+.tarification-header label {
+  font-weight: bold;
 }
 
-.button-valid{
-  position: relative;
-  margin-top:30px;
-}
-
-.invitation-section {
-  margin-top: 20px;
-}
-.button-invite {
-  background-color: #007bff;
+.button-add-price,
+.button-remove-price {
+  background: #28a745;
   color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 5px 10px;
+}
+
+.button-valid {
+  background: #218838;
+  color: white;
+  border: none;
+  border-radius: 5px;
   padding: 10px;
+  cursor: pointer;
+  margin-top: 2%;
 }
 
-  /* Responsive */
-  @media (max-width:768px){
-    
-  .create-event-container {
-    columns: 2;
-    max-width: 800px;
-    margin: 2rem auto; /* Centrer avec un espace autour */
-    padding: 2rem; /* Ajout d'espace intérieur */
-    background-color: #f9f9f9; /* Couleur de fond douce */
-    border: 1px solid #e0e0e0;
-    border-radius: 8px; /* Coins arrondis */
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Ombre légère */
-  }
-  
-  /* Style des groupes de champs */
-  .form-group {
-    margin-bottom: 1.5rem; /* Espacement vertical entre les groupes */
-  }
-  
-  .form-group button {
-    position: relative;
-    top:28px;
-  }
-  
-  }
-  
-  @media (max-width:480px){
-    
-  .title{
-    color:#11379e;
-    font-size: 1.5em;
-  }
-  
-  .create-event-container {
-  columns: 2;
-  max-width: 380px;
-  margin: 2rem auto; /* Centrer avec un espace autour */
-  padding: 2rem; /* Ajout d'espace intérieur */
-  background-color: #f9f9f9; /* Couleur de fond douce */
-  border: 1px solid #e0e0e0;
-  border-radius: 8px; /* Coins arrondis */
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Ombre légère */
-  font-size: 1em;
-  }
-  
-  /* Style des groupes de champs */
-  .form-group {
-    margin: 2%; /* Espacement vertical entre les groupes */
+.button-cancel {
+  background: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 10px;
+  cursor: pointer;
+  margin-top: 2%;
+}
 
-  }
-  
-  .form-group input{
-    width: 100px;
-    font-size: 1em;
+.button-cancel:hover {
+  background: #c82333;
+}
+
+.button-cancel-back {
+  background: #218838;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 10px;
+  cursor: pointer;
+  margin-top: 2%;
+}
+
+.button-cancel-back:hover {
+  background: #1e7e34;
+}
+
+.content {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+}
+
+.left-panel .right-panel{
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  background: #f9f9f9;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.left-panel {
+  flex: 2; /* 2/3 de la largeur */
+}
+
+.right-panel {
+  flex: 1; /* 1/3 de la largeur */
+}
+
+.image-upload {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.ticket-preview h3{
+  text-align: center;
+  margin-bottom: 10px;
+  color: #000;
+  background-color: #bdbaba;
+}
+
+.ticket-preview {
+  background: #fff;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%; /* S'assure que le conteneur occupe toute la largeur disponible */
+  max-width: 100%; /* Empêche tout dépassement horizontal */
+  box-sizing: border-box; /* Inclut les bordures et le padding dans la largeur totale */
+ }
+
+.ticket {
+  display: flex;
+  flex-direction: column;
+  align-items: left;
+  gap: 10px;
+  width: 100%; /* S'assure que le contenu occupe toute la largeur disponible */
+  max-width: 100%; /* Empêche tout dépassement horizontal */
+  box-sizing: border-box; /* Inclut les bordures et le padding dans la largeur totale */
+  color: #000;
+}
+
+.ticket-description {
+  font-family: inherit;        /* Préserve la police générale */
+  white-space: pre-wrap;       /* Respecte les retours à la ligne du texte */
+  overflow-wrap: break-word;   /* Coupe les mots longs si nécessaire */
+  word-break: break-word;      /* Force le retour à la ligne même pour les longs mots */
+  max-height: 60%;           /* Limite la hauteur pour éviter l'agrandissement de ticket-preview */
+  overflow-y: auto;            /* Ajoute une barre de défilement verticale si besoin */
+  margin: 0;                   /* Supprime marges non désirées */
+  padding: 0;                  /* Supprime padding non désiré */
+}
+
+
+.ticket img {
+  max-width: 100%; /* Empêche l'image de dépasser la largeur du conteneur */
+  height: auto; /* Maintient les proportions de l'image */
+  border-radius: 10px;
+}
+
+.qr-code img {
+  max-width: 150px; /* Limite la taille du QR code */
+  height: auto; /* Maintient les proportions du QR code */
+  margin: 0 auto; /* Centre le QR code */
+}
+
+.event-description {
+  background: #fff;
+  padding: 15px;
+  border-radius: 4px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%; /* S'assure que le conteneur occupe toute la largeur disponible */
+  max-width: 100%; /* Empêche tout dépassement horizontal */
+  overflow: hidden; /* Cache tout contenu qui dépasse */
+  box-sizing: border-box; /* Inclut les bordures et le padding dans la largeur totale */
+}
+
+.event-description textarea {
+  width: 100%; /* S'adapte à la largeur du conteneur */
+  max-width: 100%; /* Empêche tout dépassement horizontal */
+  height: 100px; /* Limite la hauteur pour éviter les débordements */
+  resize: vertical; /* Permet uniquement un redimensionnement vertical */
+  border: 1px solid #ccc; /* Ajoute une bordure visible */
+  padding: 10px;
+  font-size: 1rem;
+  color: #333;
+  box-sizing: border-box; /* Inclut le padding et la bordure dans la largeur totale */
+}
+
+.event-description textarea:focus {
+  outline: none;
+  border-color: #6200ea;
+  box-shadow: 0 0 5px rgba(98, 0, 234, 0.5);
+  border-radius: 4px;
+}
+
+
+/* Responsive */
+@media (max-width: 768px) {
+
+  .logo{
+    width: 40%;
   }
 
-  .button-add-price{
-    width:100%;
-    position: relative;
-    top: 1em;
+  .app-title{
+    display: block;
+    position: static;
+    float: right;
     font-size: 0.8em;
+    text-align: center;
   }
-  .form-group button {
-    position: relative;
-    top:0px;
-  }
-  
-  .button-valid {
-    margin-top: 20px;
-}
 
+  .profile-picture {
+      display: none;
+  }
+ 
+  .dropdown-menu{
+    display: flex;
+    position: relative;
+    width: 62%;
+    height: auto;
+  }
+
+  .form-group-item input,
+  .form-group-item select {
+    width: 100%; /* S'assure que les champs occupent toute la largeur disponible */
+    padding: 8px;
+    border: 1px solid #747373;
+    border-radius: 6px;
+    box-sizing: border-box;
+  }
+
+  .ticket {
+    width: 100%; /* S'assure que le contenu occupe toute la largeur disponible */
+    max-width: 100%; /* Empêche tout dépassement horizontal */
+  }
+
+  .qr-code img {
+    max-width: 100px; /* Réduit la taille du QR code pour les petits écrans */
+  }
+
+  .event-description {
+    width: 100%; /* S'assure que le conteneur occupe toute la largeur disponible en mobile */
+    max-width: 100%; /* Empêche tout dépassement horizontal */
+  }
+
+  .event-description textarea {
+    width: 100%; /* S'adapte à la largeur du conteneur */
+    max-width: 100%; /* Empêche tout dépassement horizontal */
+    height: 80px; /* Réduit la hauteur pour les petits écrans */
+  }
+  .content {
+    flex-direction: column; /* Les colonnes passent en disposition verticale */
+    width: 100%; /* S'assure que la colonne occupe toute la largeur disponible */
+    max-width: 100%; /* Empêche tout dépassement horizontal */
+    margin: auto; /* Centre la colonne */
+    padding: 10px; /* Réduit le padding pour les petits écrans */
+    box-sizing: border-box; /* Inclut le padding et les bordures dans la largeur totale */
+    /* background: #85a1b4; */
+    background: linear-gradient(135deg,#7ab8fa, #62a9f5, #007bff); /* Dégradé moderne */
+  }
+
+  .right-panel {
+    order: 1; /* Place la colonne droite en dessous de la colonne gauche */
+    padding: 10px;
+    max-height: 100vw; /* Permet à la colonne de s'adapter à la hauteur du contenu */
+    background: #d9d9d9;
+  }
+
+  .ticket-preview {
+    padding: 8px;
+    gap: 8px;
+    background: #cac8c8;
+  }
+
+  .ticket-description{
+    max-height: 62px;
+    overflow-y: auto;
+  }
+
+  .ticket-preview h3 {
+    font-size: 1rem;
+    margin-bottom: 8px;
+    background: none;
+  }
+
+  .left-panel {
+    order: -1; /* Place la colonne gauche en dessous */
+  }
 }

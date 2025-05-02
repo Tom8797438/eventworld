@@ -8,10 +8,10 @@
 
     <!-- Liste des événements -->
     <div v-if="events.length" class="event-list">
-      <div
+      <div class="event-card"
         v-for="event in events"
         :key="event.id"
-        class="event-card"
+        
         @click="goToEventDetails(event)"
       >
         <h3 class="event-title">{{ event.name || 'Nom non spécifié' }}</h3>

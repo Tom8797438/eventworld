@@ -3,7 +3,7 @@
     <div class="event-card" @click.stop>
       <!-- Colonne gauche -->
       <div class="event-details">
-        <h2 class="event-title">{{ selectedEvent?.name || 'Non spécifié' }}</h2>
+        <h2 class="event-title">Votre évènement : {{ selectedEvent?.name || 'Non spécifié' }}</h2>
         <input class="input-modif" type="text" v-model="editedEvent.name" />
 
         <p><strong>Description : </strong> {{ truncate(selectedEvent.description, 10) || 'Non spécifié' }}</p>
@@ -30,6 +30,30 @@
         <p><strong>Places disponibles : </strong> {{ selectedEvent.remaining_places || 'Non spécifié' }}</p>
         <input class="input-modif" type="number" v-model="editedEvent.number_place" />
 
+        <div class="price-editor">
+          <h3>Gestion des prix</h3>
+            <div v-for="(price, index) in editedEvent.price_categories" :key="index" class="price-item">
+              <label>Type de prix :</label>
+                <input
+                  class="input-modif"
+                  type="text"
+                  v-model="price.label"
+                  placeholder="ex: Standard, VIP"
+                />
+              <label>Prix (€) :</label>
+                <input
+                  class="input-modif"
+                  type="number"
+                  v-model="price.value"
+                  placeholder="ex: 10"
+                />
+                <button class="delete-price" @click="removePrice(index)">❌</button>
+                
+             
+            </div>
+            <button class="add-price" @click="addPrice">➕ Ajouter un prix</button>
+</div>
+
         <div v-for="(price, index) in editedEvent.price_categories" :key="index" class="price-editor">
         <label>Type de prix : </label>
         <input class="input-modif" type="text" v-model="price.label" placeholder="ex: Standard" />
@@ -53,6 +77,7 @@
       </div>
 
       <div class="container-button-save">
+        <button class="button-save back" @click="goBackToEvents">Retour</button>
         <button class="button-save" @click="saveChanges">Enregistrer</button>
       </div>
       
@@ -243,7 +268,13 @@ export default {
         alert("Une erreur est survenue lors de la réservation.");
       }
     };
+    const addPrice = () => {
+  editedEvent.value.price_categories.push({ label: '', value: 0 });
+};
 
+const removePrice = (index) => {
+  editedEvent.value.price_categories.splice(index, 1);
+};
     const goBackToEvents = () => {
       eventStore.selectedEvent = null;
       router.push('/Menu');
@@ -263,6 +294,8 @@ export default {
     }
 
     return {
+      addPrice,
+      removePrice,
       selectedEvent,
       truncate,
       saveChanges,
@@ -290,4 +323,248 @@ export default {
 
 <style scoped>
 /* @import '@/assets/styles/EventDetails.css'; */
+/* Conteneur principal */
+.overlay {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 70px); 
+  width: 100vw; /* Occupe toute la largeur de la fenêtre */
+  background: linear-gradient(135deg, #7ab8fa, #62a9f5, #007bff); /* Dégradé moderne */
+  padding: 20px;
+  box-sizing: border-box; /* Inclut les bordures et le padding dans les dimensions */
+  overflow: hidden; /* Empêche le scrolling */
+}
+
+/* Carte principale */
+.event-card {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  width: 100%;
+  height: 100%; /* La carte occupe toute la hauteur disponible */
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+/* Colonne gauche : Détails de l'événement */
+.event-details {
+  flex: 2; /* 2/3 de la largeur */
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  background: #efefef;
+  color:#000;
+
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  overflow-y: auto; /* Ajoute un scrolling interne si nécessaire */
+}
+
+.event-title {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #333;
+  text-align: left;
+}
+
+.input-modif {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+.textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.invitation-link-section {
+  margin-top: 1rem;
+  background: #e6f7ff;
+  padding: 10px;
+  border-radius: 6px;
+}
+
+.invitation-link-section .link a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.container-button-save {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1rem;
+}
+
+
+.add-price,
+.delete-price {
+  display: flex;
+  justify-content:flex-end;
+  margin-top: 1rem;
+  background: #28a745;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 5px 10px;
+  margin-top: 10px;
+  transition: background 0.3s;
+  float: center;
+}
+.button-save{
+  background: #28a745;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s;
+  margin: 0 5px;
+}
+
+.button-save:hover{
+  background: #218838;
+}
+
+.button-save.back {
+  background: #6c757d;
+}
+.button-save.back:hover {
+  background: #5a6268;
+}
+
+/* Colonne droite : Réservation */
+.booking-section {
+  flex: 1; /* 1/3 de la largeur */
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  background: #fff;
+  color: #000;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  overflow-y: auto; /* Ajoute un scrolling interne si nécessaire */
+}
+
+.booking-section h3{
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #333;
+  text-align: left;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+.ticket-selection {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+.quantity-selection {
+  width: 60px;
+  padding: 5px;
+  text-align: center;
+}
+
+.delete-ticket {
+  background: #dc3545;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-left: 10px;
+}
+
+.delete-ticket:hover {
+  background: #c82333;
+}
+
+.add-ticket {
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.add-ticket:hover {
+  background: #0056b3;
+}
+
+.total {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #333;
+  text-align: right;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .event-card {
+    flex-direction: column;
+    height: auto;  /* Permet à la carte de s'adapter au contenu */
+  }
+
+  .event-details,
+  .booking-section {
+    padding: 10px;
+  }
+
+  .input-modif,
+  .ticket-selection,
+  .quantity-selection {
+    font-size: 0.9rem;
+  }
+
+  .button-save,
+  .add-ticket {
+    font-size: 0.9rem;
+    padding: 8px 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .event-title {
+    font-size: 1.5rem;
+  }
+
+  .input-modif,
+  .ticket-selection,
+  .quantity-selection {
+    font-size: 0.8rem;
+  }
+
+  .button-save,
+  .add-ticket {
+    font-size: 0.8rem;
+    padding: 6px 10px;
+  }
+}
 </style>

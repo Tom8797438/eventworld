@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router';
+import BaseLayout from '@/components/LayoutBase.vue';
 import LoginView from '@/views/LoginView.vue';
 import EventpublicView from '@/views/EventpublicView.vue';
 import PublicEventDetail from '@/components/PublicEventDetail.vue';
@@ -12,11 +13,7 @@ import FirstPageView from '@/views/FirstPageView.vue';
 import CreateEvent from '@/components/CreateEvent.vue';
 
 
-
-const router = createRouter({
-  
-  history: createWebHistory(import.meta.env.BASE_URL),
-  routes: [
+const routes = [
     {
       path: '/accueil',
       name: 'EventpublicView',
@@ -42,7 +39,7 @@ const router = createRouter({
       path: '/menu',
       name: 'menu',
       component: MenuView, // Page protégée (Menu principal)
-      meta: { requiresAuth: true }, // Nécessite une authentification
+      meta: { requiresAuth: true, layout: BaseLayout }, // Nécessite une authentification
     },
     {
       path: '/register',
@@ -53,18 +50,19 @@ const router = createRouter({
       path: '/events/details', // Utilise documentId comme paramètre requis
       name: 'EventDetails',
       component: EventDetails,
-      meta: { requiresAuth: true }, // Nécessite une authentification
+      meta: { requiresAuth: true, layout: BaseLayout }, // Nécessite une authentification
     },
     {
       path: '/event/:id', // Route avec un paramètre dynamique `id`
       name: 'EventDetails',
       component: EventDetails,
+      meta: { layout: BaseLayout },
     },
     {
       path: "/scan-qr-code",
       name: "QrCodeScanner",
       component: QrCodeScanner,
-      meta: { requiresAuth: true }, // Nécessite une authentification
+      meta: { requiresAuth: true, layout: BaseLayout }, // Nécessite une authentification
     },
     {
       path: '/:pathMatch(.*)*', // Redirection par défaut
@@ -79,9 +77,13 @@ const router = createRouter({
     {
       path: '/CreateEvent',
       name: 'CreateEvent',
-      component: CreateEvent
+      component: CreateEvent,
+      meta: { layout: BaseLayout },
     }, 
-  ],
+  ];
+  const router = createRouter({
+    history: createWebHistory(),
+    routes,
 });
 
 // Middleware pour gérer les routes protégées

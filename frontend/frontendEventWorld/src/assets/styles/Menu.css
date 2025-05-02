@@ -100,7 +100,7 @@
   padding: 20px;
   overflow-y: auto;
   background-image: none;
-  background-size: cover; /* L'image couvre tout l'écran */
+  background-size: cover /* L'image couvre tout l'écran */
 }
 
 /* Barre de recherche */
@@ -110,13 +110,13 @@
   align-items: center;
   width: 50%;
   position: relative;
-  left: 35%;
+  left: 0;
 }
 
 .search-bar input {
   flex: 1;
-  padding: 10px;
-  margin-right: 10px;
+  padding: 12px;
+  margin-right: 0px;
   border: 1px solid #ccc;
   border-radius: 5px;
 }
@@ -159,7 +159,6 @@
   border: 1px solid #ccc;
   border-radius: 5px;
   padding: 12px;
-  cursor: pointer;
   transition: box-shadow 0.3s ease;
   background: white;
   width: 100%; /* La carte occupe toute la largeur disponible */
@@ -199,13 +198,14 @@
 }
 
 .btn-delete {
-  margin-top: 10px;
-  padding: 5px 10px;
-  background: #dc3545;
+  background: #ff0019;
   color: white;
   border: none;
-  border-radius: 3px;
+  padding: 10px 20px;
+  border-radius: 6px;
   cursor: pointer;
+  transition: background 0.3s;
+  margin: 0 5px;
 }
 
 .btn-delete:hover {
@@ -238,7 +238,7 @@
   flex-direction: row;
   gap: 20px;
   padding: 20px;
-  height: calc(100vh - 60px); /* Hauteur totale moins la barre de navigation */
+  height: calc(100vh - 70px); /* Hauteur totale moins la barre de navigation */
 }
 
 .left-panel {
@@ -276,10 +276,18 @@
 /* responsive */
 @media (max-width: 768px) {
 
-  .logo {
-    width: 20%;
-    height: 20%;
-  }
+.content {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  padding: 20px;
+  height: calc(100vh - 50px); /* Hauteur totale moins la barre de navigation */
+}
+
+.logo {
+  width: 20%;
+  height: 20%;
+}
 
 .profile-picture{
   display: none; /* Masque l'image de profil sur mobile */
@@ -291,14 +299,14 @@
   }
 
   .search-bar {
-    width: 100%;
+    max-width: 100%;
     position: relative;
-    left: 0; /* Aligne la barre de recherche à gauche */
   }
 
   .search-bar input{
     position: relative;
-    left: 6%;
+    left: 0;
+    border: 1px solid #4e4e4e;
   }
 
   .content {

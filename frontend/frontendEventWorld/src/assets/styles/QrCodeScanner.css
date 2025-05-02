@@ -1,187 +1,135 @@
-/* Erreurs */
-.error {
-    font-weight: bold;
-    color: red;
-    text-align: center;
-    margin: 10px 0;
-  }
-  
-  /* Cases à cocher pour les types de codes */
-  .barcode-format-checkbox {
-    margin: 10px;
-    white-space: nowrap;
-    display: inline-block;
-  }
-  
-  /* Conteneur principal */
-  .section-scan {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between; 
-    gap: 1rem;
+/* Conteneur principal */
+.cadre-scan {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center; /* Centre les éléments verticalement */
+  height: calc(100vh - 70px); /* Hauteur totale moins la barre de navigation */
+  width: 100vw; /* Occupe toute la largeur de la fenêtre */
+  background: linear-gradient(135deg,#7ab8fa, #62a9f5, #007bff); /* Dégradé moderne */
+  color: #fff; /* Texte blanc pour le contraste */
+  box-sizing: border-box; /* Inclut les bordures et le padding dans les dimensions */
+  padding: 1rem; /* Ajoute un léger padding pour éviter que le contenu touche les bords */
+  overflow: hidden; /* Empêche le scrolling */
+}
+
+/* Scanner */
+.camera-frame {
+  position: relative;
+  flex-shrink: 0; /* Empêche le redimensionnement du scanner */
+  width: 100%;
+  max-width: 600px; /* Taille maximale pour le scanner */
+  aspect-ratio: 1 / 1; /* Carré parfait */
+  border-radius: 20px 20px 0  0 ;
+  overflow: hidden;
+  background: #000; /* Fond noir pour le scanner */
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Ombre pour un effet flottant */
+}
+
+/* Zone de réponse du scan */
+.scan-response {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+  background-color: rgba(0, 0, 0, 0.6); /* Fond semi-transparent */
+  padding: 10px 20px;
+  border-radius: 10px;
+  text-align: center;
+  zoom: 200%;
+}
+
+/* Section des options */
+.section-scan {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.9); /* Fond blanc semi-transparent */
+  border-radius: 0  0 20px 20px;
+  width: 100%;
+  max-width: 600px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Ombre pour un effet flottant */
+  flex-shrink: 0; /* Empêche le redimensionnement */
+}
+
+/* Sélection de la caméra */
+.selection-camera {
+  font-size: 1rem;
+  padding: 10px;
+  border-radius: 12px;
+  border: 1px solid #ccc;
+  width: 100%;
+  max-width: 300px;
+  background: #f8f9fa; /* Fond gris clair */
+  color: #333; /* Texte sombre */
+}
+
+/* Bouton de réinitialisation */
+.reset-button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background 0.3s, transform 0.2s;
+}
+
+.reset-button:hover {
+  background-color: #0056b3;
+  transform: scale(1.05); /* Légère mise en avant au survol */
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .cadre-scan {
     padding: 1rem;
-    background: linear-gradient(135deg, #8565db, #8fd3ce);
-    border-radius: 0 0 18px 18px;
+    height: calc(100vh - 70px);
+    gap: 0rem; /* Espace réduit entre les éléments */
   }
-  
-  /* Ajuste la sélection de la caméra */
-  .selection-camera {
-    font-size: 1rem;
-    margin-bottom: 1rem;
-    padding: 22px;
-    display: block;
-    max-width: 100%;
-    border-radius: 12px;
-  }
-  
-  /* Zone pour le résultat */
-  .decode-result {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    gap: 2rem;
-    font-size: 1.2rem;
-    margin-top: 1.2rem;
-    font-weight: bold;
-  }
-  
-  /* Composant du scanner */
+
   .camera-frame {
-    position: relative; /* nécessaire pour positionner l’icône à l’intérieur */
-    width: 100%;
-    max-width: 900px;
-    aspect-ratio: 18 / 16;
-    border-radius: 18px 18px 0 0;
-    overflow: hidden;
-    margin: auto;
+    max-width: 400px; /* Réduit la taille du scanner */
   }
-  
+
+  .section-scan {
+    max-width: 400px; /* Réduit la largeur des options */
+  }
+
+  .selection-camera {
+    font-size: 0.9rem;
+    padding: 8px;
+  }
+
   .scan-response {
-    position: absolute;
-    top: 30%;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 10;
-    background-color: transparent;
-    zoom: 250%;
+    zoom: 150%; /* Réduit la taille des icônes */
   }
-  
-  .status-icon {
-    font-size: 60px;
-    display: flex;
-    justify-content: center;
-    gap: 20px;
+}
+
+@media (max-width: 480px) {
+  .cadre-scan{
+    height: calc(100vh - 50px);
   }
-  
-  .scan-response p {
-    margin: 5px 0;
-  }
-  
-  .scan-result {
-    text-align: center;
-    margin-top: 6px;
+  .camera-frame {
+    max-width: 300px; /* Réduit encore la taille pour les très petits écrans */
   }
 
-  /* Taille de l'icône au retour de scan*/
-
-  
-  .success-icon {
-    color: green;
-  }
-  
-  .warning-icon {
-    color: rgb(255, 0, 0);
-    rotate: 180deg ;
-  }
-  
-  .error-icon {
-    color: red;
-  }
-  
-  .reset-button {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    font-size: 16px;
-    cursor: pointer;
-    border-radius: 5px;
-    margin-top: 6px;
-    transition: background 0.3s;
-  }
-  
-  .reset-button:hover {
-    background-color: #0056b3;
+  .section-scan {
+    max-width: 300px;
+    padding: 1rem;
   }
 
-  /* Responsive design */
-  @media (max-width: 768px) {
-    /* Colonne verticale pour les petits écrans */
-    .section-scan {
-      flex-direction: column;
-      align-items: center;
-      max-width: 400px;
-    }
-  
-    .status-icon {
-      font-size: 60px; 
-      position: relative;
-      display: flex;
-      left: 0px;
-      gap: 38px;
-      top: 6px;
-      margin: 0px auto;
-    }
-
-    .selection-camera,
-    .barcode-format-checkbox {
-      font-size: 1.2rem;
-      width: 100%;
-    }
-  
-    qrcode-stream {
-      width: 90%;
-      height: auto;
-    }
-  }
-  
-  @media (max-width: 480px) {
-    /* Très petits écrans */
-    .section-scan {
-      padding: 0.8rem;
-    }
-  
-    .selection-camera {
-      font-size: 1.1rem;
-      margin: 5px;
-      width: 310px;
-      color:#000;
-    }
-  
-    .barcode-format-checkbox {
-      margin: 6px 0;
-      font-size: 1.2rem;
-    }
-  
-    qrcode-stream {
-      width: 100%;
-      max-width: 300px;
-    }
-  
-    .decode-result {
-      display: contents;
-      position: relative;
-      text-align: center;
-      font-size: 1.2rem;
-      margin-top: 0.2rem;
-      font-weight: bold;
-      color: #000;
-    }
-
-    .scan-response{
-      top:20%;
-    }
+  .selection-camera {
+    font-size: 0.8rem;
+    padding: 6px;
   }
 
-  
-  
+  .scan-response {
+    zoom: 120%; /* Réduit davantage la taille des icônes */
+  }
+}

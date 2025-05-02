@@ -1,40 +1,40 @@
 <template>
-  <div class="cadre-scan" :key="componentKey">
-    <div class="camera-frame">
-      <qrcode-stream
-        :constraints="selectedConstraints"
-        :formats="selectedBarcodeFormats"
-        @decode="onDecode"
-        @error="onError"
-        @detect="onDetect"
-        @camera-on="onCameraReady"
-      />
-    </div>
-    <div class="section-scan">
-      <p class="selection-camera">
-        Sélection de la caméra
-        <select v-model="selectedConstraints" class="selection-camera">
-          <option
-            v-for="option in constraintOptions"
-            :key="option.label"
-            :value="option.constraints"
-          >
-            {{ option.label }}
-          </option>
-        </select>
-      </p>
-
-      <!-- Mise à jour : Utilisation de `status` -->
-      <div class="scan-response" v-if="scanResponse">
-        <div class="status-icon" :class="statusClass">
-          <FontAwesomeIcon v-if="scanResponse.status === 'success'" :icon="['fas', 'thumbs-up']" class="success-icon"/>
-          <FontAwesomeIcon v-if="scanResponse.status === 'used'" :icon="['fas', 'thumbs-up']" class="warning-icon"/>
-          <FontAwesomeIcon v-if="scanResponse.status === 'invalid'" :icon="['fas', 'times-circle']" class="error-icon"/>
+      <div class="cadre-scan" :key="componentKey">
+        <div class="camera-frame">
+          <qrcode-stream
+            :constraints="selectedConstraints"
+            :formats="selectedBarcodeFormats"
+            @decode="onDecode"
+            @error="onError"
+            @detect="onDetect"
+            @camera-on="onCameraReady"
+          />
         </div>
-    </div>
-    
-  </div>
-</div>
+        <div class="section-scan">
+          <p class="selection-camera">
+            Sélection de la caméra
+            <select v-model="selectedConstraints" class="selection-camera">
+              <option
+                v-for="option in constraintOptions"
+                :key="option.label"
+                :value="option.constraints"
+              >
+                {{ option.label }}
+              </option>
+            </select>
+          </p>
+
+          <!-- Mise à jour : Utilisation de `status` -->
+          <div class="scan-response" v-if="scanResponse">
+            <div class="status-icon" :class="statusClass">
+              <FontAwesomeIcon v-if="scanResponse.status === 'success'" :icon="['fas', 'thumbs-up']" class="success-icon"/>
+              <FontAwesomeIcon v-if="scanResponse.status === 'used'" :icon="['fas', 'thumbs-up']" class="warning-icon"/>
+              <FontAwesomeIcon v-if="scanResponse.status === 'invalid'" :icon="['fas', 'times-circle']" class="error-icon"/>
+            </div>
+          </div>
+        </div>
+      </div>
+
 </template>
 
 <script>

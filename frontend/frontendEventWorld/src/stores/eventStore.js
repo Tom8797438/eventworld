@@ -20,25 +20,6 @@ export const useEventStore = defineStore('eventStore', {
       this.error = null;
     },
 
-    // async fetchEvents(publicOnly = false) {
-    //   try {
-    //     this.loading = true;
-    //      // Vide les événements précédents avant un nouveau chargement
-    //     this.events = [];
-
-    //     const data = await fetchEvents();
-    //     // this.events = data;
-    //     // 💡 Filtrage selon le mode
-    //     this.events = publicOnly
-    //     ? data.filter(event => event.type_event === 'public')
-    //     : data;
-    //   } catch (err) {
-    //     this.error = "Échec de la récupération des événements.";
-    //   } finally {
-    //     this.loading = false;
-    //   }
-    // },
-
     async fetchEvents() {
       try {
         this.loading = true;

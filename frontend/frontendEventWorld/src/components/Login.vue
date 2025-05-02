@@ -111,7 +111,7 @@ export default {
 /* Titre */
 .title {
   font-size: 2rem;
-  text-transform: uppercase;
+  text-transform:capitalize;
   font-weight: bold;
   color: #333;
   margin-bottom: 20px;
@@ -160,7 +160,7 @@ input::placeholder {
   cursor: pointer;
   background-color: #000;
   color: #fff;
-  text-transform: uppercase;
+  text-transform: capitalize;
 }
 
 .btn-primary:hover {
@@ -175,7 +175,7 @@ input::placeholder {
   cursor: pointer;
   background-color: #007bff;
   color: #fff;
-  text-transform: uppercase;
+  text-transform: capitalize;
 }
 
 .btn-secondary:hover {
