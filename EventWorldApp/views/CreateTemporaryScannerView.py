@@ -4,6 +4,8 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.utils import timezone
 from datetime import timedelta
+from EventWorldApp.models import Evenement, User, TemporaryScanner
+
 
 class CreateTemporaryScannerView(APIView):
     permission_classes = [IsAuthenticated]

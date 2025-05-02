@@ -1,4 +1,6 @@
 from django.urls import path, include
+from django.conf.urls.static import static
+from django.conf import settings
 from .views.authView import ProtectedView, UserProfileView
 from .views.LoginView import RegisterView
 from .views.EventView import EventViewSet
@@ -23,4 +25,4 @@ urlpatterns = [
     path('invitation/<uuid:id>/', EventInvitationDetailView.as_view(), name='event-invitation-detail'),
     path("invitation/by-event/", get_invitation_by_event_id, name="get-invitation-by-event-id"),
     path('', include(router.urls)),
-]
+]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
