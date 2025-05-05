@@ -26,7 +26,17 @@ export const useEventStore = defineStore('eventStore', {
         this.events = []; // Nettoyage avant rechargement
     
         const data = await fetchEvents();
-        this.events = data; // Ne filtre plus, car c’est pour un utilisateur connecté
+    
+        // Transformez price_categories en tableau pour chaque événement
+        this.events = data.map(event => {
+          if (event.price_categories && typeof event.price_categories === 'object' && !Array.isArray(event.price_categories)) {
+            event.price_categories = Object.entries(event.price_categories).map(([label, value]) => ({
+              label,
+              value,
+            }));
+          }
+          return event;
+        });
       } catch (err) {
         this.error = "Échec de la récupération des événements.";
       } finally {
@@ -51,6 +61,7 @@ export const useEventStore = defineStore('eventStore', {
     
         // Rafraîchir la liste des événements
         await this.fetchEvents();
+        console.log("fetchEvents :", fetchEvents);
       } catch (err) {
         this.error = "Erreur lors de la création de l'événement.";
         throw err;

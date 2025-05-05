@@ -12,7 +12,7 @@
   
         <!-- Menu déroulant -->
         <div class="dropdown-menu" :class="{ open: menuOpen }">
-          <a class="sutitle-menu" @click="goToMenu">Menu</a>
+          <a class="sutitle-menu" @click="goToMenu">Accueil</a>
           <a class="sutitle-menu" @click="goToCreat">Nouvel événement</a>
           <a class="sutitle-menu" @click="goToScan">Scanner</a>
           <a class="sutitle-menu" @click="handleLogout">Déconnexion</a>

@@ -202,9 +202,27 @@
 
 /* Responsive Design */
 @media (max-width: 768px) {
+
+  .overlay{
+    height: auto; /* Permet à l'overlay de s'adapter au contenu */
+  }
+
+.booking-section{
+  display: none;
+}
+
   .event-card {
     flex-direction: column;
     height: auto;  /* Permet à la carte de s'adapter au contenu */
+    width: 100vw;
+    padding: 0%;
+
+
+      border-radius: 0px;
+align-self: center;      
+      box-sizing:none;
+      overflow: hidden;
+    
   }
 
   .event-details,
@@ -226,6 +244,10 @@
 }
 
 @media (max-width: 480px) {
+  .booking-section{
+    display: none;
+  }
+  
   .event-title {
     font-size: 1.5rem;
   }

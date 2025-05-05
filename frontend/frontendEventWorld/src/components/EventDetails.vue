@@ -91,7 +91,7 @@
         <h3>Réserver vos places</h3>
 
         <div v-for="(ticket, index) in selectedTickets" :key="index" >
-          <label v-if="ticketTypes.length > 1" >Type de place</label>
+          <label v-if="ticketTypes.length > 1">Type de place</label>
           <select v-if="ticketTypes.length > 1" v-model="ticket.type" class="ticket-selection">
             <option v-for="option in ticketTypes" :key="option.name" :value="option.name">
               {{ option.price.label }} - {{ option.price.value }} € 
@@ -118,7 +118,7 @@
         <button v-if="ticketTypes.length > 1" class="add-ticket" @click="addTicket">➕ Ajouter un autre ticket</button>
 
         <p class="total">Total : {{ total }} €</p>
-        <button @click="bookTickets">Réserver vos places</button>
+        <button @click="bookTickets" class="add-ticket">Réserver vos places</button>
       </div>
     </div>
   </div>
@@ -130,6 +130,9 @@ import { useEventStore } from '@/stores/eventStore';
 import { useTicketStore } from '@/stores/ticketStore';
 import { useRoute, useRouter } from 'vue-router';
 import { fetchInvitationByEventId } from '@/utils/api_utils';
+import { useTicketLogic } from '@/utils/useTicketLogic';
+import { validateNumber } from '@/utils/validators';
+
 
 export default {
   setup() {
@@ -151,50 +154,67 @@ export default {
     const email = ref('');
     const phone = ref('');
 
-    const ticketTypes = ref([]);
+    // const ticketTypes = ref([]);
     const editedEvent = ref({});
 
     const selectedEvent = computed(() => eventStore.events.find(event => event.id === eventId));
-   
+    const { ticketTypes, selectedTickets, total, initializeTickets, addTicket, removeTicket } = useTicketLogic();
+    
     onMounted(async () => {
-      if (!selectedEvent.value) {
+  if (!selectedEvent.value) {
     console.error('Événement introuvable');
-    router.push('/Menu'); // Redirige vers le menu si l'événement n'existe pas
+    router.push('/Menu');
     return;
   }
 
-  if (selectedEvent.value) {
-    editedEvent.value = { ...selectedEvent.value };
+  const rawEvent = { ...selectedEvent.value };
 
-    // Transformez price_categories en tableau si c'est un objet
-    if (!Array.isArray(editedEvent.value.price_categories)) {
-      editedEvent.value.price_categories = Object.entries(editedEvent.value.price_categories || {}).map(([label, value]) => ({
-        label,
-        value,
-      }));
+  // Normalise les prix AVANT de copier dans editedEvent
+  let normalizedPrices = [];
+
+  if (typeof rawEvent.price_categories === 'string') {
+    try {
+      normalizedPrices = JSON.parse(rawEvent.price_categories);
+    } catch (e) {
+      console.error('Erreur de parsing JSON :', e);
+      normalizedPrices = [];
     }
+  } else if (typeof rawEvent.price_categories === 'object' && !Array.isArray(rawEvent.price_categories)) {
+    normalizedPrices = Object.entries(rawEvent.price_categories).map(([label, value]) => ({ label, value }));
+  } else if (Array.isArray(rawEvent.price_categories)) {
+    normalizedPrices = rawEvent.price_categories;
+  }
 
-        try {
-          const invitation = await fetchInvitationByEventId(selectedEvent.value.id);
-          if (invitation && invitation.id) {
-            invitationLink.value = `${window.location.origin}/invitation/${invitation.id}`;
-          } else {
-            console.warn("Aucune invitation trouvée pour cet événement.");
-          }
-        } catch (err) {
-          console.error("Erreur lors de la récupération du lien d'invitation :", err);
-        }
-      }
-    });
+  // Mise à jour de editedEvent avec prix bien formatés
+  editedEvent.value = {
+    ...rawEvent,
+    price_categories: normalizedPrices,
+  };
 
-    const selectedTickets = ref([{ type: ticketTypes.value[0]?.name || '', quantity: 1 }]);
+  // Appel logique tickets (copie défensive si modif plus tard)
+  initializeTickets(JSON.parse(JSON.stringify(normalizedPrices)));
 
-    const total = computed(() => {
-      return selectedTickets.value.reduce((sum, ticket) => {
-        const ticketType = ticketTypes.value.find(t => t.name === ticket.type);
-        return sum + (ticket.quantity * (ticketType?.price.value || 0));
-      }, 0);
-    });
+  try {
+    const invitation = await fetchInvitationByEventId(rawEvent.id);
+    if (invitation && invitation.id) {
+      invitationLink.value = `${window.location.origin}/invitation/${invitation.id}`;
+    } else {
+      console.warn('Aucune invitation trouvée pour cet événement.');
+    }
+  } catch (err) {
+    console.error('Erreur lors de la récupération du lien d\'invitation :', err);
+  }
+});
+
+
+    // const selectedTickets = ref([{ type: ticketTypes.value[0]?.name || '', quantity: 1 }]);
+
+    // const total = computed(() => {
+    //   return selectedTickets.value.reduce((sum, ticket) => {
+    //     const ticketType = ticketTypes.value.find(t => t.name === ticket.type);
+    //     return sum + (ticket.quantity * (ticketType?.price.value || 0));
+    //   }, 0);
+    // });
 
     const saveChanges = async () => {
       try {
@@ -208,15 +228,15 @@ export default {
 
     const calculateTotal = () => {};
 
-    const addTicket = () => {
-      if (ticketTypes.value.length > 1) {
-        selectedTickets.value.push({ type: ticketTypes.value[0].name, quantity: 1 });
-      }
-    };
+    // const addTicket = () => {
+    //   if (ticketTypes.value.length > 1) {
+    //     selectedTickets.value.push({ type: ticketTypes.value[0].name, quantity: 1 });
+    //   }
+    // };
 
-    const removeTicket = (index) => {
-      selectedTickets.value.splice(index, 1);
-    };
+    // const removeTicket = (index) => {
+    //   selectedTickets.value.splice(index, 1);
+    // };
 
     const bookTickets = async () => {
       const eventName = selectedEvent.value.name;
@@ -299,15 +319,16 @@ const removePrice = (index) => {
       resetForm,
       types,
       invitationLink,
+      validateNumber,
     };
   },
-  methods: {
-    validateNumber(event) {
-      const value = event.target.value;
-      // Supprime tout caractère non numérique
-      event.target.value = value.replace(/\D/g, '');
-    },
-  },
+  // methods: {
+  //   validateNumber(event) {
+  //     const value = event.target.value;
+  //     // Supprime tout caractère non numérique
+  //     event.target.value = value.replace(/\D/g, '');
+  //   },
+  // },
 };
 </script>
 
