@@ -41,6 +41,7 @@ class EventViewSet(viewsets.ModelViewSet):
             number_place=data["number_place"],
             type_event=data["type_event"],
             price_categories=data.get("price_categories", {}),
+            picture=data.get("picture"),
             organisator=user,
         )
 

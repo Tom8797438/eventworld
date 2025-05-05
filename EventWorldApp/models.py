@@ -93,6 +93,7 @@ class Evenement(models.Model):
     status = models.CharField(max_length=20, choices=TYPE_STATUS, default="draft")
     # Stocke dynamiquement les prix sous forme de JSON { "standard": 10, "vip": 20, "pmr": 5 }
     price_categories = models.JSONField(default=dict, blank=True, null=True)
+    picture = models.ImageField(upload_to="event_pictures/", blank=True, null=True)
 
     def __str__(self):
         return f"{self.name} ({self.code_evenement})"

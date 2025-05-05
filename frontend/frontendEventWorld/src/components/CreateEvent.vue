@@ -14,29 +14,32 @@
         <!-- Aperçu du billet -->
         <div class="ticket-preview">
           <h3>Aperçu du billet</h3>
-          <div class="ticket">
-            <img :src="imagePreview" alt="Aperçu de l'image" class="ticket-image" v-if="imagePreview" />
-            <p><strong>Titre :</strong> {{ form.name }}</p>
-            <pre class="ticket-description"><strong>Description :</strong> {{ form.description }}</pre>
-            <p><strong>Lieu :</strong> {{ form.location }}</p>
-            <p><strong>Date :</strong> {{ form.date_start }} - {{ form.date_end }}</p>
-            <p><strong>Ville :</strong> {{ form.city }}</p>
-            <p><strong>Type :</strong> {{ form.type_event }}</p>
-            <p><strong>Nombre de places :</strong> {{ form.number_place }}</p>
-            <div class="qr-code">
-              <img :src="qrCodeImage" alt="QR Code" v-if="qrCodeImage" />
+          <div class="ticket-content">
+            
+            <div class="ticket-details">
+              <p><strong>Titre :</strong> {{ form.name }}</p>
+              <pre class="ticket-description"><strong>Description :</strong> {{ form.description }}</pre>
+              <p><strong>Lieu :</strong> {{ form.location }}</p>
+              <p><strong>Date :</strong> {{ form.date_start }} - {{ form.date_end }}</p>
+              <p><strong>Ville :</strong> {{ form.city }}</p>
+              <p><strong>Type :</strong> {{ form.type_event }}</p>
+              <p><strong>Nombre de places :</strong> {{ form.number_place }}</p>
             </div>
+            <!-- Afficher l'image si elle est sélectionnée -->
+            <img :src="imagePreview" alt="Aperçu de l'image" class="ticket-image" v-if="imagePreview" />
           </div>
         </div>
-        <button type="button" class="button-cancel-back" @click="goBackToEvents">Annuler</button>
+        
+        <!-- Boutons Valider et Annuler -->
+        <div class="form-group row buttons">
+            <div><button type="button" class="button-cancel-back" @click="goBackToEvents">Retour</button></div>
+            <div><button type="submit" class="button-valid" @click="createEvent">Valider</button></div>
+            <div><button type="button" class="button-cancel" @click="resetForm">Annuler</button></div>
+        </div>
       </div>
       <!-- Colonne gauche : Formulaire -->
       <div class="left-panel">
-        <!-- Boutons Valider et Annuler -->
-        <div class="form-group row buttons">
-            <div><button type="submit" class="button-valid" @click="createEvent">Valider</button></div>
-            <div><button type="button" class="button-cancel" @click="resetForm">Annuler</button></div>
-          </div>
+        
         <form @submit.prevent="createEvent" class="form-container">
 
           <!-- Titre -->
@@ -56,7 +59,7 @@
               type="text" 
               id="description" 
               required 
-              maxlength="1920"
+              maxlength="1020"
               />
             </div>    
           </div>
@@ -239,6 +242,8 @@ export default {
       error: null,
       createdEventId: null,
       invitationLink: '',
+      selectedImage: null, 
+      imagePreview: null,  
     };
   },
   watch: {
@@ -278,24 +283,69 @@ export default {
           console.error('Erreur lors de la génération de l’invitation:', err);
         }
       },
+
+      handleImageUpload(event) {
+  const file = event.target.files[0];
+  if (file && file.type.startsWith('image/')) {
+    this.selectedImage = file;
+    this.imagePreview = URL.createObjectURL(file); // Génère une URL temporaire pour l'aperçu
+    console.log('Image sélectionnée :', file);
+  } else {
+    console.error('Le fichier sélectionné n\'est pas une image.');
+    this.selectedImage = null;
+    this.imagePreview = null; // Réinitialise l'aperçu si le fichier n'est pas valide
+  }
+},
+
+    // async createEvent() {
+    //   const eventStore = useEventStore();
+    //   try {
+    //     await eventStore.createEvent(this.form);
+    //     this.success = true;
+    //     this.error = null;
+    //     // this.createdEventId = eventStore.events[0]?.id;
+    //     confirm(
+    //   `Événement créé avec succès !\n\nCopiez le lien d'invitation :\n${this.invitationLink}`
+    // );
+    //     this.resetForm();
+    //   } catch (err) {
+    //     this.success = false;
+    //     this.error = "Erreur lors de la création de l'évènement.";
+    //   }
+    // },
     async createEvent() {
-      const eventStore = useEventStore();
-      try {
-        await eventStore.createEvent(this.form);
-        this.success = true;
-        this.error = null;
-        // this.createdEventId = eventStore.events[0]?.id;
-        confirm(
-      `Événement créé avec succès !\n\nCopiez le lien d'invitation :\n${this.invitationLink}`
-    );
-        this.resetForm();
-      } catch (err) {
-        this.success = false;
-        this.error = "Erreur lors de la création de l'évènement.";
+    const eventStore = useEventStore();
+    try {
+      // Préparer les données sous forme de FormData
+      const formData = new FormData();
+      for (const key in this.form) {
+        if (Array.isArray(this.form[key])) {
+          formData.append(key, JSON.stringify(this.form[key])); // Sérialiser les tableaux
+        } else {
+          formData.append(key, this.form[key]);
+        }
       }
-    },
+      if (this.selectedImage) {
+        formData.append('picture', this.selectedImage); // Ajouter l'image au FormData
+      }
 
+      // Vérifiez le contenu du FormData
+        for (let pair of formData.entries()) {
+          console.log(pair[0] + ':', pair[1]);
+      }
 
+      // Appeler le store pour créer l'événement
+      await eventStore.createEvent(formData);
+      this.success = true;
+      this.error = null;
+      confirm('Événement créé avec succès !');
+      this.resetForm();
+    } catch (err) {
+      this.success = false;
+      this.error = 'Erreur lors de la création de l\'évènement.';
+    }
+  },
+// fonction à modifier ci dessus
 
     resetForm() {
       this.form = {

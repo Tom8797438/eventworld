@@ -1,315 +1,244 @@
-.event-title{
-    font-size: 2em;
-    margin-top: 6px;
-  }
-  
-  .overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); /* Fond semi-transparent */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000; /* S'assurer que l'overlay est au-dessus */
-  }
-  
-  .event-card {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr); /* La première colonne est plus large */
-    gap: 2rem; /* Espace entre les colonnes */
-    background: linear-gradient(135deg, #8565db, #8fd3ce);
-    border-radius: 8px;
-    padding: 1.5rem;
-    max-width: 1000px;
-    margin: 0 auto;
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
-    z-index: 1001;
-  }
-  
-  .event-details {
-    padding-right: 1rem;
-    height: 80vh;
-    columns: 2;
-  }
-  
-  .event-details p {
-    margin-bottom: 0.5rem;
-    font-size: 1.2em;
-    display: flex;
-    max-width: auto;
-    color: #ddd;
-  }
-  
-  .booking-section {
-    background: linear-gradient(135deg, #88d3ce, #6e45e2);
-    padding: 1rem;
-    border-radius: 8px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-    display: none;
-  }
-  
-  .booking-section h3 {
-    margin-bottom: 1rem;
-    font-size: 1.2rem;
-    color: #11379e;
-  }
-  
-  .ticket-selection{
-    padding: 0.5rem;
-    font-size: 1.1rem;
-    border-radius: 4px;
-    text-transform: uppercase;
-    margin-left: 4px;
-    width: 100%;
-  }
-
-  .textarea{
-    resize : both;
-    min-width : 200px;
-    min-height : 250px;
-    max-width : 200px;
-    max-height : 200px;
-  }
-
-  .input-modif{
-    padding: 4px;
-    border-radius: 4px;
-    font-size: 1rem;
-    border: 1px solid #ddd;
-  }
-
-  .input-group.quantity-selection{
-    padding: 0.5rem;
-    font-size: 1.1rem;
-    border-radius: 4px;
-    text-transform: uppercase;
-    margin-left: 4px;
-    width: 100%;
+/* Conteneur principal */
+.overlay {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 70px); 
+  width: 100vw; /* Occupe toute la largeur de la fenêtre */
+  background: linear-gradient(135deg, #7ab8fa, #62a9f5, #007bff); /* Dégradé moderne */
+  padding: 20px;
+  box-sizing: border-box; /* Inclut les bordures et le padding dans les dimensions */
+  overflow: hidden; /* Empêche le scrolling */
 }
 
-  .ticket-selection label {
-    flex: 2;
-    font-size: 1rem;
-    margin-right: 6px;
+/* Carte principale */
+.event-card {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  width: 100%;
+  height: 100%; /* La carte occupe toute la hauteur disponible */
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+/* Colonne gauche : Détails de l'événement */
+.event-details {
+  flex: 2; /* 2/3 de la largeur */
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  background: #efefef;
+  color:#000;
+
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  overflow-y: auto; /* Ajoute un scrolling interne si nécessaire */
+}
+
+.event-title {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #333;
+  text-align: left;
+}
+
+.input-modif {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+.textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.invitation-link-section {
+  margin-top: 1rem;
+  background: #e6f7ff;
+  padding: 10px;
+  border-radius: 6px;
+}
+
+.invitation-link-section .link a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.container-button-save {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1rem;
+}
+
+
+.add-price,
+.delete-price {
+  display: flex;
+  justify-content:flex-end;
+  margin-top: 1rem;
+  background: #28a745;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 5px 10px;
+  margin-top: 10px;
+  transition: background 0.3s;
+  float: center;
+}
+.button-save{
+  background: #28a745;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s;
+  margin: 0 5px;
+}
+
+.button-save:hover{
+  background: #218838;
+}
+
+.button-save.back {
+  background: #6c757d;
+}
+.button-save.back:hover {
+  background: #5a6268;
+}
+
+/* Colonne droite : Réservation */
+.booking-section {
+  flex: 1; /* 1/3 de la largeur */
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  background: #fff;
+  color: #000;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  overflow-y: auto; /* Ajoute un scrolling interne si nécessaire */
+}
+
+.booking-section h3{
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #333;
+  text-align: left;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+.ticket-selection {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+.quantity-selection {
+  width: 60px;
+  padding: 5px;
+  text-align: center;
+}
+
+.delete-ticket {
+  background: #dc3545;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-left: 10px;
+}
+
+.delete-ticket:hover {
+  background: #c82333;
+}
+
+.add-ticket {
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.add-ticket:hover {
+  background: #0056b3;
+}
+
+.total {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #333;
+  text-align: right;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .event-card {
+    flex-direction: column;
+    height: auto;  /* Permet à la carte de s'adapter au contenu */
   }
 
-  .input-group {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 0.4rem;
-  }
-  
-  .input-group label {
-    flex: 2;
-    font-size: 1rem;
-    margin-right: 6px;
-  }
-  
-  .input-group input {
-    flex: 1;
-    padding: 0.5rem;
-    font-size: 1rem;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    text-align: center;
-  }
-  
-  .total {
-    font-size: 1.4rem;
-    font-weight: bold;
-    color: #4caf50;
-    text-align: right;
-    margin-top: 1rem;
-  }
-  
-  button {
-    max-width: 100%;
-    padding: 0.8rem;
-    background-color: #4caf50;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    font-size: 1rem;
-    font-weight: bold;
-    cursor: pointer;
-    margin-top: 0.5rem;
-  }
-  
-  .button-save {
-    width: auto;
-    padding: 0.8rem;
-    background-color: #4caf50;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    font-size: 1rem;
-    font-weight: bold;
-    cursor: pointer;
-    margin-top: 0.5rem;
-    display: flex;
+  .event-details,
+  .booking-section {
+    padding: 10px;
   }
 
-  button:hover {
-    background-color: #45a049;
+  .input-modif,
+  .ticket-selection,
+  .quantity-selection {
+    font-size: 0.9rem;
   }
 
+  .button-save,
   .add-ticket {
-    background-color: transparent;
-    border: none;
-    cursor: pointer;
-    font-size: 1.2em;
-    margin-left: 5px;
-    color: #fff;
-    background-color: #4caf50;
+    font-size: 0.9rem;
+    padding: 8px 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .event-title {
+    font-size: 1.5rem;
   }
 
-  .add-ticket:hover {
-    background-color: #45a049;
-  }
-  
-  .delete-ticket {
-    background-color: transparent;
-    border: none;
-    cursor: pointer;
-    font-size: 0.81em;
-    margin-left: 5px;
-    margin-top: 5px;
-    background-color: #007bff;
-  }
-  
-  .delete-ticket {
-    color: #dc3545;
-    width: 20%;
-  }
-  
-  .delete-ticket:hover {
-    color: #9c7579;
-    background-color: #0056b3;
-  }
-  
-  .input-modif{
-    color: #0056b3;
-    margin: 4%;
+  .input-modif,
+  .ticket-selection,
+  .quantity-selection {
+    font-size: 0.8rem;
   }
 
-  .invitation-link-section a{
-    display: inline-block;
-    border:solid 1px;
-    border-radius: 4px;
-    color: #ddd;
+  .button-save,
+  .add-ticket {
+    font-size: 0.8rem;
+    padding: 6px 10px;
   }
-
-  .link :hover{
-    background-color: #3399ff83;
-    color: #fff;
-  }
-
-  /* Responsive Design */
-  
-  /* Pour tablettes (768px ou moins) */
-  @media (max-width: 768px) {
-    .event-card {
-      display: flex;
-      flex-direction: column; /* Colonne unique */
-      padding: 1rem;
-      height: 100vh;
-      overflow-y: auto;
-    }
-  
-    .event-details {
-      width: 100%;
-      padding-right: 0;
-      height: 800px;
-      gap: 12%;
-    }
-  
-    .event-details p {
-      font-size: 1rem;
-      margin-bottom: 0.5rem;
-    }
-  
-    .input-modif,
-    .textarea {
-      font-size: 0.8rem;
-      max-width: 100%;
-      margin-bottom: 1rem;
-    }
-
-    .textarea{
-      resize : both;
-      min-width : 200px;
-      min-height : 350px;
-      max-width : 200px;
-      max-height : 200px;
-    }
-  
-    .booking-section {
-      margin-top: 1rem;
-      width: 100%;
-    }
-  
-    .booking-section h3 {
-      font-size: 1.1rem;
-    }
-  
-    .input-group label,
-    .input-group input {
-      font-size: 0.95rem;
-    }
-  
-    button {
-      font-size: 0.95rem;
-      padding: 0.6rem 1rem;
-      margin-top: 0.5rem;
-    }
-    .invitation-link-section a{
-      display: inline-block;
-      background-color: #3399ff;
-      color: white;
-      padding: 5px 10px;
-      border-radius: 4px;
-      white-space: nowrap;       /* Empêche le retour à la ligne */
-      overflow-x: auto;          /* Ajoute un scroll horizontal si trop long */
-      max-width: 100%;           /* S'adapte à la largeur du parent */
-      text-decoration: none;
-      font-family: monospace; 
-    }
-    .invitation-link-section a:hover{
-      background-color: #fff;
-      color: #3399ff;
-    }
-  }
-  
-  @media (max-width: 480px) {
-    .event-card {
-      padding: 0.8rem;
-      gap: 1rem;
-      max-height: 80vh;
-      overflow-y: auto;
-    }
-  
-    .event-details p {
-      font-size: 0.9rem;
-    }
-  
-    .input-modif,
-    .textarea {
-      font-size: 0.9rem;
-      width: 100%;
-      margin-bottom: 0.8rem;
-    }
-  
-    .booking-section {
-      display: none; /* Masque la section réservation */
-    }
-  
-    button {
-      font-size: 0.9rem;
-      padding: 0.5rem 0.8rem;
-    }
-  }
-  
+}

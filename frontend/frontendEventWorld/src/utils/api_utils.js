@@ -86,18 +86,34 @@ export async function fetchEvents() {
 export async function createEvent(eventData) {
   try {
     //console.log("Données envoyées:", eventData);
-    const response = await api.post("events/", eventData);
+    const response = await api.post("events/", eventData, {
+      headers: {
+        'Content-Type': 'multipart/form-data', // Indique que les données incluent un fichier
+      },
+  });
     return response.data;
   } catch (error) {
     console.error("Erreur création d'événement :", error.response?.data || error.message);
     throw error;
   }
 }
+//******
+// élément à supprimer
+// {
+//   headers: {
+//     'Content-Type': 'multipart/form-data',
+//   },
+// });        ne pas oublier de laisser )
+//*******
 
 // Modifier un événement
 export async function updateEvent(eventId, updatedData) {
   try{
-    const response = await api.put(`events/${eventId}/`, updatedData);
+    const response = await api.put(`events/${eventId}/`, updatedData, {
+      headers: {
+        'Content-Type': 'multipart/form-data', // Indique que les données incluent un fichier
+      },
+  });
     return response.data;
   } catch (error) {
     console.error("Erreur modification d'événement :", error.response?.data || error.message);
