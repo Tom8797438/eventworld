@@ -32,7 +32,7 @@
   
   <script>
   import { useRoute, useRouter } from 'vue-router';
-  import axios from 'axios';
+  import { resetPasswordConfirm } from '@/services/authService';
   
   export default {
     data() {
@@ -54,18 +54,15 @@
           this.errorMessage = "Les mots de passe ne correspondent pas.";
           return;
         }
-  
         try {
-          const { uid, token } = this.route.params;
-          const response = await axios.post('http://127.0.0.1:8000/api/reset-password-confirm/', {
-            uid,
-            token,
-            password: this.password,
-          });
-          console.log("Réponse brute:", response);
-          this.successMessage = "Mot de passe réinitialisé avec succès.";
-          this.errorMessage = null;
-  
+        await resetPasswordConfirm(
+            this.route.params.uid,
+            this.route.params.token,
+            this.password,
+            );
+        this.successMessage = "Mot de passe réinitialisé avec succès.";
+        this.errorMessage = null;
+
           setTimeout(() => {
             this.router.push('/Login');
           }, 2000);

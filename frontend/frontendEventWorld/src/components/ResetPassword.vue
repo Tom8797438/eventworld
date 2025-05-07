@@ -29,6 +29,7 @@
   
   <script>
   import { useAuthStore } from '@/stores/authStore';
+  import { requestPasswordReset } from '@/services/authService';
   import { useRouter } from 'vue-router';
   
   export default {
@@ -47,52 +48,19 @@
     },
     methods: {
       async handleReset() {
-  console.log('handleReset called with identifier:', this.identifier);
+      try {
+        await requestPasswordReset(this.identifier);
+        this.successMessage = "Lien envoyé.";
+        this.errorMessage = null;
+      } catch (err) {
+        this.errorMessage = err.message || "Erreur.";
+        this.successMessage = null;
+      }
+    },
+    goback() {
+      this.router.push('/FirstPage');
+    },
 
-  try {
-    const response = await fetch("http://127.0.0.1:8000/api/reset-password/", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",
-      body: JSON.stringify({ email: this.identifier }),
-    });
-
-    const data = await response.json();
-    console.log("Réponse brute:", response.status, data);
-
-    if (response.ok) {
-      this.successMessage = "Lien envoyé.";
-      // this.router.push('/reset-password-confirm'); Redirection vers la page de confirmation
-    } else {
-      this.errorMessage = data?.error || "Erreur.";
-      this.successMessage = null;
-    }
-  } catch (err) {
-    console.error("Erreur réseau:", err);
-    this.errorMessage = "Erreur réseau.";
-    this.successMessage = null;
-  }
-},
-
-    
-      // async handleReset() {
-    //   try {
-    //     console.log('handleReset called with identifier:', this.identifier);
-    //     await this.authStore.requestPasswordResetStore(this.identifier);
-    //     this.successMessage = 'Un lien de réinitialisation vous a été envoyé.';
-    //     this.errorMessage = null;
-    //   } catch (error) {
-    //     this.errorMessage = "Adresse e-mail inconnue ou erreur serveur.";
-    //     this.successMessage = null;
-    //     // Toast (optionnel avec alert simple ici)
-    //     alert(this.successMessage);
-
-    //     // Redirection 3 secondes après
-    //     setTimeout(() => {
-    //       this.router.push('/FirstPage');
-    //     }, 3000);
-    //   }
-    // },
       goback() {
         this.router.push('/FirstPage'); // Redirige vers la page d'accueil
       },

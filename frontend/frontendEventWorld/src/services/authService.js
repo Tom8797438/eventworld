@@ -41,22 +41,38 @@ export async function registerUser(userData) {
     }
 } 
 
-// Reset password
+// Reset password 
 export async function requestPasswordReset(email) {
   try {
-    console.log("Demande de réinitialisation du mot de passe pour l'email :", email);
-    const response = await axios.post(
-      `${API_URL}reset-password/`,
+    const response = await axios.post(`${API_URL}reset-password/`, 
       { email },
       {
-        withCredentials: true, // ✅ très important ici
-        headers: { "Content-Type": "application/json" }
+        headers: { "Content-Type": "application/json" },
+        withCredentials: true  // important si tu gères les cookies
       }
     );
     console.log("Réponse du backend:", response.data);
     return response.data;
   } catch (error) {
-    console.error("Erreur lors de la demande de réinitialisation du mot de passe :", error.response?.data || error.message);
+    console.error("Erreur de reset password (authService.js):", error.response?.data || error.message);
+    throw error;
+  }
+}
+
+
+export async function resetPasswordConfirm(uid, token, password) {
+  try {
+    const response = await axios.post(`${API_URL}reset-password-confirm/`,
+      { uid, token, password },
+      {
+        headers: { "Content-Type": "application/json" },
+        withCredentials: true ,
+      }
+    );
+    console.log("Réponse du backend:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Erreur reset-password-confirm:", error.response?.data || error.message);
     throw error;
   }
 }

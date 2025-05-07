@@ -8,7 +8,6 @@
 import { defineStore } from "pinia";
 import api from "@/services/axiosInstance";
 import Cookies from "js-cookie";
-import { requestPasswordReset } from '@/services/authService';
 
 export const useAuthStore = defineStore("authStore", {
   state: () => ({
@@ -53,33 +52,22 @@ export const useAuthStore = defineStore("authStore", {
             }
           },
 
-    async logoutUser(router) {
-      Cookies.remove("authToken");
-      Cookies.remove("refreshToken");
-      this.token = null;
-      this.user = null;
-      delete api.defaults.headers.common["Authorization"];
-      if (router) router.push("/login");
-    },
+        async logoutUser(router) {
+          Cookies.remove("authToken");
+          Cookies.remove("refreshToken");
+          this.token = null;
+          this.user = null;
+          delete api.defaults.headers.common["Authorization"];
+          if (router) router.push("/login");
+        },
 
-    async autoLogin() {
-      try {
-        const response = await api.get("user/");
-        this.user = response.data;
-      } catch (err) {
-        this.logoutUser();
-      }
-    },
-    
-  },
-    async requestPasswordResetStore(email) {
-      try {
-        console.log("Demande de réinitialisation du mot de passe pour l'email :", email);
-        await requestPasswordReset(email); // on utilise le service
-        this.error = null;
-      } catch (err) {
-        this.error = "Erreur lors de la demande de réinitialisation du mot de passe.";
-        throw err;
-      }
-    }
-});
+        async autoLogin() {
+          try {
+            const response = await api.get("user/");
+            this.user = response.data;
+          } catch (err) {
+            this.logoutUser();
+          }
+        },
+      },
+    });
