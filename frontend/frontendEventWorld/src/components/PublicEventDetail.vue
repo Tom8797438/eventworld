@@ -19,19 +19,19 @@
           <h3>Vos coordonnées</h3>
           <div class="input-group">
             <label>Nom</label>
-            <input type="text" placeholder="Votre nom" v-model="firstname" />
+            <input type="text" placeholder="Votre nom" v-model="firstname" required @input="validateTextOnly"/>
           </div>
           <div class="input-group">
             <label>Prénom</label>
-            <input type="text" placeholder="Votre prénom" v-model="lastname" />
+            <input type="text" placeholder="Votre prénom" v-model="lastname" required @input="validateTextOnly"/>
           </div>
           <div class="input-group">
             <label>E-mail</label>
-            <input type="email" placeholder="Votre e-mail" v-model="email" />
+            <input type="email" placeholder="Votre e-mail" v-model="email" required @input="isValidEmail"/>
           </div>
           <div class="input-group">
             <label>Téléphone</label>
-            <input type="text" placeholder="Votre N° de téléphone" v-model="phone" />
+            <input type="text" placeholder="Votre N° de téléphone" v-model="phone" required @input="validateNumber"/>
           </div>
   
           <!-- Si plusieurs types de prix, on affiche une liste déroulante -->
@@ -69,6 +69,7 @@
   import { usePublicEventStore } from '@/stores/publicEventStore';
   import { useTicketStore } from '@/stores/ticketStore';
   import { useRouter } from 'vue-router';
+  import { validateNumber, validateTextOnly,isValidEmail } from '@/utils/validators';
   
   export default {
     setup() {
@@ -184,6 +185,9 @@
         removeTicket,
         goBackToEvents,
         resetForm,
+        validateNumber,
+        validateTextOnly,
+        isValidEmail,
       };
     },
   };

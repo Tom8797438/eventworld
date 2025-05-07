@@ -19,11 +19,11 @@
         <h3>Vos coordonnées</h3>
         <div class="input-group">
           <label>Nom</label>
-          <input type="text" placeholder="Votre nom" v-model="firstname" @input="validateTextOnly"/>
+          <input type="text" placeholder="Votre nom" v-model="firstname" required @input="validateTextOnly"/>
         </div>
         <div class="input-group">
           <label>Prénom</label>
-          <input type="text" placeholder="Votre prénom" v-model="lastname" @input="validateTextOnly"/>
+          <input type="text" placeholder="Votre prénom" v-model="lastname" required @input="validateTextOnly"/>
         </div>
         <div class="input-group">
           <label>E-mail</label>
@@ -178,16 +178,16 @@ export default {
     };
   });
 
-  try {
-    await ticketStore.createTickets(event.value.id, ticketsToCreate);
-    alert("Réservation réussie !");
-    resetForm();
-    goBackToAccueil();
-  } catch (e) {
-    console.error("Erreur de réservation :", e);
-    alert("Une erreur est survenue.");
-  }
-};
+    try {
+      await ticketStore.createTickets(event.value.id, ticketsToCreate);
+      alert("Réservation réussie !");
+      resetForm();
+      goBackToAccueil();
+    } catch (e) {
+      console.error("Erreur de réservation :", e);
+      alert("Une erreur est survenue.");
+    }
+  };
 
 
     const resetForm = () => {

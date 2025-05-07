@@ -79,7 +79,9 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:8000",
 ]
 
-CORS_ORIGIN_ALLOW_ALL = True
+# CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOW_CREDENTIALS = True
+
 #https://stackoverflow.com/questions/74833288/django-vue3-access-control-allow-origin-is-not-allowed
 CORS_ALLOW_METHODS = [
     "GET",
@@ -94,11 +96,16 @@ CORS_ALLOW_METHODS = [
 # (ex: Content-Type, Authorization, Content-Disposition).
 # Sans ça, Django rejetterait les requêtes contenant ces en-têtes.
 
-    # CORS_ALLOW_HEADERS = [
-    #     "content-type",
-    #     "authorization",
-    #     "content-disposition",  # Permet d'envoyer ce header au frontend
-    # ]
+CORS_ALLOW_HEADERS = [
+    "content-type",
+    "authorization",
+    "content-disposition",  # Permet d'envoyer ce header au frontend
+    "accept",
+    "origin",
+    "user-agent",
+    "x-csrftoken",
+    "x-requested-with",
+]
 
 # CORS_EXPOSE_HEADERS -> Contrôle les en-têtes que Django peut renvoyer et qui seront visibles par le frontend.
 # Par défaut, les navigateurs bloquent l’accès aux en-têtes sensibles pour des raisons de sécurité.
@@ -199,3 +206,7 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+DEFAULT_FROM_EMAIL = 'no-reply@tonsite.com'
+FRONTEND_URL = 'http://localhost:5173'  # ou le domaine réel de ton frontend
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # pour tester dans la console

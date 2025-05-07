@@ -50,7 +50,7 @@
 
       <div class="form-group">
         <label for="name_contact">Nom du contact</label>
-        <input v-model="profil.name_contact" type="text" id="name_contact" />
+        <input v-model="profil.name_contact" type="text" id="name_contact" required @input="validateTextOnly"/>
       </div>
 
       <div class="form-group">
@@ -67,7 +67,7 @@
 
       <div class="form-group">
         <label for="city">Ville</label>
-        <input v-model="profil.city" type="text" id="city" />
+        <input v-model="profil.city" type="text" id="city" required @input="validateTextOnly"/>
       </div>
 
       <!-- Ligne 3 -->
@@ -78,7 +78,7 @@
 
       <div class="form-group">
         <label for="surname_contact">Prénom du contact</label>
-        <input v-model="profil.surname_contact" type="text" id="surname_contact" />
+        <input v-model="profil.surname_contact" type="text" id="surname_contact" required @input="validateTextOnly"/>
       </div>
 
       <div class="form-group">
@@ -121,6 +121,7 @@
 <script>
 import { registerUser } from '@/services/authService';
 import { useRouter } from 'vue-router';
+import { validateNumber, validateTextOnly,isValidEmail } from '@/utils/validators';
 
 export default {
   name: 'Register',
@@ -150,15 +151,14 @@ export default {
   },
   setup() {
     const router = useRouter();
-    return { router };
+    return { 
+      router,
+      validateNumber,
+      validateTextOnly,
+      isValidEmail,
+     };
   },
   methods: {
-    validateNumber(event) {
-    const value = event.target.value;
-    // Supprime tout caractère non numérique
-    event.target.value = value.replace(/\D/g, '');
-    this.form.postal_code = event.target.value;
-    },
     async handleRegister() {
       try {
         await registerUser({ user: this.user, profil: this.profil });

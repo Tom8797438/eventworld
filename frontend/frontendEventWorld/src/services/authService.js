@@ -26,6 +26,7 @@ export async function logout() {
     });
   }
 
+// Inscription de l'utilisateur
 export async function registerUser(userData) {
     try {
         console.log("donnée envoyée: ", JSON.stringify(userData, null, 2));
@@ -39,3 +40,23 @@ export async function registerUser(userData) {
       throw error;
     }
 } 
+
+// Reset password
+export async function requestPasswordReset(email) {
+  try {
+    console.log("Demande de réinitialisation du mot de passe pour l'email :", email);
+    const response = await axios.post(
+      `${API_URL}reset-password/`,
+      { email },
+      {
+        withCredentials: true, // ✅ très important ici
+        headers: { "Content-Type": "application/json" }
+      }
+    );
+    console.log("Réponse du backend:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Erreur lors de la demande de réinitialisation du mot de passe :", error.response?.data || error.message);
+    throw error;
+  }
+}

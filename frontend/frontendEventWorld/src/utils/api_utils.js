@@ -1,4 +1,5 @@
 import axios from "axios";
+// import { error } from "cypress/types/jquery";
 import Cookies from "js-cookie";
 
 const API_URL = "http://localhost:8000/api/";
@@ -65,6 +66,17 @@ export function logout(router) {
   delete api.defaults.headers.common["Authorization"];
 
   if (router) router.push("/login").catch(err => console.error(err));
+}
+
+// reset-password/
+export async function resetPassword(email) {
+  try {
+    const response = await api.post("reset-password/", { email });
+    return response.data;
+  } catch (error) {
+    console.error("Erreur lors de la demande de réinitialisation du mot de passe :", error.response?.data || error.message);
+    throw error;
+  }
 }
 
 // ===========================

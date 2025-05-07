@@ -11,6 +11,8 @@ import Register from '@/components/Register.vue';
 import InvitationEventView from '@/components/InvitationEventView.vue';
 import FirstPageView from '@/views/FirstPageView.vue';
 import CreateEvent from '@/components/CreateEvent.vue';
+import ResetPassword from '@/components/ResetPassword.vue';
+import ResetPasswordConfirm from '@/components/ResetPasswordConfirm.vue';
 
 
 const routes = [
@@ -35,6 +37,17 @@ const routes = [
       name: 'login',
       component: LoginView, 
     },
+    {
+      path: '/ResetPassword',
+      name: 'ResetPassword',
+      component: ResetPassword,
+    },
+    {
+      path: '/reset-password-confirm/:uid/:token',
+      name: 'ResetPasswordConfirm',
+      component: ResetPasswordConfirm,
+    },
+    
     {
       path: '/menu',
       name: 'menu',

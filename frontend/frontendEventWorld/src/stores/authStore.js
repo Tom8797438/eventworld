@@ -8,6 +8,7 @@
 import { defineStore } from "pinia";
 import api from "@/services/axiosInstance";
 import Cookies from "js-cookie";
+import { requestPasswordReset } from '@/services/authService';
 
 export const useAuthStore = defineStore("authStore", {
   state: () => ({
@@ -35,22 +36,22 @@ export const useAuthStore = defineStore("authStore", {
         // Met à jour les headers Axios automatiquement
         api.defaults.headers.common["Authorization"] = `Bearer ${access}`;
 
-  // 🔄 Recharge les données utilisateur
-  const userResponse = await api.get("user/");
-  this.user = userResponse.data;
+        // Recharge les données utilisateur
+        const userResponse = await api.get("user/");
+        this.user = userResponse.data;
 
-  // ✅ On vide les anciens événements (optionnel)
-  const eventStore = useEventStore();
-  
-  eventStore.events = [];
-   // ✅ Recharge les événements de ce user
-   await eventStore.fetchEvents();
+        // On vide les anciens événements (optionnel)
+        const eventStore = useEventStore();
+        
+        eventStore.events = [];
+        // Recharge les événements de ce user
+        await eventStore.fetchEvents();
 
-        this.error = null;
-      } catch (err) {
-        this.error = "Échec de la connexion. Vérifiez vos identifiants.";
-      }
-    },
+              this.error = null;
+            } catch (err) {
+              this.error = "Échec de la connexion. Vérifiez vos identifiants.";
+            }
+          },
 
     async logoutUser(router) {
       Cookies.remove("authToken");
@@ -69,5 +70,16 @@ export const useAuthStore = defineStore("authStore", {
         this.logoutUser();
       }
     },
+    
   },
+    async requestPasswordResetStore(email) {
+      try {
+        console.log("Demande de réinitialisation du mot de passe pour l'email :", email);
+        await requestPasswordReset(email); // on utilise le service
+        this.error = null;
+      } catch (err) {
+        this.error = "Erreur lors de la demande de réinitialisation du mot de passe.";
+        throw err;
+      }
+    }
 });

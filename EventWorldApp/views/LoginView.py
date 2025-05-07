@@ -28,7 +28,7 @@ class RegisterView(APIView):
         if user_serializer.is_valid():
             user = user_serializer.save()
             
-            profil_data["email"] = user.email  # 🔁 copie automatique
+            profil_data["email"] = user.email 
             
             # Assignation du groupe Django correspondant au rôle
             group_name = ROLE_TO_GROUP.get(user.role)
