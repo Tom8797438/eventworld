@@ -33,7 +33,6 @@
   gap: 15px;
   background: #efefef;
   color:#000;
-
   padding: 15px;
   border-radius: 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -47,6 +46,34 @@
   text-align: left;
 }
 
+.event-header-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 30px;
+  justify-content: space-between;
+}
+
+.left-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.right-col {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.event-image-preview {
+  max-width: 320px;
+  height: auto;
+  border-radius: 8px;
+}
+
 .input-modif {
   width: 100%;
   padding: 10px;
@@ -54,6 +81,53 @@
   border-radius: 6px;
   font-size: 1rem;
 }
+
+.upload-image {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  background-color: #f8f9fa;
+  border: 2px dashed #007bff;
+  padding: 15px;
+  border-radius: 10px;
+  transition: border-color 0.3s ease;
+}
+
+.upload-image:hover {
+  border-color: #0056b3;
+}
+
+.upload-image label {
+  font-weight: 600;
+  color: #007bff;
+  cursor: pointer;
+}
+
+.upload-image input[type="file"] {
+  padding: 6px 10px;
+  border: none;
+  background: #e9ecef;
+  color: #333;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.upload-image input[type="file"]::file-selector-button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.upload-image input[type="file"]::file-selector-button:hover {
+  background-color: #0056b3;
+}
+
 
 .textarea {
   min-height: 100px;
@@ -203,33 +277,61 @@
 /* Responsive Design */
 @media (max-width: 768px) {
 
-  .overlay{
-    height: auto; /* Permet à l'overlay de s'adapter au contenu */
+  .overlay {
+    height: auto; /* permet à la hauteur de s'ajuster au contenu */
+    min-height: 100vh; /* garantit que ça remplit au moins l'écran */
+    padding-bottom: 0px; /* évite que le bas se coupe */
+    padding-top: 0px;
+    overflow: visible; /* autorise le scroll vertical */
   }
 
-.booking-section{
-  display: none;
-}
+  .booking-section{
+    display: none;
+  }
+
+
+  .event-header-row {
+    flex-direction: column;
+    align-items: center;
+    gap: 8px; /* Ajuste la marge entre les blocs si nécessaire */
+  }
+  .upload-image {
+    padding: 10px;
+    gap: 6px;
+    border-width: 1px;
+    font-size: 0.85rem;
+  }
+  
+  .upload-image input[type="file"] {
+    font-size: 0.8rem;
+    padding: 4px 8px;
+  }
+  
+  .upload-image input[type="file"]::file-selector-button {
+    padding: 5px 10px;
+    font-size: 0.8rem;
+  }
+  .event-image-preview {
+    max-width: 100%;
+    border-radius: 6px;
+  }
 
   .event-card {
     flex-direction: column;
     height: auto;  /* Permet à la carte de s'adapter au contenu */
     width: 100vw;
     padding: 0%;
-
-
-      border-radius: 0px;
-align-self: center;      
-      box-sizing:none;
-      overflow: hidden;
-    
+    border-radius: 0px;
+    align-self: center;      
+    box-sizing:none;
+    overflow: visible;
   }
 
   .event-details,
   .booking-section {
     padding: 10px;
   }
-
+  
   .input-modif,
   .ticket-selection,
   .quantity-selection {
@@ -257,7 +359,26 @@ align-self: center;
   .quantity-selection {
     font-size: 0.8rem;
   }
+/**/
+.upload-image {
+  padding: 8px;
+  gap: 4px;
+}
 
+.upload-image label {
+  font-size: 0.75rem;
+}
+
+.upload-image input[type="file"]::file-selector-button {
+  font-size: 0.75rem;
+  padding: 4px 8px;
+}
+
+.event-image-preview {
+  max-width: 100%;
+}
+
+/**/
   .button-save,
   .add-ticket {
     font-size: 0.8rem;

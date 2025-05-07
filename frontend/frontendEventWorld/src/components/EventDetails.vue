@@ -2,12 +2,33 @@
   <div class="overlay" @click="goBackToEvents">
     <div class="event-card" @click.stop>
       <!-- Colonne gauche -->
-      <div class="event-details">
-        <h2 class="event-title">Votre évènement : {{ selectedEvent?.name || 'Non spécifié' }}</h2>
-        <input class="input-modif" type="text" v-model="editedEvent.name" />
+    <div class="event-details">
+      <div class="event-header-row">
 
-        <p><strong>Description : </strong> {{ truncate(selectedEvent.description, 10) || 'Non spécifié' }}</p>
-        <textarea class="textarea input-modif" v-model="editedEvent.description"></textarea>
+          <div class="left-col">
+            <h2 class="event-title">Votre évènement : {{ selectedEvent?.name || 'Non spécifié' }}</h2>
+            <input class="input-modif" type="text" v-model="editedEvent.name" />
+
+            <p><strong>Description : </strong> {{ truncate(selectedEvent.description, 10) || 'Non spécifié' }}</p>
+            <textarea class="textarea input-modif" v-model="editedEvent.description"></textarea>
+          </div>
+
+          <div class="right-col">
+            <div class="current-image">
+              <img
+                  :src="imagePreviewUrl || getEventImageUrl(selectedEvent.picture)"
+                  alt="Image actuelle"
+                  class="event-image-preview"
+                />
+            </div>
+
+            <div class="upload-image">
+              <label for="file-upload">📁 Changer l'image :</label>
+              <input type="file" id="file-upload" @change="onImageChange" accept="image/*" />
+            </div>
+          </div>
+
+      </div>      
 
         <p><strong>Date début : </strong> {{ selectedEvent.date_start || 'Non spécifié' }}</p>
         <input class="input-modif" type="date" v-model="editedEvent.date_start" />
@@ -54,15 +75,15 @@
             <button class="add-price" @click="addPrice">➕ Ajouter un prix</button>
       </div>
 
-      <div v-if="invitationLink" class="invitation-link-section">
-        <p><strong>Lien d'invitation :</strong></p>
-        <div class="link"><a :href="invitationLink" target="_blank">{{ invitationLink }}</a></div>
-      </div>
+        <div v-if="invitationLink" class="invitation-link-section">
+          <p><strong>Lien d'invitation :</strong></p>
+          <div class="link"><a :href="invitationLink" target="_blank">{{ invitationLink }}</a></div>
+        </div>
 
-      <div class="container-button-save">
-        <button class="button-save back" @click="goBackToEvents">Retour</button>
-        <button class="button-save" @click="saveChanges">Enregistrer</button>
-      </div>
+        <div class="container-button-save">
+          <button class="button-save back" @click="goBackToEvents">Retour</button>
+          <button class="button-save" @click="saveChanges">Enregistrer</button>
+        </div>
       
     </div>
 
@@ -86,7 +107,6 @@
           <input type="text" placeholder="Votre N° de téléphone" v-model="phone" required @input="validateNumber"/>
         </div>
        
-
         <!-- Si plusieurs types de prix, on affiche une liste déroulante -->
         <h3>Réserver vos places</h3>
 
@@ -105,7 +125,6 @@
           <p v-else>
             Aucun tarif disponible.
           </p>
-
 
           <div class="input-group">
             <label>Quantité</label>
@@ -132,6 +151,7 @@ import { useRoute, useRouter } from 'vue-router';
 import { fetchInvitationByEventId } from '@/utils/api_utils';
 import { useTicketLogic } from '@/utils/useTicketLogic';
 import { validateNumber } from '@/utils/validators';
+import { getEventImageUrl, handleImageUpload } from '@/utils/imageEvent';
 
 
 export default {
@@ -148,6 +168,8 @@ export default {
 
     const eventId = route.params.id; // Récupère l'ID de l'événement depuis les paramètres de la route
     const invitationLink = ref('');
+    const newImageFile = ref(null);      // pour stocker la nouvelle image sélectionnée
+    const imagePreviewUrl = ref('');     // pour l'aperçu
 
     const firstname = ref('');
     const lastname = ref('');
@@ -206,37 +228,49 @@ export default {
   }
 });
 
-
-    // const selectedTickets = ref([{ type: ticketTypes.value[0]?.name || '', quantity: 1 }]);
-
-    // const total = computed(() => {
-    //   return selectedTickets.value.reduce((sum, ticket) => {
-    //     const ticketType = ticketTypes.value.find(t => t.name === ticket.type);
-    //     return sum + (ticket.quantity * (ticketType?.price.value || 0));
-    //   }, 0);
-    // });
+const onImageChange = (event) => {
+  const { file, preview } = handleImageUpload(event);
+  if (file) {
+    newImageFile.value = file;
+    imagePreviewUrl.value = preview;
+  }
+};
 
     const saveChanges = async () => {
-      try {
-        await eventStore.updateEvent(editedEvent.value.id, editedEvent.value);
-        alert("Événement mis à jour !");
-      } catch (err) {
-        console.error(err);
-        alert("Erreur lors de la mise à jour.");
+  try {
+    const formData = new FormData();
+
+    // Ajouter tous les champs édités
+    Object.entries(editedEvent.value).forEach(([key, value]) => {
+      if (key !== 'price_categories') {
+        formData.append(key, value);
+      } else {
+        formData.append(key, JSON.stringify(value)); // price_categories au format JSON
       }
-    };
+    });
+
+    // Ajouter l'image si une nouvelle a été choisie
+    if (newImageFile.value) {
+      formData.append('picture', newImageFile.value);
+    }
+
+    await eventStore.updateEvent(editedEvent.value.id, formData);
+    alert("Événement mis à jour !");
+    
+    // Rafraîchir après la sauvegarde pour voir la nouvelle image immédiatement
+    await eventStore.fetchEvents();
+    newImageFile.value = null;
+
+  } catch (err) {
+    console.error(err);
+    alert("Erreur lors de la mise à jour.");
+  }
+  imagePreviewUrl.value = '';
+
+};
+
 
     const calculateTotal = () => {};
-
-    // const addTicket = () => {
-    //   if (ticketTypes.value.length > 1) {
-    //     selectedTickets.value.push({ type: ticketTypes.value[0].name, quantity: 1 });
-    //   }
-    // };
-
-    // const removeTicket = (index) => {
-    //   selectedTickets.value.splice(index, 1);
-    // };
 
     const bookTickets = async () => {
       const eventName = selectedEvent.value.name;
@@ -320,15 +354,12 @@ const removePrice = (index) => {
       types,
       invitationLink,
       validateNumber,
+      onImageChange,
+      getEventImageUrl,
+      imagePreviewUrl,
+      newImageFile,
     };
   },
-  // methods: {
-  //   validateNumber(event) {
-  //     const value = event.target.value;
-  //     // Supprime tout caractère non numérique
-  //     event.target.value = value.replace(/\D/g, '');
-  //   },
-  // },
 };
 </script>
 

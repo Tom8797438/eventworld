@@ -17,9 +17,7 @@ class ScanTicket (APIView):
             return Response({"message": "QR Code manquant ou id"}, status=status.HTTP_400_BAD_REQUEST)
 
         ticket = get_object_or_404(Ticketing, qr_code=qr_code)
-        print("receiptScan variable ticket: ",ticket)
-        event = ticket.event  
-        print("receiptScan variable ticket: ",event)
+        event = ticket.event 
         user = request.user
         is_owner = event.organisator == user
         is_temp_scanner = TemporaryScanner.objects.filter(

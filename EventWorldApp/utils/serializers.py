@@ -43,7 +43,7 @@ class EvenementForInvitationSerializer(serializers.ModelSerializer):
         fields = (
             'id', 'name', 'description', 'date_start', 'date_end',
             'location', 'address', 'postal_code', 'city',
-            'type_event', 'number_place', 'price_categories'
+            'type_event', 'number_place', 'price_categories', 'picture'
         )
 
 class InvitationNotificationSerializer(serializers.ModelSerializer):

@@ -35,8 +35,8 @@
                 v-for="event in filteredEvents"
                 :key="event.id"
                 class="event-card"
-                
               >
+
                 <!-- Détails de l'événement -->
                 <div class="event-details">
                   <h3 class="event-title">{{ event.name || 'Nom non spécifié' }}</h3>
@@ -49,7 +49,7 @@
                 <!-- Image de l'événement -->
                 <img
                   class="event-image"
-                  :src="event.image || 'https://via.placeholder.com/100'"
+                  :src="getEventImageUrl(event.picture)"
                   alt="Event Image"
                 />
                 <button
@@ -84,7 +84,8 @@
   import { ref, computed, onMounted } from 'vue';
   import { useEventStore } from '@/stores/eventStore';
   import { useRouter } from 'vue-router';
-  
+  import { getEventImageUrl } from '@/utils/imageEvent';
+
   const router = useRouter();
   const eventStore = useEventStore();
   

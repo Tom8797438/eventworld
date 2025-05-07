@@ -4,6 +4,9 @@ from django.contrib.auth.models import AbstractUser, Group, Permission
 from django.core.validators import RegexValidator
 from django.utils import timezone
 from datetime import timedelta
+from django.dispatch import receiver
+from django.db.models.signals import pre_save
+import os
 
 # Modèle utilisateur personnalisé
 class User(AbstractUser):
@@ -106,11 +109,26 @@ class Evenement(models.Model):
         if not self.code_evenement:  # Si le champ est vide, on génère un code unique
             self.code_evenement = str(uuid.uuid4())[:8]  # Générer un identifiant court
         super().save(*args, **kwargs)
-
+        
     class Meta:
         verbose_name = "Événement"
         verbose_name_plural = "Événements"
         ordering = ["-created_at"]
+        
+@receiver(pre_save, sender=Evenement)
+def auto_delete_old_image_on_change(sender, instance, **kwargs):
+    if not instance.pk:
+        return False  # Si nouvel événement, rien à supprimer
+
+    try:
+        old_file = Evenement.objects.get(pk=instance.pk).picture
+    except Evenement.DoesNotExist:
+        return False
+
+    new_file = instance.picture
+    if old_file and old_file != new_file:
+        if os.path.isfile(old_file.path):
+            os.remove(old_file.path)
 
 class TemporaryScanner(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)

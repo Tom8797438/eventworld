@@ -29,4 +29,5 @@ urlpatterns = [
     path('invitation/<uuid:id>/', EventInvitationDetailView.as_view(), name='event-invitation-detail'),
     path("invitation/by-event/", get_invitation_by_event_id, name="get-invitation-by-event-id"),
     path('', include(router.urls)),
-]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+]
+

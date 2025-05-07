@@ -8,7 +8,7 @@
         <!-- Ajouter une image -->
         <div class="form-group image-upload">
           <label for="image">Ajouter une image</label>
-          <input type="file" id="image" @change="handleImageUpload" />
+          <input type="file" id="image" @change="onImageSelect" />
         </div>
 
         <!-- Aperçu du billet -->
@@ -152,12 +152,8 @@
               </p>
         </div>
           </div>
-
-          
         </form>
       </div>
-
-      
     </div>
   </div>
 </template>
@@ -167,6 +163,7 @@ import { ref, computed } from 'vue';
 import { useEventStore } from '@/stores/eventStore';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from "@/stores/authStore";
+import { handleImageUpload } from '@/utils/imageEvent';
 
 export default {
   
@@ -284,35 +281,24 @@ export default {
         }
       },
 
-      handleImageUpload(event) {
-  const file = event.target.files[0];
-  if (file && file.type.startsWith('image/')) {
-    this.selectedImage = file;
-    this.imagePreview = URL.createObjectURL(file); // Génère une URL temporaire pour l'aperçu
-    console.log('Image sélectionnée :', file);
-  } else {
-    console.error('Le fichier sélectionné n\'est pas une image.');
-    this.selectedImage = null;
-    this.imagePreview = null; // Réinitialise l'aperçu si le fichier n'est pas valide
-  }
-},
+      // handleImageUpload(event) {
+      //     const file = event.target.files[0];
+      //     if (file && file.type.startsWith('image/')) {
+      //       this.selectedImage = file;
+      //       this.imagePreview = URL.createObjectURL(file); // Génère une URL temporaire pour l'aperçu
+      //       console.log('Image sélectionnée :', file);
+      //     } else {
+      //       console.error('Le fichier sélectionné n\'est pas une image.');
+      //       this.selectedImage = null;
+      //       this.imagePreview = null; // Réinitialise l'aperçu si le fichier n'est pas valide
+      //     }
+      //   },
+      onImageSelect(event) {
+        const { file, preview } = handleImageUpload(event);
+        this.selectedImage = file;
+        this.imagePreview = preview;
+  },
 
-    // async createEvent() {
-    //   const eventStore = useEventStore();
-    //   try {
-    //     await eventStore.createEvent(this.form);
-    //     this.success = true;
-    //     this.error = null;
-    //     // this.createdEventId = eventStore.events[0]?.id;
-    //     confirm(
-    //   `Événement créé avec succès !\n\nCopiez le lien d'invitation :\n${this.invitationLink}`
-    // );
-    //     this.resetForm();
-    //   } catch (err) {
-    //     this.success = false;
-    //     this.error = "Erreur lors de la création de l'évènement.";
-    //   }
-    // },
     async createEvent() {
     const eventStore = useEventStore();
     try {

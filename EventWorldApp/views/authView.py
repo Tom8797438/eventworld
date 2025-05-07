@@ -2,12 +2,9 @@ from django.shortcuts import render
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.response import Response
-# from django.contrib.auth.models import User
 from rest_framework import status
 from rest_framework_simplejwt.views import TokenObtainPairView
-# start partie reset password
 from django.contrib.auth import get_user_model
-
 from django.core.mail import send_mail
 from django.utils.http import urlsafe_base64_decode
 from django.utils.http import urlsafe_base64_encode
@@ -18,6 +15,8 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.conf import settings
 from rest_framework.permissions import AllowAny
+# start partie reset password
+# from django.contrib.auth.models import User
 
 class ProtectedView(APIView):
     permission_classes = [IsAuthenticated]  # Seuls les utilisateurs connectés peuvent accéder
@@ -26,7 +25,7 @@ class ProtectedView(APIView):
         return Response({"message": "Accès autorisé uniquement aux utilisateurs authentifiés"})
 
 class UserProfileView(APIView):
-    permission_classes = [IsAuthenticated]  # Seuls les utilisateurs connectés peuvent accéder
+    permission_classes = [IsAuthenticated]
 
     def get(self, request):
         user = request.user
@@ -47,7 +46,7 @@ class CookieTokenObtainPairView(TokenObtainPairView):
                 key="access_token",
                 value=data["access"],
                 httponly=True,
-                secure=False,  # 🔐 à passer à True en production HTTPS
+                secure=False,  # /!\ à passer à True en production HTTPS
                 samesite='Lax',
                 max_age=3600,
                 path='/',
@@ -70,7 +69,6 @@ class ResetPasswordRequestView(APIView):
     permission_classes = [AllowAny]  # accès sans token
     def post(self, request):
         email = request.data.get('email')
-        print (email)
         if not email:
             return Response({'error': 'Email requis'}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -93,7 +91,7 @@ class ResetPasswordRequestView(APIView):
         return Response({'message': 'Email de réinitialisation envoyé'}, status=status.HTTP_200_OK)
     
 class ResetPasswordConfirmView(APIView):
-    permission_classes = [AllowAny]  # accès sans token
+    permission_classes = [AllowAny]
     def post(self, request):
         uid = request.data.get('uid')
         token = request.data.get('token')

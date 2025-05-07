@@ -34,7 +34,7 @@ export default {
   name: 'Login',
   data() {
     return {
-      identifier: '', // Peut être un email ou un nom d'utilisateur
+      identifier: '', // email ou nom d'utilisateur
       password: '',
     };
   },
@@ -55,8 +55,7 @@ export default {
   },
 };
 </script>
-
-  
-  <style scoped>
-@import'@/assets/styles/Authentification.css'
-  </style>
+ 
+<style scoped>
+  @import'@/assets/styles/Authentification.css'
+</style>

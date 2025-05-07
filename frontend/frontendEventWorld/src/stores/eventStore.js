@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import { fetchEvents, createEvent, updateEvent, deleteEvent, generateInvitation, fetchInvitationById } from "@/utils/api_utils";
+import { getEventImageUrl } from '@/utils/imageEvent';
 
 export const useEventStore = defineStore('eventStore', {
   state: () => ({
@@ -35,6 +36,8 @@ export const useEventStore = defineStore('eventStore', {
               value,
             }));
           }
+          event.image= event.picture;
+
           return event;
         });
       } catch (err) {

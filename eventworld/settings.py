@@ -204,9 +204,10 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+print("MEDIA_ROOT:", MEDIA_ROOT)
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-DEFAULT_FROM_EMAIL = 'no-reply@tonsite.com'
+DEFAULT_FROM_EMAIL = 'tomzu974@gmail.com' # Adresse e-mail par défaut pour l'envoi d'e-mails
 FRONTEND_URL = 'http://localhost:5173'  # ou le domaine réel de ton frontend
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # pour tester dans la console

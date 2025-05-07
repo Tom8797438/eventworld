@@ -16,7 +16,6 @@ class TicketCreateView(APIView):
     """
     permission_classes = [AllowAny] 
     def post(self, request, *args, **kwargs):
-        # print("Données reçues :", request.data)
         event_id = request.data.get('id')
         event = get_object_or_404(Evenement, id=event_id)
 
@@ -47,7 +46,7 @@ class TicketCreateView(APIView):
                 serializer = TicketSerializer(data=ticket_instance)
                 if serializer.is_valid():
                     serializer.save()
-                    # ✅ Ajouter `event.name` à `serializer.data`
+                    # Ajouter `event.name` à `serializer.data`
                     ticket_data_serialized = serializer.data
                     ticket_data_serialized["event_name"] = event.name
 
@@ -56,5 +55,4 @@ class TicketCreateView(APIView):
                 else:
                     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-        #print("Tickets créés :", created_tickets)
         return Response({"created_tickets": created_tickets}, status=status.HTTP_201_CREATED)

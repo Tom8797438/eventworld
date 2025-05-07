@@ -24,10 +24,11 @@ from EventWorldApp.views.authView import CookieTokenObtainPairView
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("api/token/", CookieTokenObtainPairView.as_view(), name="token_obtain_pair"),
-    #path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),  # Connexion
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),  # Rafraîchir le token
     path('api/', include('EventWorldApp.urls')),
 ]
 
+# Servir les fichiers statiques
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
