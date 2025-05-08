@@ -48,7 +48,7 @@
         <p><strong>Ville : </strong> {{ selectedEvent.city || 'Non spécifié' }}</p>
         <input class="input-modif" type="text" v-model="editedEvent.city" />
 
-        <p><strong>Places disponibles : </strong> {{ selectedEvent.remaining_places || 'Non spécifié' }}</p>
+        <p><strong>Places disponibles : </strong> {{ selectedEvent.remaining_places ?? 'Non spécifié' }}</p>
         <input class="input-modif" type="number" v-model="editedEvent.number_place" />
 
         <div class="price-editor">

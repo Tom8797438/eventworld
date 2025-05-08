@@ -364,46 +364,87 @@ button:hover {
   margin-top: 20px;
 }
 
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  padding: 2rem;
+  border-radius: 10px;
+  text-align: center;
+  width: 300px;
+  color: #000;
+}
+
+.modal-content button{
+  position: relative;
+  top:8px
+}
+
 /* Responsive Design */
 
 /* Tablettes et petits écrans */
 @media (max-width: 768px) {
-  .event-card {
-    flex-direction: column;
-    /* max-width: 100%; */
-    height: auto;
-    border-radius:0;
 
-  }
-
-  .event-details,
-  .booking-section {
-    padding: 15px;
-  }
-
-  .event-title {
-    font-size: 1.5rem;
-  }
-
-  .add-ticket,
-  .delete-ticket,
-  button {
-    font-size: 0.9rem;
-    padding: 8px 12px;
-  }
-
-  /* Boutons côte à côte */
-  .button-group {
+.overlay {
+    height: auto; /* autorise la croissance en hauteur */
+    overflow: visible;
+    padding: 10px;
     display: flex;
-    justify-content: space-between;
-    gap: 10px; /* Espacement entre les boutons */
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .event-card {
+    flex-direction: column !important;  /* Force l’empilement vertical */
+    height: auto !important;
+    border-radius: 0;
+
+  }
+
+  .event-details {
+    order: 1;
+    width: 100%;
+  }
+
+  .booking-section {
+    order: 2;
+    width: 100%;
+  }
+
+  .event-image {
+    width: 100%;
+    max-height: 200px;
+    object-fit: cover;
+  }
+
+  .button-validation {
+    flex-direction: column;
+  }
+
+  .ticket-line {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .ticket-field.small {
+    max-width: 100%;
   }
 
   .add-ticket,
   .delete-ticket,
-  button {
-    flex: 1; /* Les boutons prennent une largeur égale */
-    max-width: 48%; /* Limite la largeur pour qu'ils soient côte à côte */
+  .button-validation button {
+    width: 100%;
   }
 
   .total {

@@ -10,13 +10,14 @@
                   alt="Event Image"
                 />
         <p><strong>Description:</strong></p>
-        <textarea readonly class="description">{{ event.description || 'Non spécifié' }}</textarea>
+        <v-model readonly class="description"> {{ event.description || 'Non spécifié' }} </v-model>
         <p><strong>Date début :</strong> {{ event.date_start || 'Non spécifié' }}</p>
         <p><strong>Date fin :</strong> {{ event.date_end || 'Non spécifié' }}</p>
         <p><strong>Lieu :</strong> {{ event.location || 'Non spécifié' }}</p>
         <p><strong>Adresse :</strong> {{ event.address || 'Non spécifié' }}</p>
         <p><strong>Ville :</strong> {{ event.city || 'Non spécifié' }}</p>
-        <p><strong>Places disponibles :</strong> {{ event.number_place || 'Non spécifié' }}</p>
+        <p><strong>Places restantes :</strong> {{ event.remaining_places ?? 'Non spécifié' }}</p>
+        <!-- <p><strong>Places disponibles :</strong> {{ event.number_place || 'Non spécifié' }}</p> -->
       </div>
 
       <!-- Colonne droite : Réservation -->
@@ -40,36 +41,36 @@
         </div>
 
         <h3>Réserver vos places</h3>
-<div
-  v-for="(ticket, index) in selectedTickets"
-  :key="index"
-  class="ticket-line"
->
-  <!-- Type de place -->
-  <div class="ticket-field">
-    <label>Type de place</label>
-    <select v-model="ticket.type" class="ticket-selection">
-      <option v-for="option in ticketTypes" :key="option.name" :value="option.name">
-        {{ option.price.label }} - {{ option.price.value || 'Gratuit' }} €
-      </option>
-    </select>
-  </div>
+        <div
+          v-for="(ticket, index) in selectedTickets"
+          :key="index"
+          class="ticket-line"
+        >
+          <!-- Type de place -->
+          <div class="ticket-field">
+            <label>Type de place</label>
+            <select v-model="ticket.type" class="ticket-selection">
+              <option v-for="option in ticketTypes" :key="option.name" :value="option.name">
+                {{ option.price.label }} - {{ option.price.value || 'Gratuit' }} €
+              </option>
+            </select>
+          </div>
 
-  <!-- Quantité -->
-  <div class="ticket-field small">
-    <label>Quantité</label>
-    <input type="number" min="1" v-model="ticket.quantity" class="quantity-selection" />
-  </div>
+          <!-- Quantité -->
+          <div class="ticket-field small">
+            <label>Quantité</label>
+            <input type="number" min="1" v-model="ticket.quantity" class="quantity-selection" />
+          </div>
 
-  <!-- Bouton supprimer -->
-  <button
-    v-if="!isFreeEvent"
-    class="delete-ticket"
-    @click="removeTicket(index)"
-  >
-    ❌
-  </button>
-</div>
+          <!-- Bouton supprimer -->
+          <button
+            v-if="!isFreeEvent"
+            class="delete-ticket"
+            @click="removeTicket(index)"
+          >
+            ❌
+          </button>
+        </div>
 
 
         <!-- Bouton "Ajouter un autre ticket" uniquement si ce n'est pas gratuit et qu'il y a plusieurs prix -->
@@ -81,6 +82,13 @@
         </div>  
       </div>
     </div>
+    <!-- Modal de places épuisées -->
+<div v-if="showNoSeatsModal" class="modal-overlay">
+  <div class="modal-content">
+    <p>❌ Désolé mais, il n'y a plus de places pour cet événement.</p>
+    <button @click="showNoSeatsModal = false">OK</button>
+  </div>
+</div>
   </div>
 
   <p v-else-if="error" class="error">{{ error }}</p>
@@ -110,6 +118,8 @@ const lastname = ref('');
 const email = ref('');
 const phone = ref('');
 
+const showNoSeatsModal = ref(false);
+
 const {
   ticketTypes,
   selectedTickets,
@@ -136,6 +146,11 @@ const isSinglePriceEvent = computed(() => ticketTypes.value.length === 1);
 const isFreeEvent = computed(() => isSinglePriceEvent.value && ticketTypes.value[0].price.value === 0);
 
 const bookTickets = async () => {
+  if (event.value.remaining_places === 0) {
+    showNoSeatsModal.value = true;
+    return;
+  }
+
   if (!firstname.value.trim() || !lastname.value.trim() || !email.value.trim() || !phone.value.trim()) {
     alert("Veuillez remplir tous les champs.");
     return;
@@ -190,9 +205,14 @@ const goBackToAccueil = () => {
 
 <style scoped>
 @import '@/assets/styles/InvitationEventView.css';
-@import '@/assets/styles/EventDetails.css';
 /*sur charge de la class css*/
 .event-image{
-  width: 25%;
+  width: 100%;
 }
+
+.event-card {
+  flex-direction: row;
+}
+
+
 </style>

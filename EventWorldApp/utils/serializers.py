@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from EventWorldApp.models import User, Profil, Evenement, Ticketing, TemporaryScanner, InvitationNotification
+from EventWorldApp.utils.event_count import calculate_remaining_places
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -20,7 +21,6 @@ class TemporaryScannerSerializer(serializers.ModelSerializer):
             'can_scan': {'default': True}
         }
 
-
 class ProfilSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profil
@@ -38,13 +38,19 @@ class TicketSerializer(serializers.ModelSerializer):
         fields = "__all__"
         
 class EvenementForInvitationSerializer(serializers.ModelSerializer):
+    remaining_places = serializers.SerializerMethodField()
+
     class Meta:
         model = Evenement
         fields = (
             'id', 'name', 'description', 'date_start', 'date_end',
             'location', 'address', 'postal_code', 'city',
             'type_event', 'number_place', 'price_categories', 'picture',
+            'remaining_places'  # champ calculé à inclure
         )
+
+    def get_remaining_places(self, obj):
+        return calculate_remaining_places(obj)
 
 class InvitationNotificationSerializer(serializers.ModelSerializer):
     event = EvenementForInvitationSerializer(read_only=True)
