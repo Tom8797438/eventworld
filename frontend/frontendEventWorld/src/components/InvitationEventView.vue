@@ -4,6 +4,11 @@
       <!-- Colonne gauche : Détails de l'événement -->
       <div class="event-details">
         <h2 class="event-title">{{ event.name || 'Non spécifié' }}</h2>
+        <img
+                  class="event-image"
+                  :src="getEventImageUrl(event.picture)"
+                  alt="Event Image"
+                />
         <p><strong>Description:</strong></p>
         <textarea readonly class="description">{{ event.description || 'Non spécifié' }}</textarea>
         <p><strong>Date début :</strong> {{ event.date_start || 'Non spécifié' }}</p>
@@ -82,87 +87,67 @@
   <p v-else>Chargement...</p>
 </template>
 
-<script>
+<script setup>
 import { ref, onMounted, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useTicketStore } from '@/stores/ticketStore';
 import { fetchInvitationById } from '@/utils/api_utils';
 import { useTicketLogic } from '@/utils/useTicketLogic';
-import { validateNumber, validateTextOnly,isValidEmail } from '@/utils/validators';
+import { validateNumber, validateTextOnly, isValidEmail } from '@/utils/validators';
+import { getEventImageUrl } from '@/utils/imageEvent';
 
-export default {
-  name: 'InvitationEventView',
-  setup() {
-    const route = useRoute();
-    const router = useRouter();
-    const invitationId = route.params.id;
+const route = useRoute();
+const router = useRouter();
+const invitationId = route.params.id;
 
-    const ticketStore = useTicketStore();
+const ticketStore = useTicketStore();
 
-    const event = ref(null);
-    const error = ref(null);
+const event = ref(null);
+const error = ref(null);
 
-    const firstname = ref('');
-    const lastname = ref('');
-    const email = ref('');
-    const phone = ref('');
-    const { ticketTypes, selectedTickets, total, initializeTickets, addTicket, removeTicket } = useTicketLogic();
+const firstname = ref('');
+const lastname = ref('');
+const email = ref('');
+const phone = ref('');
 
-    onMounted(async () => {
-      try {
-        const invitation = await fetchInvitationById(invitationId);
-        event.value = invitation.event;
+const {
+  ticketTypes,
+  selectedTickets,
+  total,
+  initializeTickets,
+  addTicket,
+  removeTicket
+} = useTicketLogic();
 
-        console.log('Event:', event.value); // Vérifiez les données de l'événement
-        console.log('Price Categories (avant transformation):', event.value.price_categories);
+onMounted(async () => {
+  try {
+    const invitation = await fetchInvitationById(invitationId);
+    event.value = invitation.event;
 
-        const priceCategories = event.value.price_categories;
-        initializeTickets(priceCategories);
+    const priceCategories = event.value.price_categories;
+    initializeTickets(priceCategories);
+  } catch (err) {
+    console.error("Erreur lors du chargement de l'invitation :", err);
+    error.value = "Invitation invalide ou expirée.";
+  }
+});
 
-        console.log('Ticket Types (après transformation):', ticketTypes.value); // Vérifiez les types de tickets
-      } catch (err) {
-        console.error("Erreur lors du chargement de l'invitation :", err);
-        error.value = "Invitation invalide ou expirée.";
-      }
-    });
+const isSinglePriceEvent = computed(() => ticketTypes.value.length === 1);
+const isFreeEvent = computed(() => isSinglePriceEvent.value && ticketTypes.value[0].price.value === 0);
 
-    // Détermine si l'événement est gratuit
-    const isSinglePriceEvent = computed(() => {
-        return ticketTypes.value.length === 1;
-      });
-
-    const isFreeEvent = computed(() => {
-      return isSinglePriceEvent.value && ticketTypes.value[0].price.value === 0;
-    });
-
-    const bookTickets = async () => {
-  // Validation des champs de formulaire
-  if (
-    !firstname.value.trim() ||
-    !lastname.value.trim() ||
-    !email.value.trim() ||
-    !phone.value.trim()
-  ) {
+const bookTickets = async () => {
+  if (!firstname.value.trim() || !lastname.value.trim() || !email.value.trim() || !phone.value.trim()) {
     alert("Veuillez remplir tous les champs.");
     return;
   }
-
-  // Validation des tickets
-  if (
-    selectedTickets.value.some(
-      (ticket) =>
-        !ticket.type || !ticket.quantity || ticket.quantity <= 0
-    )
-  )
-   {
+  if (!isValidEmail(email.value)) {
+    alert("Veuillez saisir une adresse e-mail valide.");
+    return;
+  }
+  if (selectedTickets.value.some(ticket => !ticket.type || ticket.quantity <= 0)) {
     alert("Veuillez vérifier chaque ticket (type et quantité).");
     return;
   }
-  if (!isValidEmail(email.value)) {
-  alert("Veuillez saisir une adresse e-mail valide.");
-  return;
-}
-
 
   const ticketsToCreate = selectedTickets.value.map(ticket => {
     const ticketType = ticketTypes.value.find(t => t.name === ticket.type);
@@ -178,54 +163,36 @@ export default {
     };
   });
 
-    try {
-      await ticketStore.createTickets(event.value.id, ticketsToCreate);
-      alert("Réservation réussie !");
-      resetForm();
-      goBackToAccueil();
-    } catch (e) {
-      console.error("Erreur de réservation :", e);
-      alert("Une erreur est survenue.");
-    }
-  };
+  try {
+    await ticketStore.createTickets(event.value.id, ticketsToCreate);
+    alert("Réservation réussie !");
+    resetForm();
+    goBackToAccueil();
+  } catch (e) {
+    console.error("Erreur de réservation :", e);
+    alert("Une erreur est survenue.");
+  }
+};
 
+const resetForm = () => {
+  firstname.value = '';
+  lastname.value = '';
+  email.value = '';
+  phone.value = '';
+  selectedTickets.value = [{ type: ticketTypes.value[0]?.name || 'free', quantity: 1 }];
+};
 
-    const resetForm = () => {
-      firstname.value = "";
-      lastname.value = "";
-      email.value = "";
-      phone.value = "";
-      selectedTickets.value = [{ type: ticketTypes.value[0]?.name || 'free', quantity: 1 }];
-    };
-
-    const goBackToAccueil = () => {
-      router.push('/accueil');
-    };
-
-    return {
-      event,
-      error,
-      firstname,
-      lastname,
-      email,
-      phone,
-      selectedTickets,
-      ticketTypes,
-      total,
-      isFreeEvent,
-      bookTickets,
-      addTicket,
-      removeTicket,
-      goBackToAccueil,
-      validateNumber,
-      validateTextOnly,
-      isValidEmail,
-    };
-  },
+const goBackToAccueil = () => {
+  router.push('/accueil');
 };
 </script>
 
+
 <style scoped>
 @import '@/assets/styles/InvitationEventView.css';
-
+@import '@/assets/styles/EventDetails.css';
+/*sur charge de la class css*/
+.event-image{
+  width: 25%;
+}
 </style>

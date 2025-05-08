@@ -152,6 +152,8 @@ import { fetchInvitationByEventId } from '@/utils/api_utils';
 import { useTicketLogic } from '@/utils/useTicketLogic';
 import { validateNumber } from '@/utils/validators';
 import { getEventImageUrl, handleImageUpload } from '@/utils/imageEvent';
+import { confirmAndNavigate } from '@/utils/navigation';
+
 
 
 export default {
@@ -236,39 +238,54 @@ const onImageChange = (event) => {
   }
 };
 
-    const saveChanges = async () => {
+const saveChanges = async () => {
   try {
-    const formData = new FormData();
+    const hasImage = newImageFile.value instanceof File;
 
-    // Ajouter tous les champs édités
-    Object.entries(editedEvent.value).forEach(([key, value]) => {
-      if (key !== 'price_categories') {
-        formData.append(key, value);
-      } else {
-        formData.append(key, JSON.stringify(value)); // price_categories au format JSON
-      }
-    });
+    if (hasImage) {
+      const formData = new FormData();
 
-    // Ajouter l'image si une nouvelle a été choisie
-    if (newImageFile.value) {
+      Object.entries(editedEvent.value).forEach(([key, value]) => {
+        if (value === null || value === undefined || value === '') return;
+
+        if (key === 'price_categories') {
+          formData.append(key, JSON.stringify(value));
+        } else {
+          formData.append(key, String(value));
+        }
+      });
+
       formData.append('picture', newImageFile.value);
+
+      await eventStore.updateEvent(editedEvent.value.id, formData, true); // true = formData
+
+    } else {
+      // JSON pur si pas d'image
+      const jsonPayload = {};
+      Object.entries(editedEvent.value).forEach(([key, value]) => {
+        if (value === null || value === undefined || value === '') return;
+        if (key === 'picture') return; // NE PAS envoyer picture sans image
+        jsonPayload[key] = key === 'price_categories' ? JSON.stringify(value) : value;
+      });
+
+      await eventStore.updateEvent(editedEvent.value.id, jsonPayload, false); // false = JSON
     }
 
-    await eventStore.updateEvent(editedEvent.value.id, formData);
     alert("Événement mis à jour !");
-    
-    // Rafraîchir après la sauvegarde pour voir la nouvelle image immédiatement
     await eventStore.fetchEvents();
     newImageFile.value = null;
+    imagePreviewUrl.value = '';
+    router.push('/Menu');
 
   } catch (err) {
-    console.error(err);
+    const errorMsg = err.response?.data?.picture?.[0];
+    if (errorMsg === "Upload a valid image. The file you uploaded was either not an image or a corrupted image.") {
+    alert("❌ L'image est invalide. Veuillez importer une image correcte (format JPG, PNG, etc.).");
+  } else {
+    console.error('❌ Erreur lors de la mise à jour :', err.response?.data || err.message);
     alert("Erreur lors de la mise à jour.");
-  }
-  imagePreviewUrl.value = '';
-
+  } }
 };
-
 
     const calculateTotal = () => {};
 
@@ -306,16 +323,17 @@ const onImageChange = (event) => {
       }
     };
     const addPrice = () => {
-  editedEvent.value.price_categories.push({ label: '', value: 0 });
-};
-
-const removePrice = (index) => {
-  editedEvent.value.price_categories.splice(index, 1);
-};
-    const goBackToEvents = () => {
-      eventStore.selectedEvent = null;
-      router.push('/Menu');
+      editedEvent.value.price_categories.push({ label: '', value: 0 });
     };
+
+    const removePrice = (index) => {
+      editedEvent.value.price_categories.splice(index, 1);
+    };
+    // Fonction pour revenir en arrière vers la liste des événements
+    const goBackToEvents = () => {
+      confirmAndNavigate("Êtes-vous sûr de vouloir revenir au menu ?", router, "/Menu");
+    };
+
 
     const resetForm = () => {
       firstname.value = "";

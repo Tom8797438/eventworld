@@ -15,7 +15,17 @@
               <li class="event-item">Total des événements : <strong>{{ events.length }}</strong></li>
               <li class="event-item">Événements à venir : <strong>{{ upcomingEvents }}</strong></li>
               <li class="event-item">Événements passés : <strong>{{ pastEvents }}</strong></li>
+              <DashboardMenu
+                  :total="events.length"
+                  :upcoming="upcomingEvents"
+                  :past="pastEvents"
+                  :sold="soldPlaces"
+                  :available="availablePlaces"
+                />
+
+
             </ul>
+
           </div>
         </div>
         <!-- Colonne gauche : Liste des événements -->
@@ -44,14 +54,25 @@
                   <p><strong class="event-item">Description :</strong> {{ truncate(event.description, 50) || 'Non spécifiée' }}</p>
                   <p><strong class="event-item">Lieu :</strong> {{ event.location || 'Non spécifié' }}</p>
                   <p><strong class="event-item">Ville :</strong> {{ event.city || 'Non spécifiée' }}</p>
-                  <p><strong class="event-item">Places restantes :</strong> {{ event.number_place || 'Non spécifiées' }}</p>
+                  <p>
+                    <strong class="event-item">Taux de remplissage : </strong>
+                    <span :style="{ color: getFillingRate(event) > 80 ? 'green' : getFillingRate(event) > 50 ? 'orange' : 'red' }">
+                      {{ getFillingRate(event) }}%
+                    </span>
+                  </p>
+                  <DashbordCardMenu
+                  :sold="event.number_place - (event.remaining_places ?? event.number_place)"
+                  :total="event.number_place"
+                />
                 </div>
+                
                 <!-- Image de l'événement -->
                 <img
                   class="event-image"
                   :src="getEventImageUrl(event.picture)"
                   alt="Event Image"
                 />
+
                 <button
                   v-if="showDelete"
                   class="btn-delete modificate"
@@ -59,6 +80,7 @@
                 >
                   Modifier
                 </button>
+
                 <button
                   v-if="showDelete"
                   class="btn-delete"
@@ -66,6 +88,7 @@
                 >
                   Supprimer
                 </button>
+                
               </div>
             </div>
   
@@ -85,6 +108,9 @@
   import { useEventStore } from '@/stores/eventStore';
   import { useRouter } from 'vue-router';
   import { getEventImageUrl } from '@/utils/imageEvent';
+  import DashboardMenu from '@/components/charts/DashbordMenu.vue';
+  import DashbordCardMenu from '@/components/charts/DashbordCardMenu.vue'
+
 
   const router = useRouter();
   const eventStore = useEventStore();
@@ -120,11 +146,28 @@
   const upcomingEvents = computed(() =>
     events.value.filter((event) => new Date(event.date_start) > new Date()).length
   );
+
+  const soldPlaces = computed(() =>
+  events.value.reduce((sum, e) => sum + (e.number_place - (e.remaining_places ?? e.number_place)), 0)
+  );
+  const availablePlaces = computed(() =>
+    events.value.reduce((sum, e) => sum + (e.remaining_places ?? e.number_place), 0)
+  );
   
   const pastEvents = computed(() =>
     events.value.filter((event) => new Date(event.date_start) <= new Date()).length
   );
   
+  // dashboard par card
+  const getFillingRate = (event) => {
+  const total = event.number_place || 0;
+  const remaining = event.remaining_places ?? total;
+  const sold = total - remaining;
+  return total > 0 ? Math.round((sold / total) * 100) : 0;
+};
+
+
+
   // Rediriger vers les détails de l'événement
   const goToEventDetails = (event) => {
     router.push({

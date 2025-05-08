@@ -32,9 +32,9 @@
         
         <!-- Boutons Valider et Annuler -->
         <div class="form-group row buttons">
+            <div><button type="button" class="button-cancel" @click="resetForm">Réinitialiser</button></div>
             <div><button type="button" class="button-cancel-back" @click="goBackToEvents">Retour</button></div>
             <div><button type="submit" class="button-valid" @click="createEvent">Valider</button></div>
-            <div><button type="button" class="button-cancel" @click="resetForm">Annuler</button></div>
         </div>
       </div>
       <!-- Colonne gauche : Formulaire -->
@@ -164,6 +164,8 @@ import { useEventStore } from '@/stores/eventStore';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from "@/stores/authStore";
 import { handleImageUpload } from '@/utils/imageEvent';
+import { confirmAndNavigate } from '@/utils/navigation';
+
 
 export default {
   
@@ -197,9 +199,9 @@ export default {
       router.push({ name: "login" });
     };
 
-     // Fonction pour revenir en arrière vers la liste des événements
+
     const goBackToEvents = () => {
-      router.push('/Menu');
+      confirmAndNavigate("Êtes-vous sûr de vouloir revenir au menu ?", router, "/Menu");
     };
 
     return {
