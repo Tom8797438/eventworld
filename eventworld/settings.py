@@ -13,6 +13,15 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 from pathlib import Path
 from datetime import timedelta
 import os
+import environ
+
+# Détection d'environnement
+ENVIRONMENT = os.getenv('ENVIRONMENT', 'local')  # par défaut 'local'
+env_file = '.env.local' if ENVIRONMENT == 'local' else '.env.docker'
+
+# Initialisation d'environ
+env = environ.Env()
+environ.Env.read_env(env_file)  # Charge les variables depuis le bon fichier .env
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 #BASE_DIR = Path(__file__).resolve().parent.parent
@@ -152,8 +161,8 @@ DATABASES = {
         'NAME': os.getenv('DB_NAME'),
         'USER': os.getenv('DB_USER'),
         'PASSWORD': os.getenv('DB_PASSWORD'),
-        'HOST': os.getenv('DB_HOST', 'eventworld-db'),
-        'PORT': os.getenv('DB_PORT', '5432'),
+        'HOST': os.getenv('DB_HOST'), #'eventworld-db'),
+        'PORT': os.getenv('DB_PORT'),# '5432'),
     }
 }
 
