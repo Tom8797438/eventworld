@@ -1,10 +1,10 @@
 {
   "name": "EventWorld Dev",
-  "build": {
-  "dockerfile": "Dockerfile"
-},
+  "image": "mcr.microsoft.com/devcontainers/python:3.11-bookworm",
   "features": {
-    "ghcr.io/devcontainers/features/docker-in-docker:1": {}
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "20"
+    }
   },
   "postCreateCommand": "pip install --upgrade pip && pip install -r requirements.txt && cd frontend/frontendEventWorld && npm install",
   "postStartCommand": "./start-servers.sh",
