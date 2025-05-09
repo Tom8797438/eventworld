@@ -5,6 +5,7 @@
     "ghcr.io/devcontainers/features/docker-in-docker:1": {}
   },
   "postCreateCommand": "pip install --upgrade pip && pip install -r requirements.txt && cd frontend/frontendEventWorld && npm install",
+  "postStartCommand": "./start-servers.sh",
   "customizations": {
     "vscode": {
       "extensions": [
