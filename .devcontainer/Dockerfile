@@ -1,10 +1,13 @@
 FROM mcr.microsoft.com/devcontainers/python:3.11-node
 
-# Ajoute les permissions root et installe pip, venv, et autres outils essentiels
+# Rends root temporairement pour installer
 USER root
-RUN apt-get update && \
-    apt-get install -y python3-pip python3-venv && \
+
+# Installation de pip + venv de manière fiable
+RUN apt-get update && apt-get install -y python3-venv && \
+    python3 -m ensurepip && \
+    python3 -m pip install --upgrade pip && \
     apt-get clean
 
-# Reviens à l'utilisateur par défaut
+# Reviens à l'utilisateur vscode par défaut
 USER vscode
