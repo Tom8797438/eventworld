@@ -1,7 +1,7 @@
 {
   "name": "EventWorld Dev",
   "build": {
-  "dockerfile": "Dockerfile",
+  "dockerfile": "Dockerfile"
 },
   "features": {
     "ghcr.io/devcontainers/features/docker-in-docker:1": {}
