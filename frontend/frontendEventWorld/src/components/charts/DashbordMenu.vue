@@ -1,13 +1,13 @@
 <template>
     <div class="gauge-container">
-      <div class="gauge">
+      <!-- <div class="gauge">
         <Doughnut :data="getChartData(upcoming, total)" :options="chartOptions" />
         <p class="gauge-label">À venir</p>
       </div>
       <div class="gauge">
         <Doughnut :data="getChartData(past, total)" :options="chartOptions" />
         <p class="gauge-label">Passés</p>
-      </div>
+      </div> -->
       <div class="gauge">
         <Doughnut :data="getChartData(sold, sold + available)" :options="chartOptions" />
         <p class="gauge-label">Taux de remplissage</p>
@@ -40,7 +40,7 @@
       datasets: [{
         data: [percent, 100 - percent],
         backgroundColor: ['#4e79a7', '#e0e0e0'],
-        borderWidth: 0
+        borderWidth: 0,
       }]
     }
   }
@@ -50,7 +50,16 @@
     rotation: -90,
     cutout: '70%',
     plugins: {
-      tooltip: { enabled: false },
+      tooltip: {
+      enabled: true, // ✅ Affiche le tooltip
+      callbacks: {
+        label: (context) => {
+          const label = context.label || ''
+          const value = context.raw || 0
+          return `${label} : ${value.toFixed(1)}%`
+        }
+      }
+    },
       legend: { display: false }
     }
   }
@@ -65,12 +74,14 @@
     flex-wrap: wrap;
   }
   .gauge {
-    width: 190px;
+    width: 100px;
     text-align: center;
   }
+
   .gauge-label {
-    margin-top: 10px;
+    margin-top: 12px;
     font-weight: bold;
+    font-size: 80%;
   }
   </style>
   

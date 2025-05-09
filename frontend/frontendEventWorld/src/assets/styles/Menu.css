@@ -212,6 +212,14 @@
   background: #a71d2a;
 }
 
+.btn-delete.modificate {
+  background: #28a745;
+}
+
+.btn-delete.modificate:hover {
+  background: #218838;
+}
+
 /* Chargement */
 .loading {
   text-align: center;
@@ -322,7 +330,7 @@
   }
 
   .right-panel{
-    background:#f9f9f9
+    background:#90bddc
   }
 
 
@@ -344,6 +352,7 @@
   .event-card {
     flex-direction: column; /* Les éléments à l'intérieur de la carte sont empilés verticalement */
     align-items: flex-start; /* Aligne les éléments au début */
+    background:#90bddc;
   }
   
   .event-image {
