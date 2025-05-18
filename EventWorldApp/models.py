@@ -97,6 +97,7 @@ class Evenement(models.Model):
     # Stocke dynamiquement les prix sous forme de JSON { "standard": 10, "vip": 20, "pmr": 5 }
     price_categories = models.JSONField(default=dict, blank=True, null=True)
     picture = models.ImageField(upload_to="event_pictures/", blank=True, null=True)
+    temp_user_limit = models.PositiveIntegerField(default=0)  # utilisateur temporaire
 
     def __str__(self):
         return f"{self.name} ({self.code_evenement})"
@@ -132,17 +133,43 @@ def auto_delete_old_image_on_change(sender, instance, **kwargs):
 
 class TemporaryScanner(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    # Champ pour lien sécurisé
+    access_token = models.UUIDField(editable=False, unique=True, blank=True, null=True)
+    # Alias donné par l’organisateur (ex : Sophie)
+    display_name = models.CharField(max_length=100)
+    # Adresse mail de l’utilisateur temporaire
+    email = models.EmailField()
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="temporary_scanner")
     event = models.ForeignKey(Evenement, on_delete=models.CASCADE, related_name="temporary_scanners")
     created_at = models.DateTimeField(auto_now_add=True)
     expires_at = models.DateTimeField()
     can_scan = models.BooleanField(default=True)
-
+    can_sell = models.BooleanField(default=False)
+    tickets_scanned = models.PositiveIntegerField(default=0)  # pour les KPI
+    tickets_sold = models.PositiveIntegerField(default=0)     # pour les KPI
+    # Suivi de première connexion
+    first_access_at = models.DateTimeField(null=True, blank=True)
+    # Suivi de dernière activité (pour savoir s’il est “connecté”)
+    last_seen_at = models.DateTimeField(null=True, blank=True)
+    def save(self, *args, **kwargs):
+        if not self.access_token:
+            while True:
+                token = uuid.uuid4()
+                if not TemporaryScanner.objects.filter(access_token=token).exists():
+                    self.access_token = token
+                    break
+        super().save(*args, **kwargs)
+        
     def is_active(self):
-        return self.can_scan and timezone.now() < self.expires_at
+        return timezone.now() < self.expires_at
+
+    def is_online(self):
+        if self.last_seen_at:
+            return (timezone.now() - self.last_seen_at).total_seconds() < 300  # 5 minutes
+        return False
 
     def __str__(self):
-        return f"{self.user.username} - Scan pour {self.event.name} (jusqu'à {self.expires_at})"
+        return f"{self.display_name} ({self.email}) - {self.event.name}"
 
 # Gestion des tickets et QR Codes
 class Ticketing(models.Model):

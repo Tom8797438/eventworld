@@ -1,22 +1,58 @@
 //Connection du Frontend Vue.js à l’API Django
 
 import axios from 'axios';
+import Cookies from "js-cookie";
 
 const AUTH_API_URL = 'http://127.0.0.1:8000/api/token/';
 const API_URL = 'http://127.0.0.1:8000/api/'; 
 
+// export async function login(username, password) {
+//     return await axios.post(AUTH_API_URL, { username, password,}, {
+//         withCredentials: true  // 🍪 Très important pour envoyer/recevoir les cookies
+//       });
+//     }
+
 export async function login(username, password) {
-    return await axios.post(AUTH_API_URL, { username, password,}, {
-        withCredentials: true  // 🍪 Très important pour envoyer/recevoir les cookies
-      });
-    }
+  try {
+    const response = await axios.post(AUTH_API_URL, { username, password }, {
+      // withCredentials: true
+    });
+
+    const { access, refresh } = response.data;
+
+    // ✅ Enregistrement manuel des tokens JWT
+    Cookies.set("authToken", access);   // Pas {secure: true} en local
+    Cookies.set("refreshToken", refresh);
+
+    return response.data;
+  } catch (error) {
+    console.error("Erreur login:", error.response?.data || error.message);
+    throw error;
+  }
+}
 
 // Rafraîchissement du token (si tu en fais un jour, via cookie sécurisé)
+// export async function refreshToken() {
+//     return await axios.post(`${AUTH_API_URL}refresh/`, {}, {
+//       withCredentials: true
+//     });
+//   }
+
 export async function refreshToken() {
-    return await axios.post(`${AUTH_API_URL}refresh/`, {}, {
-      withCredentials: true
-    });
+  const refresh = Cookies.get("refreshToken");
+
+  if (!refresh) {
+    throw new Error("Aucun token de rafraîchissement disponible.");
   }
+
+  const response = await axios.post(`${AUTH_API_URL}token/refresh/`, {
+    refresh: refresh,
+  });
+
+  Cookies.set("authToken", response.data.access);  // ✅ on met à jour le token
+
+  return response.data;
+}
 
 // Déconnexion
 export async function logout() {

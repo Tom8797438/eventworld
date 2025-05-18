@@ -93,6 +93,83 @@
   padding: 5px 10px;
 }
 
+.temporary-user-section {
+  margin-top: 1rem;
+}
+
+.user-limit-input {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.user-limit-input input[type="number"] {
+  width: 80px;
+  padding: 5px;
+}
+
+.button-add-user {
+  background-color: #2ecc71;
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.temporary-user-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.temporary-user-card {
+  border: 1px solid #ccc;
+  padding: 1rem;
+  border-radius: 8px;
+  width: 220px;
+  background-color: #f9f9f9;
+  color: #000;
+  font-size: small;
+}
+
+.temporary-user-card h4 {
+  margin-bottom: 0.5rem;
+  font-weight:500;
+  color: #000;
+}
+
+.temporary-user-card input {
+  width: 100%;
+  margin-bottom: 0.5rem;
+  padding: 5px;
+}
+
+.temporary-user-card label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-right: 10px;
+}
+
+.temporary-user-card input[type="checkbox"] {
+  margin-right: 5px;
+  max-width: 20px;
+}
+
+.temporary-user-card .permissions {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 0.5rem;
+}
+
+.user-limit-input label {
+  font-weight: bold;
+  color: #000;
+}
+
 .button-valid {
   background: #218838;
   color: white;

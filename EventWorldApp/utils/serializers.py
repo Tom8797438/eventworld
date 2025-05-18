@@ -14,10 +14,13 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class TemporaryScannerSerializer(serializers.ModelSerializer):
+    user = serializers.StringRelatedField()
+    event = serializers.StringRelatedField()
     class Meta:
         model = TemporaryScanner
-        fields = ['user', 'event', 'can_scan', 'expires_at']
+        fields = ['id', 'user', 'event', 'expires_at', 'can_scan', 'can_sell', 'is_active', 'tickets_scanned', 'tickets_sold']
         extra_kwargs = {
+            'can_sell': {'default': True},
             'can_scan': {'default': True}
         }
 
@@ -30,7 +33,7 @@ class EventSerializer(serializers.ModelSerializer):
     class Meta:
         model = Evenement
         fields = "__all__"
-        read_only_fields = ('code_evenement',) 
+        read_only_fields = ('code_evenement', 'organisator','created_at', 'updated_at') 
 
 class TicketSerializer(serializers.ModelSerializer):
     class Meta:

@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { fetchEvents, createEvent, updateEvent, deleteEvent, generateInvitation, fetchInvitationById } from "@/utils/api_utils";
+import { fetchEvents, createEvent, updateEvent, deleteEvent, generateInvitation, fetchInvitationById, createEventWithTempUsers } from "@/utils/api_utils";
 import { getEventImageUrl } from '@/utils/imageEvent';
 
 export const useEventStore = defineStore('eventStore', {
@@ -123,6 +123,32 @@ export const useEventStore = defineStore('eventStore', {
         return invitation;
       } catch (err) {
         this.error = "Erreur lors de la génération de l'invitation.";
+        throw err;
+      } finally {
+        this.loading = false;
+      }
+    },
+
+    // ⚡️ Nouvelle action dédiée uniquement à la création avec utilisateurs temporaires
+    async createEventWithTemporaryUsers(payload) {
+        try {
+      this.loading = true;
+      this.error = null;
+
+      const response = await createEventWithTempUsers(payload);
+
+      // Stockage réactif
+      this.temporaryUsers = response.temporary_users;
+      this.invitationLinks = response.temporary_users.map(user => ({
+        alias: user.alias,
+        scan_link: user.scan_link,
+        sell_link: user.sell_link,
+      }));
+
+      // Actualise la liste complète
+        await this.fetchEvents();
+      } catch (err) {
+        this.error = err.response?.data || "Erreur lors de la création d'événement avec utilisateurs temporaires.";
         throw err;
       } finally {
         this.loading = false;

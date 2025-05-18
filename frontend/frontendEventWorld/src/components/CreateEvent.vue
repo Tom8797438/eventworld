@@ -132,12 +132,36 @@
           </div>
 
           <!-- Utilisateur temporaire -->
-          <div class="form-group">
-            <label>
-              <input type="checkbox" v-model="form.temporary_user" />
-              Utilisateur temporaire
-            </label>
-                    <!-- Message de statut -->
+          <div class="temporary-user-section">
+            <div class="user-limit-input">
+              <label>Utilisateurs temporaires :</label>
+              <input type="number" v-model.number="event.temp_user_limit" min="0" max="100" />
+            </div>
+
+            <div class="temporary-user-list">
+              <div class="temporary-user-card" v-for="(user, index) in temporaryUserData" :key="index">
+                <h4>Démonstration type {{ index + 1 }}</h4>
+                <input v-model="user.alias" placeholder="Alias (ex: Sophie)" />
+                <input v-model="user.email" placeholder="E-mail (ex: sophie@email.com)" />
+                <label><input type="checkbox" v-model="user.can_scan" /> Peut scanner</label>
+                <label><input type="checkbox" v-model="user.can_sell" /> Peut vendre</label>
+              </div>
+            </div>
+          </div>
+
+              <div v-if="temporaryUsers && temporaryUsers.length">
+                <h3>Utilisateurs temporaires créés !</h3>
+                <!-- <ul>
+                  <li v-for="user in temporaryUsers" :key="user.username">
+                    {{ user.username }} - Scan: <a :href="user.scan_link" target="_blank">Lien scan</a>,
+                    Vente: <a :href="user.sell_link" target="_blank">Lien vente</a>
+                  </li>
+                </ul> -->
+              </div>
+         
+          
+
+        <!-- Message de statut -->
         <p v-if="success" class="success">L'inscription est faite !
         </p>
         <p v-if="error" class="error">{{ error }}
@@ -151,7 +175,6 @@
                 <a :href="invitationLink" target="_blank">{{ invitationLink }}</a>
               </p>
         </div>
-          </div>
         </form>
       </div>
     </div>
@@ -159,7 +182,7 @@
 </template>
 
 <script>
-import { ref, computed } from 'vue';
+import { ref, computed, reactive } from 'vue';
 import { useEventStore } from '@/stores/eventStore';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from "@/stores/authStore";
@@ -177,6 +200,20 @@ export default {
 
     const menuOpen = ref(false);
     const searchQuery = ref("");
+
+    const event = reactive({
+      name: '',
+      start_date: '',
+      end_date: '',
+      temp_user_limit: 0,
+    });
+    const submitEvent = async () => {
+      console.log("Submitting event:", event);
+      await eventStore.createEventWithTemporaryUsers(event);
+    };
+    const loading = computed(() => eventStore.loading);
+    const error = computed(() => eventStore.error);
+    const temporaryUsers = computed(() => eventStore.temporaryUsers);
 
     // Basculer le menu
     const toggleMenu = () => {
@@ -205,6 +242,11 @@ export default {
     };
 
     return {
+      event,
+      loading,
+      error,
+      temporaryUsers,
+      submitEvent,
       menuOpen,
       searchQuery,
       toggleMenu,
@@ -243,18 +285,41 @@ export default {
       invitationLink: '',
       selectedImage: null, 
       imagePreview: null,  
+
+      temporaryUserData: [
+      {
+        alias: '',
+        email: '',
+        can_scan: true,
+        can_sell: true
+      }
+    ]
     };
   },
-  watch: {
-    "form.date_start"(newDateStart) {
-      // Si date_end est vide ou antérieure à date_start, mettez-la à jour
-      if (!this.form.date_end || this.form.date_end < newDateStart) {
-        this.form.date_end = newDateStart;
-      }
-    },
+  watch: 
+  {
+  "event.temp_user_limit"(newVal) {
+    this.generateTemporaryUserData();
+  },
+  "form.date_start"(newDateStart) {
+    // Si date_end est vide ou antérieure à date_start, mettez-la à jour
+    if (!this.form.date_end || this.form.date_end < newDateStart) {
+      this.form.date_end = newDateStart;
+    }
+  },
   },
   methods: {
     
+    generateTemporaryUserData() {
+    const limit = this.event.temp_user_limit || 0;
+    this.temporaryUserData = Array.from({ length: limit }, (_, i) => ({
+      alias: `TempUser${i + 1}`,
+      email: `temp${i + 1}@eventworld.com`,
+      can_scan: true,
+      can_sell: true
+    }));
+    },
+
     validatePostalCode(event) {
     const value = event.target.value;
     // Supprime tout caractère non numérique
@@ -282,57 +347,50 @@ export default {
           console.error('Erreur lors de la génération de l’invitation:', err);
         }
       },
-
-      // handleImageUpload(event) {
-      //     const file = event.target.files[0];
-      //     if (file && file.type.startsWith('image/')) {
-      //       this.selectedImage = file;
-      //       this.imagePreview = URL.createObjectURL(file); // Génère une URL temporaire pour l'aperçu
-      //       console.log('Image sélectionnée :', file);
-      //     } else {
-      //       console.error('Le fichier sélectionné n\'est pas une image.');
-      //       this.selectedImage = null;
-      //       this.imagePreview = null; // Réinitialise l'aperçu si le fichier n'est pas valide
-      //     }
-      //   },
+      
       onImageSelect(event) {
         const { file, preview } = handleImageUpload(event);
         this.selectedImage = file;
         this.imagePreview = preview;
   },
 
-    async createEvent() {
-    const eventStore = useEventStore();
-    try {
-      // Préparer les données sous forme de FormData
-      const formData = new FormData();
-      for (const key in this.form) {
-        if (Array.isArray(this.form[key])) {
-          formData.append(key, JSON.stringify(this.form[key])); // Sérialiser les tableaux
-        } else {
-          formData.append(key, this.form[key]);
-        }
-      }
-      if (this.selectedImage) {
-        formData.append('picture', this.selectedImage); // Ajouter l'image au FormData
-      }
-
-      // Vérifiez le contenu du FormData
-        for (let pair of formData.entries()) {
-          console.log(pair[0] + ':', pair[1]);
-      }
-
-      // Appeler le store pour créer l'événement
-      await eventStore.createEvent(formData);
-      this.success = true;
-      this.error = null;
-      confirm('Événement créé avec succès !');
-      this.resetForm();
-    } catch (err) {
-      this.success = false;
-      this.error = 'Erreur lors de la création de l\'évènement.';
+async createEvent() {
+  const eventStore = useEventStore();
+  try {
+    const formData = new FormData();
+    for (const key in this.form) {
+      const value = this.form[key];
+      formData.append(key, Array.isArray(value) ? JSON.stringify(value) : value);
     }
-  },
+
+    formData.append('temp_user_limit', this.event.temp_user_limit);
+    formData.append("temp_user_temp_data",JSON.stringify(this.temporaryUserData));
+
+    if (this.selectedImage) {
+      formData.append('picture', this.selectedImage);
+    }
+
+    // 👇 Appel 1 : créer l'événement
+    await eventStore.createEvent(formData);
+
+    // ✅ Crée une copie propre
+    const formDataForTempUsers = new FormData();
+    for (let pair of formData.entries()) {
+      formDataForTempUsers.append(pair[0], pair[1]);
+    }
+
+    // 👇 Appel 2 : créer les utilisateurs temporaires
+    await eventStore.createEventWithTemporaryUsers(formDataForTempUsers);
+
+    this.success = true;
+    this.error = null;
+    confirm('Événement créé avec succès !');
+    this.resetForm();
+  } catch (err) {
+    this.success = false;
+    this.error = 'Erreur lors de la création de l\'évènement.';
+  }
+},
 // fonction à modifier ci dessus
 
     resetForm() {
@@ -350,8 +408,12 @@ export default {
         type_event: '',
         number_place: null,
         price_categories: [],
-        temporary_user: false,
+        temporaryUsers: '',
       };
+      this.event.temp_user_limit = 0;
+      this.temporaryUserData = []; // 👈 reset ici
+      this.imagePreview = null;
+      this.selectedImage = null;
     },
   },
 };

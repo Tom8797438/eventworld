@@ -221,3 +221,20 @@ export async function fetchInvitationByEventId(eventId) {
   }
 }
 
+// ===========================
+// ✅ PARTIE GESTION DES UTILISATEURS TEMPORAIRES
+// ===========================
+
+export async function createEventWithTempUsers(formData) {
+  try {
+    console.log("Données dans api_utils.js createEventWithTempUsers :", formData);
+    const response = await api.post('event/create-with-temp-users/', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+    console.log("Données dans api_utils.js createEventWithTempUsers :", formData);
+    return response.data;
+  } catch (error) {
+    console.error("Erreur lors de la création de l'utilisateur temporaire :", error.response?.data || error.message);
+    throw error;
+  }
+}

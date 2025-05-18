@@ -2,7 +2,8 @@ from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
-from django.utils import timezone
+from django.utils.timezone import make_aware
+from datetime import datetime, time
 from datetime import timedelta
 from EventWorldApp.models import Evenement, User, TemporaryScanner
 
@@ -22,7 +23,7 @@ class CreateTemporaryScannerView(APIView):
             if event.organisator != request.user:
                 return Response({"error": "Vous n'êtes pas l'organisateur de cet événement."}, status=403)
 
-            expires_at = timezone.now() + timedelta(days=days)
+            expires_at =  make_aware(datetime.combine(event.date_end + timedelta(days=1), time.min))
 
             TemporaryScanner.objects.update_or_create(
                 user=user,
