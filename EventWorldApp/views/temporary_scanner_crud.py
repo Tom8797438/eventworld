@@ -8,10 +8,12 @@ from EventWorldApp.models import Evenement, TemporaryScanner
 class TemporaryScannerDetailView(APIView):
     permission_classes = [IsAuthenticated]
 
-    def put(self, request, event_id, scanner_id):
+    def put(self, request, scanner_id):
         try:
-            event = Evenement.objects.get(id=event_id, organisator=request.user)
-            scanner = TemporaryScanner.objects.get(id=scanner_id, event=event)
+            scanner = TemporaryScanner.objects.select_related("event").get(id=scanner_id)
+            event = scanner.event
+            if event.organisator != request.user:
+                            return Response({"error": "Accès interdit."}, status=403)
 
             scanner.display_name = request.data.get("alias", scanner.display_name)
             scanner.email = request.data.get("email", scanner.email)
@@ -25,10 +27,13 @@ class TemporaryScannerDetailView(APIView):
         except TemporaryScanner.DoesNotExist:
             return Response({"error": "Utilisateur temporaire introuvable."}, status=404)
 
-    def delete(self, request, event_id, scanner_id):
+    def delete(self, request, scanner_id):
         try:
-            event = Evenement.objects.get(id=event_id, organisator=request.user)
-            scanner = TemporaryScanner.objects.get(id=scanner_id, event=event)
+            scanner = TemporaryScanner.objects.select_related("event").get(id=scanner_id)
+            event = scanner.event
+            if event.organisator != request.user:
+                return Response({"error": "Accès interdit."}, status=403)
+            
             scanner.user.delete()  # supprime aussi l'utilisateur lié
             scanner.delete()
             return Response({"message": "Utilisateur temporaire supprimé avec succès."})

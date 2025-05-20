@@ -30,15 +30,17 @@ urlpatterns = [
 
     path('register/', RegisterView.as_view(), name='register'),
     path('tickets/',TicketCreateView.as_view(), name='tickets'),
-    path ('scan_ticket/',ScanTicket.as_view(),name='scan_ticket'),
+    path('scan_ticket/',ScanTicket.as_view(),name='scan_ticket'),
     
     path('events/draft/', CreateDraftEventView.as_view(), name='create-draft-event'),
     path('invitation/', GenerateInvitationView.as_view(), name='generate-invitation'),
     
     path('create-temporary-scanner/', CreateTemporaryScannerView.as_view(), name='create-temporary-scanner'),
     path('event/create-with-temp-users/', CreateEventWithTemporaryScanners.as_view()),
-    path('event/<uuid:event_id>/temporary-scanners/', EventTemporaryScannersListView.as_view()),
+    path('event/<uuid:event_id>/temporary-scanners/', EventTemporaryScannersListView.as_view(), name="temporary_scanner_list"),
+    path('event/<uuid:event_id>/temporary-scanner/<uuid:scanner_id>/', TemporaryScannerDetailView.as_view(), name="temporary_scanner_detail"),
     path('temporary-scanner/status/', TemporaryScannerStatusView.as_view()),
+    path('temporary-scanner/<uuid:scanner_id>/', TemporaryScannerDetailView.as_view(), name='update-temporary-scanner'),
     
     path('invitation/<uuid:id>/', EventInvitationDetailView.as_view(), name='event-invitation-detail'),
     path("invitation/by-event/", get_invitation_by_event_id, name="get-invitation-by-event-id"),

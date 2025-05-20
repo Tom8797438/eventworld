@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import { fetchEvents, createEvent, updateEvent, deleteEvent, generateInvitation, fetchInvitationById, createEventWithTempUsers } from "@/utils/api_utils";
+import {fetchTemporaryScanners, deleteTemporaryScanner, updateTemporaryScanner } from "@/utils/api_utils";
 import { getEventImageUrl } from '@/utils/imageEvent';
 
 export const useEventStore = defineStore('eventStore', {
@@ -9,6 +10,7 @@ export const useEventStore = defineStore('eventStore', {
     loading: false,
     error: null,
     selectedEvent: null,
+    temporaryScanners: [],
   }),
   actions: {
     setSelectedEvent(event) {
@@ -87,7 +89,6 @@ export const useEventStore = defineStore('eventStore', {
       }
     },
     
-
     async deleteEvent(Id) {
       try {
           this.loading = true;
@@ -129,7 +130,7 @@ export const useEventStore = defineStore('eventStore', {
       }
     },
 
-    // ⚡️ Nouvelle action dédiée uniquement à la création avec utilisateurs temporaires
+    // Action dédiée à la création avec utilisateurs temporaires
     async createEventWithTemporaryUsers(payload) {
         try {
       this.loading = true;
@@ -154,5 +155,60 @@ export const useEventStore = defineStore('eventStore', {
         this.loading = false;
       }
     },
+
+    // Action dédiée à la récupération des utilisateurs temporaires
+    async loadTemporaryScanners(eventId) {
+      try {
+        this.loading = true;
+        console.log("eventId : ", eventId);
+        const scanners = await fetchTemporaryScanners(eventId);
+        this.temporaryScanners = scanners.map(scanner => ({
+          id: scanner.id,
+          display_name: scanner.display_name || scanner.user || 'Utilisateur temporaire',
+          email: scanner.email || 'email inconnu',
+          can_scan: scanner.can_scan,
+          can_sell: scanner.can_sell,
+          access_token: scanner.access_token,
+          last_seen_at: scanner.last_seen_at,
+          tickets_sold: scanner.tickets_sold,
+          tickets_scanned: scanner.tickets_scanned
+        }));
+      } catch (error) {
+        this.error = "Erreur lors du chargement des utilisateurs temporaires.";
+        throw error;
+      } finally {
+        this.loading = false;
+      }
+    },
+
+    // Action dédiée à la modification des utilisateurs temporaires
+    async updateTemporaryScanner(scannerId, payload) {
+      try {
+        this.loading = true;
+        const response = await updateTemporaryScanner(scannerId, payload);
+        //await this.loadTemporaryScanners(this.editedEvent?.id); // refresh local
+        return response;
+      } catch (err) {
+        this.error = "Erreur lors de la modification de l'utilisateur temporaire.";
+        throw err;
+      } finally {
+        this.loading = false;
+      }
+    },
+
+    // Action dédiée à la suppression des utilisateurs temporaires
+    async deleteTemporaryScanner(scannerId) {
+      try {
+        this.loading = true;
+        const response = await deleteTemporaryScanner(scannerId);
+        //await this.loadTemporaryScanners(scannerId); // refresh local
+        return response;
+      } catch (err) {
+        this.error = "Erreur lors de la suppression de l'utilisateur temporaire.";
+        throw err;
+      } finally {
+        this.loading = false;
+      }
+    }
   },
 });

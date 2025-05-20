@@ -225,16 +225,47 @@ export async function fetchInvitationByEventId(eventId) {
 // ✅ PARTIE GESTION DES UTILISATEURS TEMPORAIRES
 // ===========================
 
-export async function createEventWithTempUsers(formData) {
-  try {
-    console.log("Données dans api_utils.js createEventWithTempUsers :", formData);
-    const response = await api.post('event/create-with-temp-users/', formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    });
-    console.log("Données dans api_utils.js createEventWithTempUsers :", formData);
-    return response.data;
-  } catch (error) {
-    console.error("Erreur lors de la création de l'utilisateur temporaire :", error.response?.data || error.message);
-    throw error;
+  export async function createEventWithTempUsers(formData) {
+    try {
+      console.log("Données dans api_utils.js createEventWithTempUsers :", formData);
+      const response = await api.post('event/create-with-temp-users/', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      console.log("Données dans api_utils.js createEventWithTempUsers :", formData);
+      return response.data;
+    } catch (error) {
+      console.error("Erreur lors de la création de l'utilisateur temporaire :", error.response?.data || error.message);
+      throw error;
+    }
   }
-}
+
+  export async function fetchTemporaryScanners(eventId) {
+    try {
+      const response = await api.get(`event/${eventId}/temporary-scanners/`);
+      console.log("Données dans api_utils.js loadTemporaryScanners :", response.data);
+      return response.data;
+    } catch (error) {
+      console.error("Erreur loadTemporaryScanners:", error.response?.data || error.message);
+      throw error;
+    }
+  }
+
+  export async function updateTemporaryScanner(scannerId, payload) {
+    try {
+      const response = await api.put(`temporary-scanner/${scannerId}/`, payload);
+      return response.data;
+    } catch (error) {
+      console.error("Erreur updateTemporaryScanner:", error.response?.data || error.message);
+      throw error;
+    }
+  }
+
+  export async function deleteTemporaryScanner(scannerId) {
+    try {
+      const response = await api.delete(`temporary-scanner/${scannerId}/`);
+      return response.data;
+    } catch (error) {
+      console.error("Erreur deleteTemporaryScanner:", error.response?.data || error.message);
+      throw error;
+    }
+  }

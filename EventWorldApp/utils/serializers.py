@@ -35,6 +35,23 @@ class EventSerializer(serializers.ModelSerializer):
         fields = "__all__"
         read_only_fields = ('code_evenement', 'organisator','created_at', 'updated_at') 
 
+class TemporaryScannerSerializerLight(serializers.ModelSerializer):
+    class Meta:
+        model = TemporaryScanner
+        fields = [
+            'id', 'display_name', 'email', 'access_token',
+            'can_scan', 'can_sell', 'tickets_scanned',
+            'tickets_sold', 'last_seen_at'
+        ]
+
+class EventDetailSerializer(serializers.ModelSerializer):
+    temporary_scanners = TemporaryScannerSerializerLight(many=True, read_only=True)
+
+    class Meta:
+        model = Evenement
+        fields = "__all__"
+
+
 class TicketSerializer(serializers.ModelSerializer):
     class Meta:
         model= Ticketing

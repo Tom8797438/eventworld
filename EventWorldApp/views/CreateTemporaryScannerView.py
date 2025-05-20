@@ -23,7 +23,7 @@ class CreateTemporaryScannerView(APIView):
             if event.organisator != request.user:
                 return Response({"error": "Vous n'êtes pas l'organisateur de cet événement."}, status=403)
 
-            expires_at =  make_aware(datetime.combine(event.date_end + timedelta(days=1), time.min))
+            expires_at = make_aware(datetime.combine(event.date_end + timedelta(days=1), time.min))
 
             TemporaryScanner.objects.update_or_create(
                 user=user,

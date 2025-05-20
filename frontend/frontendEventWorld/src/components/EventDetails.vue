@@ -69,10 +69,53 @@
                   placeholder="ex: 10"
                 />
                 <button class="delete-price" @click="removePrice(index)">❌</button>
-                
              
             </div>
             <button class="add-price" @click="addPrice">➕ Ajouter un prix</button>
+      </div>
+
+      <!-- utilisateurs temporaires -->
+      <div class="temporary-users-section">
+        <h3>Utilisateurs temporaires</h3>
+        <div v-if="temporaryScanners?.length">
+          <div v-for="scanner in temporaryScanners" :key="scanner.id" class="scanner-card">
+
+  <!-- Nom et Email modifiables -->
+  <label>
+    Alias :
+    <input v-model="scanner.display_name" type="text" />
+  </label>
+
+  <label>
+    Email :
+    <input v-model="scanner.email" type="email" />
+  </label>
+
+  <!-- Expiration -->
+  <p v-if="scanner.expires_at">Expire le : {{ formatDate(scanner.expires_at) }}</p>
+
+  <!-- Droits modifiables -->
+  <div class="checkbox-group">
+    <label>
+      <input type="checkbox" v-model="scanner.can_scan" />
+      Peut scanner
+    </label>
+    <label>
+      <input type="checkbox" v-model="scanner.can_sell" />
+      Peut vendre
+    </label>
+  </div>
+
+  <!-- Dernière activité -->
+  <p v-if="scanner.last_seen_at">Dernière activité : {{ formatDate(scanner.last_seen_at) }}</p>
+
+  <!-- Actions -->
+  <button @click="updateTempUser(scanner)">💾 Enregistrer</button>
+  <button @click="deleteTempUser(scanner.id)">🗑️ Supprimer</button>
+  <button @click="goToTempUserAccess(scanner.access_token)">🔗 Voir accès</button>
+
+</div>
+        </div>
       </div>
 
         <div v-if="invitationLink" class="invitation-link-section">
@@ -84,7 +127,7 @@
           <button class="button-save back" @click="goBackToEvents">Retour</button>
           <button class="button-save" @click="saveChanges">Enregistrer</button>
         </div>
-      
+    
     </div>
 
       <!-- Colonne droite : Réservation -->
@@ -184,6 +227,9 @@ export default {
     const selectedEvent = computed(() => eventStore.events.find(event => event.id === eventId));
     const { ticketTypes, selectedTickets, total, initializeTickets, addTicket, removeTicket } = useTicketLogic();
     
+    const temporaryScanners = computed(() => eventStore.temporaryScanners);
+
+
     onMounted(async () => {
   if (!selectedEvent.value) {
     console.error('Événement introuvable');
@@ -225,6 +271,9 @@ export default {
     } else {
       console.warn('Aucune invitation trouvée pour cet événement.');
     }
+   // Chargement des utilisateurs temporaires
+    await eventStore.loadTemporaryScanners(rawEvent.id);
+
   } catch (err) {
     console.error('Erreur lors de la récupération du lien d\'invitation :', err);
   }
@@ -237,6 +286,38 @@ const onImageChange = (event) => {
     imagePreviewUrl.value = preview;
   }
 };
+
+const deleteTempUser = async(scannerId) => {
+    if (confirm("Supprimer cet utilisateur temporaire ?")) {
+      try {
+      await eventStore.deleteTemporaryScanner(scannerId);
+      await eventStore.loadTemporaryScanners(editedEvent.value.id);
+      alert("Utilisateur Supprimer !");
+
+      } catch (err) {
+        alert("Erreur lors de la suppression.");
+        console.error(err);
+      }
+    }
+  };
+  const updateTempUser = async(scanner) => {
+    try {
+      const payload = {
+        alias: scanner.display_name,
+        email: scanner.email,
+        can_scan: scanner.can_scan,
+        can_sell: scanner.can_sell
+      };
+      console.log("Update scanner ID :", scanner.id);
+      await eventStore.updateTemporaryScanner(scanner.id, payload);
+      // await eventStore.loadTemporaryScanners(editedEvent.value.id);
+      alert("Utilisateur mis à jour !");
+
+    } catch (err) {
+      alert("Erreur lors de la mise à jour.");
+      console.error(err);
+    }
+  };
 
 const saveChanges = async () => {
   try {
@@ -376,8 +457,27 @@ const saveChanges = async () => {
       getEventImageUrl,
       imagePreviewUrl,
       newImageFile,
+      eventStore,
+      temporaryScanners,
+      updateTempUser,
+      deleteTempUser,
     };
   },
+
+methods: {
+
+    editTempUser(scanner) {
+      alert(`Prévoir ici l'édition de ${scanner.display_name}`);
+    },
+
+    goToTempUserAccess(token) {
+      window.open(`/access/temp/${token}`, "_blank");
+    },
+
+    formatDate(date) {
+      return new Date(date).toLocaleString();
+    }
+  }
 };
 </script>
 

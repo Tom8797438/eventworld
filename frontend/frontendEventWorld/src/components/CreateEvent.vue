@@ -371,7 +371,7 @@ async createEvent() {
     }
 
     // 👇 Appel 1 : créer l'événement
-    await eventStore.createEvent(formData);
+    //await eventStore.createEvent(formData);
 
     // ✅ Crée une copie propre
     const formDataForTempUsers = new FormData();
