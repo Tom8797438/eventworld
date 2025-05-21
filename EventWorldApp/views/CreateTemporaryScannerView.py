@@ -36,3 +36,6 @@ class CreateTemporaryScannerView(APIView):
             return Response({"error": "Utilisateur introuvable."}, status=404)
         except Evenement.DoesNotExist:
             return Response({"error": "Événement introuvable."}, status=404)
+
+
+

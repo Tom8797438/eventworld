@@ -7,7 +7,7 @@ from django.utils.crypto import get_random_string
 from django.contrib.auth.hashers import make_password
 from django.utils.timezone import make_aware
 from datetime import datetime, time
-from EventWorldApp.models import User  # ✅ IMPORT MANQUANT
+from EventWorldApp.models import User
 from EventWorldApp.models import Evenement, TemporaryScanner, InvitationNotification
 from EventWorldApp.utils.serializers import EventSerializer
 

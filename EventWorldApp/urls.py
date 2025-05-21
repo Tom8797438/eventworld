@@ -15,7 +15,7 @@ from .views.ScanView import ScanTicket
 from .views.LinkInvitationView import CreateDraftEventView, GenerateInvitationView, EventInvitationDetailView, get_invitation_by_event_id
 from rest_framework.routers import DefaultRouter
 
-from .views.temporary_scanner_crud import (TemporaryScannerDetailView, TemporaryScannerListView)
+from .views.temporary_scanner_crud import (TemporaryScannerCreateView, TemporaryScannerDetailView, TemporaryScannerListView)
 from EventWorldApp.views.access_temp_token import TemporaryAccessView
 
 router = DefaultRouter()
@@ -48,6 +48,8 @@ urlpatterns = [
     path("event/<uuid:event_id>/temporary-users/", TemporaryScannerListView.as_view(), name="temporary-user-list"),
     path("event/<uuid:event_id>/temporary-user/<uuid:scanner_id>/", TemporaryScannerDetailView.as_view(), name="temporary-user-detail"),
     path("access/temp/<uuid:token>/", TemporaryAccessView.as_view(), name="temporary-access"),
+    path('temporary-scanner/', TemporaryScannerCreateView.as_view(), name='create-temporary-scanner'),
+
     
     path('', include(router.urls)),
 ]

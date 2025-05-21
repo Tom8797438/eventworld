@@ -76,46 +76,68 @@
 
       <!-- utilisateurs temporaires -->
       <div class="temporary-users-section">
-        <h3>Utilisateurs temporaires</h3>
+        <h3>Les utilisateurs temporaires enregistrés</h3>
         <div v-if="temporaryScanners?.length">
           <div v-for="scanner in temporaryScanners" :key="scanner.id" class="scanner-card">
 
-  <!-- Nom et Email modifiables -->
-  <label>
-    Alias :
-    <input v-model="scanner.display_name" type="text" />
-  </label>
+            <!-- Nom et Email modifiables -->
+            <label>
+              Alias :
+              <input v-model="scanner.display_name" type="text" />
+            </label>
 
-  <label>
-    Email :
-    <input v-model="scanner.email" type="email" />
-  </label>
+            <label>
+              Email :
+              <input v-model="scanner.email" type="email" />
+            </label>
 
-  <!-- Expiration -->
-  <p v-if="scanner.expires_at">Expire le : {{ formatDate(scanner.expires_at) }}</p>
+            <!-- Expiration -->
+            <p v-if="scanner.expires_at">Expire le : {{ formatDate(scanner.expires_at) }}</p>
 
-  <!-- Droits modifiables -->
-  <div class="checkbox-group">
-    <label>
-      <input type="checkbox" v-model="scanner.can_scan" />
-      Peut scanner
-    </label>
-    <label>
-      <input type="checkbox" v-model="scanner.can_sell" />
-      Peut vendre
-    </label>
-  </div>
+            <!-- Droits modifiables -->
+            <div class="checkbox-group">
+              <label>
+                <input type="checkbox" v-model="scanner.can_scan" />
+                Peut scanner
+              </label>
+              <label>
+                <input type="checkbox" v-model="scanner.can_sell" />
+                Peut vendre
+              </label>
+            </div>
 
-  <!-- Dernière activité -->
-  <p v-if="scanner.last_seen_at">Dernière activité : {{ formatDate(scanner.last_seen_at) }}</p>
+            <!-- Dernière activité -->
+            <p v-if="scanner.last_seen_at">Dernière activité : {{ formatDate(scanner.last_seen_at) }}</p>
 
-  <!-- Actions -->
-  <button @click="updateTempUser(scanner)">💾 Enregistrer</button>
-  <button @click="deleteTempUser(scanner.id)">🗑️ Supprimer</button>
-  <button @click="goToTempUserAccess(scanner.access_token)">🔗 Voir accès</button>
+            <!-- Actions -->
+            <button @click="updateTempUser(scanner)">💾 Enregistrer</button>
+            <button @click="deleteTempUser(scanner.id)">🗑️ Supprimer</button>
+            <button @click="goToTempUserAccess(scanner.access_token)">🔗 Voir accès</button>
 
-</div>
+          </div>
+
         </div>
+      </div>
+      <!-- Ajout d'utilisateur temportaire -->
+      <div class="scanner-card new-scanner-form">
+        <h3>Ajouter des utilisateurs temporaires</h3>
+        <label>Alias :
+          <input v-model="newTempUser.alias" type="text" />
+        </label>
+        <label>Email :
+          <input v-model="newTempUser.email" type="email" />
+        </label>
+        <div class="checkbox-group">
+          <label>
+            <input type="checkbox" v-model="newTempUser.can_scan" />
+            Peut scanner
+          </label>
+          <label>
+            <input type="checkbox" v-model="newTempUser.can_sell" />
+            Peut vendre
+          </label>
+        </div>
+        <button @click="createTempUser">➕ Ajouter</button>
       </div>
 
         <div v-if="invitationLink" class="invitation-link-section">
@@ -228,6 +250,14 @@ export default {
     const { ticketTypes, selectedTickets, total, initializeTickets, addTicket, removeTicket } = useTicketLogic();
     
     const temporaryScanners = computed(() => eventStore.temporaryScanners);
+
+    // Ajout de nouvel utilisateur temporaire
+    const newTempUser = ref({
+      alias: '',
+      email: '',
+      can_scan: false,
+      can_sell: false,
+    });
 
 
     onMounted(async () => {
@@ -429,6 +459,32 @@ const saveChanges = async () => {
       return text.length > maxLength ? text.slice(0, maxLength) + '…' : text;
     }
 
+    // champs pour les utilisateurs temporaires
+    const createTempUser = async () => {
+  if (!newTempUser.value.alias || !newTempUser.value.email) {
+    alert("Alias et email sont obligatoires.");
+    return;
+  }
+
+  const payload = {
+    alias: newTempUser.value.alias,
+    email: newTempUser.value.email,
+    can_scan: newTempUser.value.can_scan,
+    can_sell: newTempUser.value.can_sell,
+    event_id: editedEvent.value.id,
+  };
+
+  try {
+    await eventStore.createTemporaryScanner(payload);
+    await eventStore.loadTemporaryScanners(editedEvent.value.id);  // Refresh
+    newTempUser.value = { alias: '', email: '', can_scan: false, can_sell: false };
+    alert("Utilisateur temporaire ajouté !");
+  } catch (err) {
+    console.error("Erreur lors de la création :", err);
+    alert("Erreur lors de l'ajout.");
+  }
+};
+
     return {
       addPrice,
       removePrice,
@@ -461,6 +517,8 @@ const saveChanges = async () => {
       temporaryScanners,
       updateTempUser,
       deleteTempUser,
+      newTempUser,
+      createTempUser,
     };
   },
 

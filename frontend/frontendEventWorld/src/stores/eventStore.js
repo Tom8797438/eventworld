@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { fetchEvents, createEvent, updateEvent, deleteEvent, generateInvitation, fetchInvitationById, createEventWithTempUsers } from "@/utils/api_utils";
-import {fetchTemporaryScanners, deleteTemporaryScanner, updateTemporaryScanner } from "@/utils/api_utils";
+import {fetchTemporaryScanners, deleteTemporaryScanner, updateTemporaryScanner, createTemporaryScanner } from "@/utils/api_utils";
 import { getEventImageUrl } from '@/utils/imageEvent';
 
 export const useEventStore = defineStore('eventStore', {
@@ -205,6 +205,21 @@ export const useEventStore = defineStore('eventStore', {
         return response;
       } catch (err) {
         this.error = "Erreur lors de la suppression de l'utilisateur temporaire.";
+        throw err;
+      } finally {
+        this.loading = false;
+      }
+    },
+
+    // Action dédiée à la création des utilisateurs temporaires depuis eventDetail.vue
+    async createTemporaryScanner(payload) {
+      try {
+        this.loading = true;
+        const response = await createTemporaryScanner(payload);
+        await this.loadTemporaryScanners(payload.event_id); // refresh après ajout
+        return response;
+      } catch (err) {
+        this.error = "Erreur lors de la création d'un utilisateur temporaire.";
         throw err;
       } finally {
         this.loading = false;

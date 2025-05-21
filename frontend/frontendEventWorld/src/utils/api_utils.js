@@ -269,3 +269,13 @@ export async function fetchInvitationByEventId(eventId) {
       throw error;
     }
   }
+
+  export async function createTemporaryScanner(payload) {
+  try {
+    const response = await api.post(`temporary-scanner/`, payload);
+    return response.data;
+  } catch (error) {
+    console.error("Erreur createTemporaryScanner:", error.response?.data || error.message);
+    throw error;
+  }
+}
