@@ -398,8 +398,9 @@ button:hover {
 
 .overlay {
     height: auto; /* autorise la croissance en hauteur */
+    width: auto;
     overflow: visible;
-    padding: 10px;
+    /* padding: 10px; */
     display: flex;
     flex-direction: column;
     align-items: stretch;

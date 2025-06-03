@@ -45,7 +45,7 @@
           <!-- Titre -->
           <div class="form-group row">
             <div class="form-group-item">
-              <label for="name">Evènement</label>
+              <label for="name">Titre Evènement</label>
               <input v-model="form.name" type="text" id="name" required />
             </div>
           </div>
@@ -54,54 +54,38 @@
           <div class="form-group row">
             <div class="form-group-item">
               <label for="description">Description</label>
-              <input 
-              v-model="form.description" 
-              type="text" 
-              id="description" 
-              required 
+              <textarea class="textarea input-modif"
+              v-model="form.description"
+              type="text"
+              id="description"
+              required
               maxlength="1020"
-              />
-            </div>    
-          </div>
-
-          <!-- Lieu et Adresse -->
-          <div class="form-group row">
+              ></textarea>
+            </div> 
             <div class="form-group-item">
               <label for="location">Lieu</label>
               <input v-model="form.location" type="text" id="location" required placeholder="Salle de spectacle"/>
-            </div>
-            <div class="form-group-item">
+              <div class="form-group-item">
               <label for="address">Adresse</label>
               <input v-model="form.address" type="text" id="address" required />
+              </div>
             </div>
+               
           </div>
+
+          
 
           <!-- Code postal et Ville -->
           <div class="form-group row">
             <div class="form-group-item">
-              <label for="postal_code">Code Postal</label>
-              <input v-model="form.postal_code" type="text" id="postal_code" required @input="validatePostalCode"/>
-            </div>
-            <div class="form-group-item">
-              <label for="city">Ville</label>
-              <input v-model="form.city" type="text" id="city" required />
-            </div>
-          </div>
-
-          <!-- Dates -->
-          <div class="form-group row">
-            <div class="form-group-item">
               <label for="date_start">Date début</label>
-              <input v-model="form.date_start" type="date" id="date_start" required />
+                <input v-model="form.date_start" type="date" id="date_start" required />
+              <div class="form-group-item">
+                <label for="date_end">Date fin</label>
+                <input v-model="form.date_end" type="date" id="date_end" :min="form.date_start" required />  
+              </div>
             </div>
-            <div class="form-group-item">
-              <label for="date_end">Date fin</label>
-              <input v-model="form.date_end" type="date" id="date_end" :min="form.date_start" required />
-            </div>
-          </div>
-
-          <!-- Type et Nombre de places -->
-          <div class="form-group row">
+            
             <div class="form-group-item">
               <label for="type_event">Type</label>
               <select v-model="form.type_event" id="type_event" required>
@@ -109,12 +93,22 @@
                   {{ label }}
                 </option>
               </select>
-            </div>
+            
+              <div class="form-group-item">
+                <label for="number_place">Places</label>
+                <input v-model="form.number_place" type="number" id="number_place" required />
+              </div>
+</div>
             <div class="form-group-item">
-              <label for="number_place">Nombre de places</label>
-              <input v-model="form.number_place" type="number" id="number_place" required />
+                <label for="postal_code">Code Postal</label>
+                <input v-model="form.postal_code" type="text" id="postal_code" required @input="validatePostalCode"/>
+              <div class="form-group-item">
+                <label for="city">Ville</label>
+                <input v-model="form.city" type="text" id="city" required />
+              </div>
             </div>
           </div>
+
 
           <!-- Tarification -->
           <div class="form-group row">
@@ -135,28 +129,28 @@
           <div class="temporary-user-section">
             <div class="user-limit-input">
               <label>Utilisateurs temporaires :</label>
-              <input type="number" v-model.number="event.temp_user_limit" min="0" max="100" />
+              <input type="number" v-model.number="event.temp_user_limit" min="0" max="12" placeholder="12"/>
             </div>
 
             <div class="temporary-user-list">
               <div class="temporary-user-card" v-for="(user, index) in temporaryUserData" :key="index">
                 <h4>Démonstration type {{ index + 1 }}</h4>
-                <input v-model="user.alias" placeholder="Alias (ex: Sophie)" />
-                <input v-model="user.email" placeholder="E-mail (ex: sophie@email.com)" />
-                <label><input type="checkbox" v-model="user.can_scan" /> Peut scanner</label>
-                <label><input type="checkbox" v-model="user.can_sell" /> Peut vendre</label>
+                <div class="user-row">
+                  <div class="user-inputs">
+                    <input v-model="user.alias" placeholder="Alias (ex: Sophie)" />
+                    <input v-model="user.email" placeholder="E-mail (ex: sophie@email.com)" />
+                  </div>
+                  <div class="user-checkboxes">
+                    <label><input type="checkbox" v-model="user.can_scan" /> Scanner</label>
+                    <label><input type="checkbox" v-model="user.can_sell" /> Vendre</label>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
 
               <div v-if="temporaryUsers && temporaryUsers.length">
                 <h3>Utilisateurs temporaires créés !</h3>
-                <!-- <ul>
-                  <li v-for="user in temporaryUsers" :key="user.username">
-                    {{ user.username }} - Scan: <a :href="user.scan_link" target="_blank">Lien scan</a>,
-                    Vente: <a :href="user.sell_link" target="_blank">Lien vente</a>
-                  </li>
-                </ul> -->
               </div>
          
           
@@ -188,7 +182,6 @@ import { useRouter } from 'vue-router';
 import { useAuthStore } from "@/stores/authStore";
 import { handleImageUpload } from '@/utils/imageEvent';
 import { confirmAndNavigate } from '@/utils/navigation';
-
 
 export default {
   
@@ -309,9 +302,22 @@ export default {
   },
   },
   methods: {
-    
+    limitTempUser(event) {
+  let value = Number(event.target.value);
+  if (value > 12) {
+    value = 12;
+    event.target.value = 12;
+  }
+  if (value < 0) {
+    value = 0;
+    event.target.value = 0;
+  }
+  this.event.temp_user_limit = value;
+  this.generateTemporaryUserData();
+},
     generateTemporaryUserData() {
     const limit = this.event.temp_user_limit || 0;
+    if (limit > 12) limit = 12;
     this.temporaryUserData = Array.from({ length: limit }, (_, i) => ({
       alias: `TempUser${i + 1}`,
       email: `temp${i + 1}@eventworld.com`,
@@ -370,16 +376,13 @@ async createEvent() {
       formData.append('picture', this.selectedImage);
     }
 
-    // 👇 Appel 1 : créer l'événement
-    //await eventStore.createEvent(formData);
-
-    // ✅ Crée une copie propre
+    // Crée une copie propre
     const formDataForTempUsers = new FormData();
     for (let pair of formData.entries()) {
       formDataForTempUsers.append(pair[0], pair[1]);
     }
 
-    // 👇 Appel 2 : créer les utilisateurs temporaires
+    // Appel 2 : créer les utilisateurs temporaires
     await eventStore.createEventWithTemporaryUsers(formDataForTempUsers);
 
     this.success = true;
@@ -391,8 +394,8 @@ async createEvent() {
     this.error = 'Erreur lors de la création de l\'évènement.';
   }
 },
-// fonction à modifier ci dessus
 
+// fonction à modifier ci dessus
     resetForm() {
       this.form = {
         name: '',
@@ -411,7 +414,7 @@ async createEvent() {
         temporaryUsers: '',
       };
       this.event.temp_user_limit = 0;
-      this.temporaryUserData = []; // 👈 reset ici
+      this.temporaryUserData = []; // reset
       this.imagePreview = null;
       this.selectedImage = null;
     },

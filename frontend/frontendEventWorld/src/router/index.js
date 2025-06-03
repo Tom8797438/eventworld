@@ -13,6 +13,7 @@ import FirstPageView from '@/views/FirstPageView.vue';
 import CreateEvent from '@/components/CreateEvent.vue';
 import ResetPassword from '@/components/ResetPassword.vue';
 import ResetPasswordConfirm from '@/components/ResetPasswordConfirm.vue';
+import TemporaryHomeView from '@/views/TemporaryHomeView.vue';
 
 
 const routes = [
@@ -93,6 +94,19 @@ const routes = [
       component: CreateEvent,
       meta: { layout: BaseLayout },
     }, 
+      {
+    path: '/access/temp/:token',
+    name: 'TemporaryHome',
+    component: TemporaryHomeView,
+  },
+  {
+    path: '/scanner/:token',
+    component: () => import('@/views/ScanPage.vue'),
+  },
+  {
+    path: '/vente/:token',
+    component: () => import('@/views/SellPage.vue'),
+  },
   ];
   const router = createRouter({
     history: createWebHistory(),

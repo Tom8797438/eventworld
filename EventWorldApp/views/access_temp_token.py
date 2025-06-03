@@ -28,7 +28,8 @@ class TemporaryAccessView(APIView):
                 "alias": scanner.display_name,
                 "can_scan": scanner.can_scan,
                 "can_sell": scanner.can_sell,
-                "event": scanner.event.name
+                "event": scanner.event.name,
+                "event_id": str(scanner.event.id)
             })
             response.set_cookie(
                 key="scanner_auth",

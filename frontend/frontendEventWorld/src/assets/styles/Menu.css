@@ -330,7 +330,7 @@
   }
 
   .right-panel{
-    background:#90bddc
+    background:#cac8c8
   }
 
 
@@ -352,7 +352,7 @@
   .event-card {
     flex-direction: column; /* Les éléments à l'intérieur de la carte sont empilés verticalement */
     align-items: flex-start; /* Aligne les éléments au début */
-    background:#90bddc;
+    background:#cac8c8;
   }
   
   .event-image {
