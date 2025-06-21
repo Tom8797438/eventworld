@@ -14,7 +14,7 @@ jobs:
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
-        # nouveauté 2
+        # nouveauté 3
         with:
           node-version: 18
 
