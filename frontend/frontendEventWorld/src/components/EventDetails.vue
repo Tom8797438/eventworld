@@ -340,7 +340,6 @@ const deleteTempUser = async(scannerId) => {
       };
       console.log("Update scanner ID :", scanner.id);
       await eventStore.updateTemporaryScanner(scanner.id, payload);
-      // await eventStore.loadTemporaryScanners(editedEvent.value.id);
       alert("Utilisateur mis à jour !");
 
     } catch (err) {

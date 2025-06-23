@@ -3,6 +3,7 @@ djangorestframework
 djangorestframework-simplejwt
 django-cors-headers
 django-filter
+Pillow
 PyJWT
 requests
 psycopg2-binary

@@ -1,0 +1,10 @@
+[init]
+	defaultBranch = none
+[fetch]
+	recurseSubmodules = false
+[credential]
+	interactive = never
+[transfer]
+	bundleURI = true
+[http "https://gitlab.com"]
+	sslCAInfo = /mnt/d/Projets/Eventworld/eventworld/builds/bzoxCnA6M/0/Tom8797438/eventworld.tmp/CI_SERVER_TLS_CA_FILE
