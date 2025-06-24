@@ -30,6 +30,8 @@
   flex: 2; /* 2/3 de la largeur */
   display: flex;
   flex-direction: column;
+  position: relative;;
+  top:25px;
   gap: 15px;
   background: #efefef;
   color:#000;
