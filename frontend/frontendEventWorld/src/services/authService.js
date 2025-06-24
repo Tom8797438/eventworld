@@ -3,14 +3,9 @@
 import axios from 'axios';
 import Cookies from "js-cookie";
 
-const AUTH_API_URL = 'http://127.0.0.1:8000/api/token/';
-const API_URL = 'http://127.0.0.1:8000/api/'; 
+const AUTH_API_URL = 'http://192.168.56.1:8000/api/token/';
+const API_URL = 'http://192.168.56.1:8000/api/'; 
 
-// export async function login(username, password) {
-//     return await axios.post(AUTH_API_URL, { username, password,}, {
-//         withCredentials: true  // 🍪 Très important pour envoyer/recevoir les cookies
-//       });
-//     }
 
 export async function login(username, password) {
   try {
@@ -31,12 +26,6 @@ export async function login(username, password) {
   }
 }
 
-// Rafraîchissement du token (si tu en fais un jour, via cookie sécurisé)
-// export async function refreshToken() {
-//     return await axios.post(`${AUTH_API_URL}refresh/`, {}, {
-//       withCredentials: true
-//     });
-//   }
 
 export async function refreshToken() {
   const refresh = Cookies.get("refreshToken");
@@ -49,7 +38,7 @@ export async function refreshToken() {
     refresh: refresh,
   });
 
-  Cookies.set("authToken", response.data.access);  // ✅ on met à jour le token
+  Cookies.set("authToken", response.data.access);  
 
   return response.data;
 }

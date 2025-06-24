@@ -35,10 +35,10 @@ SECRET_KEY = 'django-insecure-gy775*qyy9g-4op4=(u04s16451g1-i-k67=_n4e17jg8%z+)_
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-# DEBUG = True => css actif http://127.0.0.1:8000/admin/
-# DEBUG = False => css non actif http://127.0.0.1:8000/admin/
+# DEBUG = True => css actif http://192.168.56.1:8000/admin/
+# DEBUG = False => css non actif http://192.168.56.1:8000/admin/
 
-#ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+#ALLOWED_HOSTS = ['192.168.56.1', 'localhost']
 ALLOWED_HOSTS = ['*']
 
 # Application definition
@@ -87,6 +87,8 @@ MIDDLEWARE = [
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://localhost:8000",
+    "http://192.168.56.1:5173",
+    "http://192.168.56.1:8000",
 ]
 
 # CORS_ORIGIN_ALLOW_ALL = True

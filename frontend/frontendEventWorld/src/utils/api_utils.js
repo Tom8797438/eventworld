@@ -2,7 +2,7 @@ import axios from "axios";
 // import { error } from "cypress/types/jquery";
 import Cookies from "js-cookie";
 
-const API_URL = "http://localhost:8000/api/";
+const API_URL = "http://192.168.56.1:8000/api/";
 
 // ✅ Création d'une instance Axios avec configuration sécurisée
 const api = axios.create({
