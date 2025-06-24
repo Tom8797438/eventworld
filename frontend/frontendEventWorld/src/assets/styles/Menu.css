@@ -252,6 +252,8 @@
 .left-panel {
   flex: 2; /* La colonne gauche occupe 2/3 de l'espace */
   overflow-y: auto;
+   position: relative;
+  top:20px;
 }
 
 .right-panel {
@@ -259,6 +261,8 @@
   background: #007bff49;
   border-radius: 5px;
   padding: 20px;
+  position: relative;
+  top:20px;
   box-shadow: rgba(0, 0, 0, 0.09) 0px 2px 1px, rgba(0, 0, 0, 0.09) 0px 4px 2px, rgba(0, 0, 0, 0.09) 0px 8px 4px, rgba(0, 0, 0, 0.09) 0px 16px 8px, rgba(0, 0, 0, 0.09) 0px 32px 16px;
 }
 
