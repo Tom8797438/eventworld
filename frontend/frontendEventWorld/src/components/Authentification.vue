@@ -34,7 +34,7 @@ export default {
   name: 'Login',
   data() {
     return {
-      identifier: '', // email ou nom d'utilisateur
+      identifier: '',
       password: '',
     };
   },

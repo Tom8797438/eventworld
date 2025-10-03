@@ -87,11 +87,11 @@ MIDDLEWARE = [
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://localhost:8000",
-    "http://192.168.56.1:5173",
-    "http://192.168.56.1:8000",
+    #"http://192.168.56.1:5173",
+    #"http://192.168.56.1:8000",
 ]
 
-# CORS_ORIGIN_ALLOW_ALL = True
+CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
 
 #https://stackoverflow.com/questions/74833288/django-vue3-access-control-allow-origin-is-not-allowed
@@ -225,10 +225,10 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-print("MEDIA_ROOT:", MEDIA_ROOT)
+#print("MEDIA_ROOT:", MEDIA_ROOT)
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 DEFAULT_FROM_EMAIL = 'tomzu974@gmail.com' # Adresse e-mail par défaut pour l'envoi d'e-mails
-FRONTEND_URL = 'http://localhost:5173'  # ou le domaine réel de ton frontend
+#FRONTEND_URL = 'http://localhost:5173'  # ou le domaine réel de ton frontend
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # pour tester dans la console

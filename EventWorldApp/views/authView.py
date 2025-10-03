@@ -27,8 +27,8 @@ class ProtectedView(APIView):
 class UserProfileView(APIView):
     permission_classes = [IsAuthenticated]
     def get(self, request):
-        print("🔍 Header Authorization:", request.headers.get('Authorization'))
-        print("🔍 Utilisateur authentifié :", request.user)
+        print("Header Authorization:", request.headers.get('Authorization'))
+        print("Utilisateur authentifié :", request.user)
         user = request.user
         return Response({
             "id": user.id,

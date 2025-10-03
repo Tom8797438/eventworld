@@ -2,15 +2,15 @@ import axios from "axios";
 // import { error } from "cypress/types/jquery";
 import Cookies from "js-cookie";
 
-const API_URL = "http://192.168.56.1:8000/api/";
+const API_URL = "http://localhost:8000/api/";
 
-// ✅ Création d'une instance Axios avec configuration sécurisée
+// Création d'une instance Axios avec configuration sécurisée
 const api = axios.create({
   baseURL: API_URL,
   headers: { "Content-Type": "application/json" },
 });
 
-// ✅ Ajoute automatiquement le token aux requêtes si disponible
+// Ajoute automatiquement le token aux requêtes si disponible
 api.interceptors.request.use(
   (config) => {
     const token = Cookies.get("authToken");
