@@ -1,208 +1,372 @@
 <template>
-  <div class="overlay" @click="goBackToEvents">
-    <div class="event-card" @click.stop>
-      <!-- Colonne gauche -->
-    <div class="event-details">
-      <div class="event-header-row">
-
-          <div class="left-col">
-            <h2 class="event-title">Votre évènement : {{ selectedEvent?.name || 'Non spécifié' }}</h2>
-            <input class="input-modif" type="text" v-model="editedEvent.name" />
-
-            <p><strong>Description : </strong> {{ truncate(selectedEvent.description, 10) || 'Non spécifié' }}</p>
-            <textarea class="textarea input-modif" v-model="editedEvent.description"></textarea>
-          </div>
-
-          <div class="right-col">
-            <div class="current-image">
+  <div class="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-indigo-100 flex items-center justify-center p-4">
+    <div class="max-w-7xl w-full bg-white rounded-lg shadow-lg overflow-hidden">
+      <!-- Overlay pour fermer -->
+      <div class="flex flex-col md:flex-row h-full">
+        <!-- Colonne gauche : Détails et édition -->
+        <div class="md:w-2/3 p-6 bg-gray-50 overflow-y-auto space-y-6">
+          <!-- Header avec image et titre -->
+          <div class="flex flex-col md:flex-row gap-6">
+            <div class="flex-shrink-0">
               <img
-                  :src="imagePreviewUrl || getEventImageUrl(selectedEvent.picture)"
-                  alt="Image actuelle"
-                  class="event-image-preview"
+                :src="imagePreviewUrl || getEventImageUrl(selectedEvent.picture)"
+                alt="Image actuelle"
+                class="w-80 h-auto rounded-lg border border-gray-300 shadow-md"
+              />
+              <div class="mt-4 bg-blue-50 p-4 rounded-lg border-2 border-dashed border-blue-300">
+                <label for="file-upload" class="block text-sm font-medium text-blue-700 cursor-pointer">📁 Changer l'image :</label>
+                <input
+                  type="file"
+                  id="file-upload"
+                  @change="onImageChange"
+                  accept="image/*"
+                  class="mt-2 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
                 />
+              </div>
             </div>
-
-            <div class="upload-image">
-              <label for="file-upload">📁 Changer l'image :</label>
-              <input type="file" id="file-upload" @change="onImageChange" accept="image/*" />
+            <div class="flex-1 space-y-4">
+              <h2 class="text-3xl font-bold text-purple-800">Votre évènement</h2>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Nom de l'événement</label>
+                <input
+                  class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500"
+                  type="text"
+                  v-model="editedEvent.name"
+                />
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                <textarea
+                  class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500 resize-none"
+                  v-model="editedEvent.description"
+                  rows="4"
+                ></textarea>
+              </div>
             </div>
           </div>
 
-      </div>      
-
-        <p><strong>Date début : </strong> {{ selectedEvent.date_start || 'Non spécifié' }}</p>
-        <input class="input-modif" type="date" v-model="editedEvent.date_start" />
-
-        <p><strong>Date fin : </strong> {{ selectedEvent.date_end || 'Non spécifié' }}</p>
-        <input class="input-modif" type="date" v-model="editedEvent.date_end" />
-
-        <p><strong>Lieu : </strong> {{ selectedEvent.location || 'Non spécifié' }}</p>
-        <input class="input-modif" type="text" v-model="editedEvent.location" />
-
-        <p><strong>Adresse : </strong> {{ selectedEvent.address || 'Non spécifié' }}</p>
-        <input class="input-modif" type="text" v-model="editedEvent.address" />
-
-        <p><strong>Code postal : </strong> {{ selectedEvent.postal_code || 'Non spécifié' }}</p>
-        <input class="input-modif" type="text" v-model="editedEvent.postal_code" required @input="validateNumber"/>
-
-        <p><strong>Ville : </strong> {{ selectedEvent.city || 'Non spécifié' }}</p>
-        <input class="input-modif" type="text" v-model="editedEvent.city" />
-
-        <p><strong>Places disponibles : </strong> {{ selectedEvent.remaining_places ?? 'Non spécifié' }}</p>
-        <input class="input-modif" type="number" v-model="editedEvent.number_place" />
-
-        <div class="price-editor">
-          <h3>Gestion des prix</h3>
-            <div v-for="(price, index) in editedEvent.price_categories" :key="index" class="price-item">
-              <label>Type de prix :</label>
+          <!-- Champs d'édition -->
+          <div class="bg-white p-6 rounded-lg shadow-md border border-purple-200">
+            <h3 class="text-xl font-bold text-purple-800 mb-4">Détails de l'événement</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Date début</label>
                 <input
-                  class="input-modif"
+                  class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500"
+                  type="date"
+                  v-model="editedEvent.date_start"
+                />
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Date fin</label>
+                <input
+                  class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500"
+                  type="date"
+                  v-model="editedEvent.date_end"
+                />
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Lieu</label>
+                <input
+                  class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500"
+                  type="text"
+                  v-model="editedEvent.location"
+                />
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Adresse</label>
+                <input
+                  class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500"
+                  type="text"
+                  v-model="editedEvent.address"
+                />
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Code postal</label>
+                <input
+                  class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500"
+                  type="text"
+                  v-model="editedEvent.postal_code"
+                  @input="validateNumber"
+                />
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Ville</label>
+                <input
+                  class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500"
+                  type="text"
+                  v-model="editedEvent.city"
+                />
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Nombre de places</label>
+                <input
+                  class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500"
+                  type="number"
+                  v-model="editedEvent.number_place"
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- Gestion des prix -->
+          <div class="bg-white p-6 rounded-lg shadow-md border border-purple-200">
+            <h3 class="text-xl font-bold text-purple-800 mb-4">Gestion des prix</h3>
+            <div v-for="(price, index) in editedEvent.price_categories" :key="index" class="flex gap-2 mb-2 items-end">
+              <div class="flex-1">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Catégorie</label>
+                <input
+                  class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500"
                   type="text"
                   v-model="price.label"
                   placeholder="ex: Standard, VIP"
                 />
-              <label>Prix (€) :</label>
+              </div>
+              <div class="w-24">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Prix (€)</label>
                 <input
-                  class="input-modif"
+                  class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500"
                   type="number"
                   v-model="price.value"
-                  placeholder="ex: 10"
+                  placeholder="10"
                 />
-                <button class="delete-price" @click="removePrice(index)">❌</button>
-             
+              </div>
+              <button
+                class="bg-red-600 text-white px-3 py-2 rounded-lg hover:bg-red-700 transition-colors duration-200"
+                @click="removePrice(index)"
+              >
+                ❌
+              </button>
             </div>
-            <button class="add-price" @click="addPrice">➕ Ajouter un prix</button>
-      </div>
-
-      <!-- utilisateurs temporaires -->
-      <div class="temporary-users-section">
-        <h3>Les utilisateurs temporaires enregistrés</h3>
-        <div v-if="temporaryScanners?.length">
-          <div v-for="scanner in temporaryScanners" :key="scanner.id" class="scanner-card">
-
-            <!-- Nom et Email modifiables -->
-            <label>
-              Alias :
-              <input v-model="scanner.display_name" type="text" />
-            </label>
-
-            <label>
-              Email :
-              <input v-model="scanner.email" type="email" />
-            </label>
-
-            <!-- Expiration -->
-            <p v-if="scanner.expires_at">Expire le : {{ formatDate(scanner.expires_at) }}</p>
-
-            <!-- Droits modifiables -->
-            <div class="checkbox-group">
-              <label>
-                <input type="checkbox" v-model="scanner.can_scan" />
-                Peut scanner
-              </label>
-              <label>
-                <input type="checkbox" v-model="scanner.can_sell" />
-                Peut vendre
-              </label>
-            </div>
-
-            <!-- Dernière activité -->
-            <p v-if="scanner.last_seen_at">Dernière activité : {{ formatDate(scanner.last_seen_at) }}</p>
-
-            <!-- Actions -->
-            <button @click="updateTempUser(scanner)">💾 Enregistrer</button>
-            <button @click="deleteTempUser(scanner.id)">🗑️ Supprimer</button>
-            <button @click="goToTempUserAccess(scanner.access_token)">🔗 Voir accès</button>
-
+            <button
+              class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors duration-200 mt-4"
+              @click="addPrice"
+            >
+              ➕ Ajouter un prix
+            </button>
           </div>
 
-        </div>
-      </div>
-      <!-- Ajout d'utilisateur temportaire -->
-      <div class="scanner-card new-scanner-form">
-        <h3>Ajouter des utilisateurs temporaires</h3>
-        <label>Alias :
-          <input v-model="newTempUser.alias" type="text" />
-        </label>
-        <label>Email :
-          <input v-model="newTempUser.email" type="email" />
-        </label>
-        <div class="checkbox-group">
-          <label>
-            <input type="checkbox" v-model="newTempUser.can_scan" />
-            Peut scanner
-          </label>
-          <label>
-            <input type="checkbox" v-model="newTempUser.can_sell" />
-            Peut vendre
-          </label>
-        </div>
-        <button @click="createTempUser">➕ Ajouter</button>
-      </div>
-
-        <div v-if="invitationLink" class="invitation-link-section">
-          <p><strong>Lien d'invitation :</strong></p>
-          <div class="link"><a :href="invitationLink" target="_blank">{{ invitationLink }}</a></div>
-        </div>
-
-        <div class="container-button-save">
-          <button class="button-save back" @click="goBackToEvents">Retour</button>
-          <button class="button-save" @click="saveChanges">Enregistrer</button>
-        </div>
-    
-    </div>
-
-      <!-- Colonne droite : Réservation -->
-      <div class="booking-section">
-        <h3>Coordonnées client</h3>
-        <div class="input-group">
-          <label>Nom</label>
-          <input type="text" placeholder="Votre nom" v-model="firstname" />
-        </div>
-        <div class="input-group">
-          <label>Prénom</label>
-          <input type="text" placeholder="Votre prénom" v-model="lastname" />
-        </div>
-        <div class="input-group">
-          <label>E-mail</label>
-          <input type="email" placeholder="Votre e-mail" v-model="email" required/>
-        </div>
-        <div class="input-group">
-          <label>Téléphone</label>
-          <input type="text" placeholder="Votre N° de téléphone" v-model="phone" required @input="validateNumber"/>
-        </div>
-       
-        <!-- Si plusieurs types de prix, on affiche une liste déroulante -->
-        <h3>Réserver vos places</h3>
-
-        <div v-for="(ticket, index) in selectedTickets" :key="index" >
-          <label v-if="ticketTypes.length > 1">Type de place</label>
-          <select v-if="ticketTypes.length > 1" v-model="ticket.type" class="ticket-selection">
-            <option v-for="option in ticketTypes" :key="option.name" :value="option.name">
-              {{ option.price.label }} - {{ option.price.value }} € 
-            </option>
-          </select>
-
-          <p v-else-if="ticketTypes.length === 1">
-            <strong>{{ ticketTypes[0]?.label || 'Type inconnu' }} :</strong>
-            {{ ticketTypes[0]?.value ?? '0' }} €
-          </p>
-          <p v-else>
-            Aucun tarif disponible.
-          </p>
-
-          <div class="input-group">
-            <label>Quantité</label>
-            <input type="number" min="1" v-model="ticket.quantity" @input="calculateTotal" class="quantity-selection"/>
-            <button class="delete-ticket" @click="removeTicket(index)">❌</button>
+          <!-- Utilisateurs temporaires -->
+          <div class="bg-white p-6 rounded-lg shadow-md border border-purple-200">
+            <h3 class="text-xl font-bold text-purple-800 mb-4">Utilisateurs temporaires</h3>
+            <div v-if="temporaryScanners?.length" class="space-y-4">
+              <div v-for="scanner in temporaryScanners" :key="scanner.id" class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                  <input
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500"
+                    v-model="scanner.display_name"
+                    placeholder="Alias"
+                  />
+                  <input
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500"
+                    v-model="scanner.email"
+                    type="email"
+                    placeholder="Email"
+                  />
+                </div>
+                <div class="flex gap-4 mb-4">
+                  <label class="flex items-center">
+                    <input type="checkbox" v-model="scanner.can_scan" class="mr-2" />
+                    Peut scanner
+                  </label>
+                  <label class="flex items-center">
+                    <input type="checkbox" v-model="scanner.can_sell" class="mr-2" />
+                    Peut vendre
+                  </label>
+                </div>
+                <p v-if="scanner.expires_at" class="text-sm text-gray-600 mb-2">Expire le : {{ formatDate(scanner.expires_at) }}</p>
+                <p v-if="scanner.last_seen_at" class="text-sm text-gray-600 mb-4">Dernière activité : {{ formatDate(scanner.last_seen_at) }}</p>
+                <div class="flex gap-2 flex-wrap">
+                  <button
+                    class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-200"
+                    @click="updateTempUser(scanner)"
+                  >
+                    💾 Enregistrer
+                  </button>
+                  <button
+                    class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors duration-200"
+                    @click="deleteTempUser(scanner.id)"
+                  >
+                    🗑️ Supprimer
+                  </button>
+                  <button
+                    class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors duration-200"
+                    @click="goToTempUserAccess(scanner.access_token)"
+                  >
+                    🔗 Voir accès
+                  </button>
+                  <button
+                    class="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors duration-200"
+                    @click="copyTempUserAccess(scanner.access_token)"
+                  >
+                    📋 Copier lien
+                  </button>
+                  <button
+                    class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors duration-200"
+                    @click="sendTempUserAccess(scanner)"
+                  >
+                    ✉️ Envoyer lien
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="mt-6">
+              <h4 class="text-lg font-semibold text-purple-800 mb-4">Ajouter un utilisateur temporaire</h4>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <input
+                  class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500"
+                  v-model="newTempUser.alias"
+                  placeholder="Alias"
+                />
+                <input
+                  class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500"
+                  v-model="newTempUser.email"
+                  type="email"
+                  placeholder="Email"
+                />
+              </div>
+              <div class="flex gap-4 mb-4">
+                <label class="flex items-center">
+                  <input type="checkbox" v-model="newTempUser.can_scan" class="mr-2" />
+                  Peut scanner
+                </label>
+                <label class="flex items-center">
+                  <input type="checkbox" v-model="newTempUser.can_sell" class="mr-2" />
+                  Peut vendre
+                </label>
+              </div>
+              <button
+                class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors duration-200"
+                @click="createTempUser"
+              >
+                ➕ Ajouter
+              </button>
+            </div>
           </div>
 
+          <!-- Lien d'invitation -->
+          <div v-if="invitationLink" class="bg-blue-50 p-4 rounded-lg border border-blue-200">
+            <p class="text-sm text-blue-700"><strong>Lien d'invitation :</strong></p>
+            <div class="flex flex-col md:flex-row md:items-center gap-2">
+              <a :href="invitationLink" target="_blank" class="text-blue-600 underline break-all">{{ invitationLink }}</a>
+              <button
+                class="bg-gray-600 text-white px-3 py-2 rounded-lg hover:bg-gray-700 transition-colors duration-200 text-sm"
+                @click="copyInvitationLink"
+              >
+                📋 Copier lien
+              </button>
+            </div>
+          </div>
+
+          <!-- Boutons -->
+          <div class="flex justify-end gap-4">
+            <button
+              class="bg-gray-600 text-white px-6 py-3 rounded-lg hover:bg-gray-700 transition-colors duration-200 font-semibold"
+              @click="goBackToEvents"
+            >
+              Retour
+            </button>
+            <button
+              class="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors duration-200 font-semibold"
+              @click="saveChanges"
+            >
+              Enregistrer
+            </button>
+          </div>
         </div>
 
-        <button v-if="ticketTypes.length > 1" class="add-ticket" @click="addTicket">➕ Ajouter un autre ticket</button>
+        <!-- Colonne droite : Réservation -->
+        <div class="md:w-1/3 p-6 bg-white border-l border-gray-200 overflow-y-auto space-y-6">
+          <h3 class="text-2xl font-bold text-purple-800">Coordonnées client</h3>
+          <div class="space-y-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Prénom</label>
+              <input
+                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500"
+                type="text"
+                placeholder="Votre prénom"
+                v-model="firstname"
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Nom</label>
+              <input
+                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500"
+                type="text"
+                placeholder="Votre nom"
+                v-model="lastname"
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+              <input
+                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500"
+                type="email"
+                placeholder="Votre e-mail"
+                v-model="email"
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Téléphone</label>
+              <input
+                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500"
+                type="text"
+                placeholder="Votre N° de téléphone"
+                v-model="phone"
+                @input="validateNumber"
+              />
+            </div>
+          </div>
 
-        <p class="total">Total : {{ total }} €</p>
-        <button @click="bookTickets" class="add-ticket">Réserver vos places</button>
+          <h3 class="text-2xl font-bold text-purple-800">Réserver vos places</h3>
+          <div v-for="(ticket, index) in selectedTickets" :key="index" class="space-y-2 bg-gray-50 p-4 rounded-lg">
+            <select
+              v-if="ticketTypes.length > 1"
+              v-model="ticket.type"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500"
+            >
+              <option v-for="option in ticketTypes" :key="option.name" :value="option.name">
+                {{ option.price.label }} - {{ option.price.value }} €
+              </option>
+            </select>
+            <p v-else-if="ticketTypes.length === 1" class="text-sm text-gray-700">
+              <strong>{{ ticketTypes[0]?.label || 'Type inconnu' }} :</strong> {{ ticketTypes[0]?.value ?? '0' }} €
+            </p>
+            <div class="flex items-center gap-2">
+              <input
+                class="w-20 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500"
+                type="number"
+                min="1"
+                v-model="ticket.quantity"
+                @input="calculateTotal"
+              />
+              <button
+                class="bg-red-600 text-white px-3 py-2 rounded-lg hover:bg-red-700 transition-colors duration-200"
+                @click="removeTicket(index)"
+              >
+                ❌
+              </button>
+            </div>
+          </div>
+
+          <button
+            v-if="ticketTypes.length > 1"
+            class="w-full bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors duration-200 font-semibold"
+            @click="addTicket"
+          >
+            ➕ Ajouter un autre ticket
+          </button>
+
+          <div class="bg-purple-50 p-4 rounded-lg border border-purple-200">
+            <p class="text-lg font-bold text-center text-purple-800">Total : {{ total }} €</p>
+          </div>
+          <button
+            class="w-full bg-green-600 text-white py-3 px-4 rounded-lg hover:bg-green-700 transition-colors duration-200 font-semibold"
+            @click="bookTickets"
+          >
+            Réserver vos places
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -213,7 +377,7 @@ import { ref, computed, onMounted } from 'vue';
 import { useEventStore } from '@/stores/eventStore';
 import { useTicketStore } from '@/stores/ticketStore';
 import { useRoute, useRouter } from 'vue-router';
-import { fetchInvitationByEventId } from '@/utils/api_utils';
+import { fetchInvitationByEventId, sendTempAccessLink } from '@/utils/api_utils';
 import { useTicketLogic } from '@/utils/useTicketLogic';
 import { validateNumber } from '@/utils/validators';
 import { getEventImageUrl, handleImageUpload } from '@/utils/imageEvent';
@@ -528,17 +692,47 @@ methods: {
     },
 
     goToTempUserAccess(token) {
-      window.open(`/access/temp/${token}`, "_blank");
+      window.open(this.getTempAccessLink(token), "_blank");
+    },
+    getTempAccessLink(token) {
+      return `${window.location.origin}/access/temp/${token}`;
+    },
+    async copyTempUserAccess(token) {
+      const link = this.getTempAccessLink(token);
+      try {
+        await navigator.clipboard.writeText(link);
+        alert("Lien copie.");
+      } catch (err) {
+        console.error(err);
+        alert("Impossible de copier le lien.");
+      }
+    },
+    async sendTempUserAccess(scanner) {
+      if (!scanner?.id) return;
+      const eventId = this.editedEvent?.id;
+      if (!eventId) return;
+      try {
+        await sendTempAccessLink(eventId, scanner.id, scanner.email);
+        alert("Lien envoye par mail.");
+      } catch (err) {
+        console.error(err);
+        alert("Erreur lors de l'envoi du lien.");
+      }
     },
 
     formatDate(date) {
       return new Date(date).toLocaleString();
+    },
+    async copyInvitationLink() {
+      if (!this.invitationLink) return;
+      try {
+        await navigator.clipboard.writeText(this.invitationLink);
+        alert("Lien copie.");
+      } catch (err) {
+        console.error(err);
+        alert("Impossible de copier le lien.");
+      }
     }
   }
 };
 </script>
-
-<style scoped>
-@import '@/assets/styles/EventDetails.css';
-
-</style>

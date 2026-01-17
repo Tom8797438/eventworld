@@ -1,68 +1,132 @@
 <template>
-    <div class="overlay" @click="goBackToEvents">
-      <div class="event-card" @click.stop v-if="selectedEvent">
-        <!-- Colonne gauche -->
-        <div class="event-details">
-          <h2 class="event-title">{{ selectedEvent?.name || 'Non spécifié' }}</h2>
-          <p ><strong>Description:</strong></p>
-          <textarea readonly class="description"> {{ selectedEvent.description || 'Non spécifié' }}</textarea>
+  <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" @click="goBackToEvents">
+    <div class="max-w-6xl w-full mx-4 bg-white rounded-lg shadow-lg overflow-hidden flex flex-col md:flex-row" @click.stop v-if="selectedEvent">
+      <!-- Colonne gauche : Détails de l'événement -->
+      <div class="md:w-2/3 p-6 bg-gray-50 space-y-4">
+        <h2 class="text-2xl font-bold text-purple-800">{{ selectedEvent?.name || 'Non spécifié' }}</h2>
+        <div class="space-y-2 text-sm text-gray-700">
+          <p><strong>Description:</strong></p>
+          <textarea
+            readonly
+            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-white resize-none"
+            rows="4"
+          >
+            {{ selectedEvent.description || 'Non spécifié' }}
+          </textarea>
           <p><strong>Date début:</strong> {{ selectedEvent.date_start || 'Non spécifié' }}</p>
           <p><strong>Date fin:</strong> {{ selectedEvent.date_end || 'Non spécifié' }}</p>
           <p><strong>Lieu :</strong> {{ selectedEvent.location || 'Non spécifié' }}</p>
           <p><strong>Adresse :</strong> {{ selectedEvent.address || 'Non spécifié' }}</p>
           <p><strong>Ville :</strong> {{ selectedEvent.city || 'Non spécifié' }}</p>
-          <p><strong>Places disponibles :</strong> {{ selectedEvent.remaining_places  || 'Non spécifié' }}</p>
-        </div>
-  
-        <!-- Colonne droite : Réservation -->
-        <div class="booking-section">
-          <h3>Vos coordonnées</h3>
-          <div class="input-group">
-            <label>Nom</label>
-            <input type="text" placeholder="Votre nom" v-model="firstname" required @input="validateTextOnly"/>
-          </div>
-          <div class="input-group">
-            <label>Prénom</label>
-            <input type="text" placeholder="Votre prénom" v-model="lastname" required @input="validateTextOnly"/>
-          </div>
-          <div class="input-group">
-            <label>E-mail</label>
-            <input type="email" placeholder="Votre e-mail" v-model="email" required @input="isValidEmail"/>
-          </div>
-          <div class="input-group">
-            <label>Téléphone</label>
-            <input type="text" placeholder="Votre N° de téléphone" v-model="phone" required @input="validateNumber"/>
-          </div>
-  
-          <!-- Si plusieurs types de prix, on affiche une liste déroulante -->
-          <h3>Réserver vos places</h3>
-  
-          <div v-for="(ticket, index) in selectedTickets" :key="index" >
-            <label v-if="ticketTypes.length > 1" >Type de place</label>
-            <select v-if="ticketTypes.length > 1" v-model="ticket.type" class="ticket-selection">
-              <option v-for="option in ticketTypes" :key="option.name" :value="option.name">
-                {{ option.price.label }} - {{ option.price.value }} € 
-              </option>
-            </select>
-  
-            <p v-else><strong>{{ ticketTypes[0].price.label }} :</strong>{{ ticketTypes[0].price.value }} €</p>
-  
-            <div class="input-group">
-              <label>Quantité</label>
-              <input type="number" min="1" v-model="ticket.quantity" @input="calculateTotal" class="quantity-selection"/>
-              <button class="delete-ticket" @click="removeTicket(index)">❌</button>
-            </div>
-  
-          </div>
-  
-          <button v-if="ticketTypes.length > 1" class="add-ticket" @click="addTicket">➕ Ajouter un autre ticket</button>
-  
-          <p class="total">Total : {{ total }} €</p>
-          <button @click="bookTickets">Réserver vos places</button>
+          <p><strong>Places disponibles :</strong> {{ selectedEvent.remaining_places || 'Non spécifié' }}</p>
         </div>
       </div>
+
+      <!-- Colonne droite : Réservation -->
+      <div class="md:w-1/3 p-6 bg-white border-l border-gray-200 space-y-6">
+        <h3 class="text-xl font-bold text-purple-800">Vos coordonnées</h3>
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Nom</label>
+            <input
+              type="text"
+              placeholder="Votre nom"
+              v-model="firstname"
+              required
+              @input="validateTextOnly"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+            />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Prénom</label>
+            <input
+              type="text"
+              placeholder="Votre prénom"
+              v-model="lastname"
+              required
+              @input="validateTextOnly"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+            />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">E-mail</label>
+            <input
+              type="email"
+              placeholder="Votre e-mail"
+              v-model="email"
+              required
+              @input="isValidEmail"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+            />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Téléphone</label>
+            <input
+              type="text"
+              placeholder="Votre N° de téléphone"
+              v-model="phone"
+              required
+              @input="validateNumber"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+            />
+          </div>
+        </div>
+
+        <h3 class="text-xl font-bold text-purple-800">Réserver vos places</h3>
+        <div v-for="(ticket, index) in selectedTickets" :key="index" class="space-y-2">
+          <div v-if="ticketTypes.length > 1">
+            <label class="block text-sm font-medium text-gray-700 mb-1">Type de place</label>
+            <select
+              v-model="ticket.type"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+            >
+              <option v-for="option in ticketTypes" :key="option.name" :value="option.name">
+                {{ option.price.label }} - {{ option.price.value }} €
+              </option>
+            </select>
+          </div>
+          <p v-else class="text-sm text-gray-700">
+            <strong>{{ ticketTypes[0]?.price.label }} :</strong> {{ ticketTypes[0]?.price.value }} €
+          </p>
+          <div class="flex items-center gap-2">
+            <div class="flex-1">
+              <label class="block text-sm font-medium text-gray-700 mb-1">Quantité</label>
+              <input
+                type="number"
+                min="1"
+                v-model="ticket.quantity"
+                @input="calculateTotal"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              />
+            </div>
+            <button
+              class="bg-red-600 text-white px-3 py-2 rounded-lg hover:bg-red-700 transition-colors duration-200"
+              @click="removeTicket(index)"
+            >
+              ❌
+            </button>
+          </div>
+        </div>
+
+        <button
+          v-if="ticketTypes.length > 1"
+          @click="addTicket"
+          class="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors duration-200"
+        >
+          ➕ Ajouter un autre ticket
+        </button>
+
+        <p class="text-lg font-bold text-right text-purple-800">Total : {{ total }} €</p>
+        <button
+          @click="bookTickets"
+          class="w-full bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 transition-colors duration-200"
+        >
+          Réserver vos places
+        </button>
+      </div>
     </div>
-  </template>
+  </div>
+</template>
   
   <script>
   import {onMounted, ref, computed } from 'vue';
@@ -192,8 +256,3 @@
     },
   };
   </script>
-  
-  <style scoped>
-  @import '@/assets/styles/PublicEventDetails.css';
-  </style>
-  

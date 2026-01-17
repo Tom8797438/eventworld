@@ -1,7 +1,7 @@
 <template>
-    <div>
-        <FirstPage />
-    </div>
+  <div class="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-indigo-100">
+    <FirstPage />
+  </div>
 </template>
 
 <script>

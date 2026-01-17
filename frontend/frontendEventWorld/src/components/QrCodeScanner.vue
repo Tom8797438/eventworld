@@ -1,40 +1,66 @@
 <template>
-      <div class="cadre-scan" :key="componentKey">
-        <div class="camera-frame">
-          <qrcode-stream
-            :constraints="selectedConstraints"
-            :formats="selectedBarcodeFormats"
-            @decode="onDecode"
-            @error="onError"
-            @detect="onDetect"
-            @camera-on="onCameraReady"
-          />
-        </div>
-        <div class="section-scan">
-          <p class="selection-camera">
-            Sélection de la caméra
-            <select v-model="selectedConstraints" class="selection-camera">
-              <option
-                v-for="option in constraintOptions"
-                :key="option.label"
-                :value="option.constraints"
-              >
-                {{ option.label }}
-              </option>
-            </select>
-          </p>
+  <div class="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-indigo-100 flex items-center justify-center p-6" :key="componentKey">
+    <div class="max-w-md w-full space-y-6 bg-white p-6 rounded-lg shadow-lg">
+      <!-- Cadre de la caméra -->
+      <div class="relative bg-gray-200 rounded-lg overflow-hidden border-2 border-purple-300">
+        <qrcode-stream
+          :constraints="selectedConstraints"
+          :formats="selectedBarcodeFormats"
+          @decode="onDecode"
+          @error="onError"
+          @detect="onDetect"
+          @camera-on="onCameraReady"
+          class="w-full h-64"
+        />
+      </div>
 
-          <!-- Mise à jour : Utilisation de `status` -->
-          <div class="scan-response" v-if="scanResponse">
-            <div class="status-icon" :class="statusClass">
-              <FontAwesomeIcon v-if="scanResponse.status === 'success'" :icon="['fas', 'thumbs-up']" class="success-icon"/>
-              <FontAwesomeIcon v-if="scanResponse.status === 'used'" :icon="['fas', 'thumbs-up']" class="warning-icon"/>
-              <FontAwesomeIcon v-if="scanResponse.status === 'invalid'" :icon="['fas', 'times-circle']" class="error-icon"/>
-            </div>
+      <!-- Section de sélection et statut -->
+      <div class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">Sélection de la caméra</label>
+          <select
+            v-model="selectedConstraints"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+          >
+            <option
+              v-for="option in constraintOptions"
+              :key="option.label"
+              :value="option.constraints"
+            >
+              {{ option.label }}
+            </option>
+          </select>
+        </div>
+
+        <!-- Statut du scan -->
+        <div v-if="scanResponse" class="flex items-center justify-center p-4 rounded-lg border" :class="statusBorderClass">
+          <div class="flex items-center space-x-2">
+            <FontAwesomeIcon
+              v-if="scanResponse.status === 'success'"
+              :icon="['fas', 'thumbs-up']"
+              class="text-green-600 text-2xl"
+            />
+            <FontAwesomeIcon
+              v-if="scanResponse.status === 'used'"
+              :icon="['fas', 'exclamation-circle']"
+              class="text-yellow-600 text-2xl"
+            />
+            <FontAwesomeIcon
+              v-if="scanResponse.status === 'fraud'"
+              :icon="['fas', 'exclamation-circle']"
+              class="text-red-600 text-2xl"
+            />
+            <FontAwesomeIcon
+              v-if="scanResponse.status === 'invalid'"
+              :icon="['fas', 'times-circle']"
+              class="text-red-600 text-2xl"
+            />
+            <span class="text-sm font-medium" :class="statusTextClass">{{ scanResponse.message || 'Statut inconnu' }}</span>
           </div>
         </div>
       </div>
-
+    </div>
+  </div>
 </template>
 
 <script>
@@ -74,7 +100,7 @@ export default {
 
     let qrData;
 
-    // 🧠 Si c'est un JSON encodé en string, on le parse
+    // Si c'est un JSON encodé en string, on le parse
     try {
       qrData = JSON.parse(decodedString);
     } catch (e) {
@@ -129,10 +155,12 @@ export default {
     if (!scanResponse.value) return "";
     switch (scanResponse.value.status) {
       //case "valid":
-      case "sucess":
+      case "success":
         return "success-icon";
       case "used":
         return "warning-icon";
+      case "fraud":
+        return "error-icon";
       case "invalid":
         return "error-icon";
       default:
@@ -187,7 +215,3 @@ export default {
 };
 </script>
 
-<style scoped>
-@import '@/assets/styles/QrCodeScanner.css'
-
-</style>

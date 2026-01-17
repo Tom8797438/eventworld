@@ -14,6 +14,10 @@ import CreateEvent from '@/components/CreateEvent.vue';
 import ResetPassword from '@/components/ResetPassword.vue';
 import ResetPasswordConfirm from '@/components/ResetPasswordConfirm.vue';
 import TemporaryHomeView from '@/views/TemporaryHomeView.vue';
+import EventScanStatusView from '@/views/EventScanStatusView.vue';
+import ProfileView from '@/views/ProfileView.vue';
+import SettingsView from '@/views/SettingsView.vue';
+import HelpView from '@/views/HelpView.vue';
 
 
 const routes = [
@@ -71,6 +75,30 @@ const routes = [
       name: 'EventDetails',
       component: EventDetails,
       meta: { layout: BaseLayout },
+    },
+    {
+      path: '/event/:id/scan-status',
+      name: 'EventScanStatus',
+      component: EventScanStatusView,
+      meta: { requiresAuth: true, layout: BaseLayout },
+    },
+    {
+      path: '/profile',
+      name: 'Profile',
+      component: ProfileView,
+      meta: { requiresAuth: true, layout: BaseLayout },
+    },
+    {
+      path: '/settings',
+      name: 'Settings',
+      component: SettingsView,
+      meta: { requiresAuth: true, layout: BaseLayout },
+    },
+    {
+      path: '/help',
+      name: 'Help',
+      component: HelpView,
+      meta: { requiresAuth: true, layout: BaseLayout },
     },
     {
       path: "/scan-qr-code",

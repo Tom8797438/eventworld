@@ -117,8 +117,9 @@
   flex: 1;
   padding: 12px;
   margin-right: 0px;
-  border: 1px solid #ccc;
+  border: 1px solid #6200ea;
   border-radius: 5px;
+  color: black !important;
 }
 
 .btn-primary {

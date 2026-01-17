@@ -1,39 +1,69 @@
 <template>
-  <div class="cadre-scan" v-if="canScan && authorizedEventId">
-    <div class="camera-frame" :key="componentKey">
-      <qrcode-stream
-        :constraints="selectedConstraints"
-        :formats="selectedBarcodeFormats"
-        @decode="onDecode"
-        @error="onError"
-        @detect="onDetect"
-        @camera-on="onCameraReady"
-      />
-    </div>
+  <div v-if="canScan && authorizedEventId" class="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-indigo-100 flex items-center justify-center p-6">
+    <div class="max-w-md w-full space-y-6 bg-white p-6 rounded-lg shadow-lg">
+      <!-- Cadre de la caméra -->
+      <div class="relative bg-gray-200 rounded-lg overflow-hidden border-2 border-purple-300">
+        <qrcode-stream
+          :constraints="selectedConstraints"
+          :formats="selectedBarcodeFormats"
+          @decode="onDecode"
+          @error="onError"
+          @detect="onDetect"
+          @camera-on="onCameraReady"
+          :key="componentKey"
+          class="w-full h-64"
+        />
+      </div>
 
-    <div class="section-scan">
-      <p class="selection-camera">
-        Caméra :
-        <select v-model="selectedConstraints">
-          <option v-for="option in constraintOptions" :key="option.label" :value="option.constraints">
-            {{ option.label }}
-          </option>
-        </select>
-      </p>
+      <!-- Section de sélection et statut -->
+      <div class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">Caméra :</label>
+          <select
+            v-model="selectedConstraints"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+          >
+            <option v-for="option in constraintOptions" :key="option.label" :value="option.constraints">
+              {{ option.label }}
+            </option>
+          </select>
+        </div>
 
-      <div class="scan-response" v-if="scanResponse">
-        <div :class="['status-icon', statusClass]">
-          <font-awesome-icon v-if="scanResponse.status === 'success'" icon="fas fa-thumbs-up" />
-          <font-awesome-icon v-if="scanResponse.status === 'used'" icon="fas fa-exclamation-circle" />
-          <font-awesome-icon v-if="scanResponse.status === 'invalid'" icon="fas fa-times-circle" />
-          <p>{{ scanResponse.message }}</p>
+        <!-- Statut du scan -->
+        <div v-if="scanResponse" class="p-4 rounded-lg border" :class="statusBorderClass">
+          <div class="flex items-center space-x-2">
+            <FontAwesomeIcon
+              v-if="scanResponse.status === 'success'"
+              :icon="['fas', 'thumbs-up']"
+              class="text-green-600 text-2xl"
+            />
+            <FontAwesomeIcon
+              v-if="scanResponse.status === 'used'"
+              :icon="['fas', 'exclamation-circle']"
+              class="text-yellow-600 text-2xl"
+            />
+            <FontAwesomeIcon
+              v-if="scanResponse.status === 'fraud'"
+              :icon="['fas', 'exclamation-circle']"
+              class="text-red-600 text-2xl"
+            />
+            <FontAwesomeIcon
+              v-if="scanResponse.status === 'invalid'"
+              :icon="['fas', 'times-circle']"
+              class="text-red-600 text-2xl"
+            />
+            <p class="text-sm font-medium" :class="statusTextClass">{{ scanResponse.message }}</p>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
-  <div v-else>
-    <p>⛔ Vous n'avez pas le droit de scanner ou le lien est invalide.</p>
+  <!-- Accès refusé -->
+  <div v-else class="min-h-screen bg-gradient-to-br from-red-50 to-red-100 flex items-center justify-center p-6">
+    <div class="max-w-md w-full text-center bg-white p-6 rounded-lg shadow-lg">
+      <p class="text-red-600 text-lg">⛔ Vous n'avez pas le droit de scanner ou le lien est invalide.</p>
+    </div>
   </div>
 </template>
 
@@ -174,7 +204,7 @@ export default {
 </script>
 
 <style scoped>
-@import '@/assets/styles/QrCodeScanner.css';
+/* @import '@/assets/styles/QrCodeScanner.css';
 
 .success-icon {
   color: green;
@@ -188,5 +218,5 @@ export default {
 
 .cadre-scan {
  height: 100vh;
-}
+} */
 </style>

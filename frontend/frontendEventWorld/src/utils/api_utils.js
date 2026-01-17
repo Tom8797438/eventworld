@@ -180,6 +180,38 @@ export async function checkTicketStatus(qr_code) {
   }
 }
 
+export async function fetchEventTicketStatus(eventId) {
+  try {
+    const response = await api.get(`event/${eventId}/ticket-status/`);
+    return response.data;
+  } catch (error) {
+    console.error("Erreur lors de la récupération des tickets :", error.response?.data || error.message);
+    throw error;
+  }
+}
+
+export async function sendTicketByEmail(eventId, ticketId, email = null) {
+  try {
+    const payload = email ? { email } : {};
+    const response = await api.post(`event/${eventId}/ticket/${ticketId}/send-email/`, payload);
+    return response.data;
+  } catch (error) {
+    console.error("Erreur lors de l'envoi du ticket :", error.response?.data || error.message);
+    throw error;
+  }
+}
+
+export async function sendTempAccessLink(eventId, scannerId, email = null) {
+  try {
+    const payload = email ? { email } : {};
+    const response = await api.post(`event/${eventId}/temporary-scanner/${scannerId}/send-access/`, payload);
+    return response.data;
+  } catch (error) {
+    console.error("Erreur lors de l'envoi du lien d'acces :", error.response?.data || error.message);
+    throw error;
+  }
+}
+
 // ===========================
 // ✅ PARTIE INVITATION
 // ===========================

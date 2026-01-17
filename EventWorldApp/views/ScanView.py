@@ -1,8 +1,8 @@
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from django.shortcuts import get_object_or_404
 from EventWorldApp.models import Ticketing, TemporaryScanner
+from django.db.models import F
 from rest_framework.permissions import IsAuthenticated
 from EventWorldApp.permissions import IsNotStudent
 from django.utils import timezone
@@ -16,21 +16,28 @@ class ScanTicket (APIView):
         if not qr_code:
             return Response({"message": "QR Code manquant ou id"}, status=status.HTTP_400_BAD_REQUEST)
 
-        ticket = get_object_or_404(Ticketing, qr_code=qr_code)
+        try:
+            ticket = Ticketing.objects.get(qr_code=qr_code)
+        except Ticketing.DoesNotExist:
+            return Response(
+                {"message": "Fraude : QR code inconnu", "status": "fraud"},
+                status=status.HTTP_200_OK,
+            )
         event = ticket.event 
         user = request.user
         is_owner = event.organisator == user
-        is_temp_scanner = TemporaryScanner.objects.filter(
+        temp_scanner = TemporaryScanner.objects.filter(
             user=user, 
             event=event, 
             can_scan=True, 
             expires_at__gt=timezone.now()
-        ).exists()
+        ).first()
+        is_temp_scanner = temp_scanner is not None
         
         if not is_owner and not is_temp_scanner:
             return Response(
-                {"message": "Vous n'avez pas l'autorisation de scanner ce ticket."},
-                status=status.HTTP_403_FORBIDDEN
+                {"message": "Fraude : billet pour un autre evenement", "status": "fraud"},
+                status=status.HTTP_200_OK
             )
         
         # Vérifie que l'utilisateur est bien l'organisateur de l'événement
@@ -42,10 +49,10 @@ class ScanTicket (APIView):
         
         if ticket.status == "used":
                 return Response(
-                {"message": "Ce ticket a déjà été utilisé", "status": "used"},
+                {"message": "Non valide : deja scanne", "status": "used"},
                 status=status.HTTP_200_OK,
             )
-        # ✅ Vérifie si l'utilisateur est l'organisateur OU un scanneur temporaire actif
+        # Vérifie si l'utilisateur est l'organisateur OU un scanneur temporaire actif
         event = ticket.event
         
 
@@ -53,6 +60,12 @@ class ScanTicket (APIView):
         ticket.status = "used"
         ticket.scan_timestamp = timezone.now()
         ticket.save()
+
+        if temp_scanner:
+            TemporaryScanner.objects.filter(id=temp_scanner.id).update(
+                tickets_scanned=F("tickets_scanned") + 1,
+                last_seen_at=timezone.now(),
+            )
 
         return Response(
             {"message": "Ticket validé avec succès", "status": "success"},

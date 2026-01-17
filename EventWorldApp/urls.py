@@ -17,6 +17,9 @@ from rest_framework.routers import DefaultRouter
 
 from .views.temporary_scanner_crud import (TemporaryScannerCreateView, TemporaryScannerDetailView, TemporaryScannerListView)
 from EventWorldApp.views.access_temp_token import TemporaryAccessView
+from EventWorldApp.views.event_ticket_status import EventTicketStatusView
+from EventWorldApp.views.send_ticket_email import SendTicketEmailView
+from EventWorldApp.views.send_temp_access_email import SendTemporaryAccessEmailView
 
 router = DefaultRouter()
 router.register(r'events', EventViewSet, basename='event')
@@ -41,6 +44,9 @@ urlpatterns = [
     path('event/<uuid:event_id>/temporary-scanner/<uuid:scanner_id>/', TemporaryScannerDetailView.as_view(), name="temporary_scanner_detail"),
     path('temporary-scanner/status/', TemporaryScannerStatusView.as_view()),
     path('temporary-scanner/<uuid:scanner_id>/', TemporaryScannerDetailView.as_view(), name='update-temporary-scanner'),
+    path('event/<uuid:event_id>/ticket-status/', EventTicketStatusView.as_view(), name='event-ticket-status'),
+    path('event/<uuid:event_id>/ticket/<uuid:ticket_id>/send-email/', SendTicketEmailView.as_view(), name='send-ticket-email'),
+    path('event/<uuid:event_id>/temporary-scanner/<uuid:scanner_id>/send-access/', SendTemporaryAccessEmailView.as_view(), name='send-temp-access-email'),
     
     path('invitation/<uuid:id>/', EventInvitationDetailView.as_view(), name='event-invitation-detail'),
     path("invitation/by-event/", get_invitation_by_event_id, name="get-invitation-by-event-id"),

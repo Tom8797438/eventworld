@@ -63,7 +63,7 @@
 body {
   min-height: 100vh;
   color: var(--color-text);
-  background: var(--color-page-background); /* Utilise la nouvelle variable */
+  background: var(--color-page-background); 
   transition:
     color 0.5s,
     background-color 0.5s;
